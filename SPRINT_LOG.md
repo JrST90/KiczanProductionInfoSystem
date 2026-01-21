@@ -7,8 +7,10 @@
 
 | Task Description | Assigned Owner | Priority | Status |
 | :--- | :--- | :--- | :--- |
-| [e.g., Auth API] | @username1 | High | Completed |
-| [e.g., Login UI] | @username2 | High | Completed |
+| Sprint 1: Write & Deploy Database Script Development & Testing | Josh Stanczyk | Medium | Review |
+| Sprint 1: Main User Interface – Initial Application State – Develop & Test | Josh Stanczyk | High | To Do |
+| Sprint 1: Main User Interface – Search by Part Number – Develop & Test | Josh Stanczyk, Daniel Puharic, Elian Garcia, Justin Kisner | High | To Do |
+| Sprint 1: Main User Interface – Search by Due Date Range – Develop & Test | Josh Stanczyk, Daniel Puharic, Elian Garcia, Justin Kisner | Medium | To Do |
 
 ## 2. Progress & Blockers
 * **Completed Work:** [Summary of achievements]
@@ -22,5 +24,5 @@
 | [UI Layout]   | Manual | Passed | Screenshot in Repo |
 
 ## 4. Bug Tracking
-* **Bug Description:** [e.g., Login button unresponsive]
+* **Bug Description:**
 * **Severity:** [High/Med/Low] | **Fix Status:** [Fixed/Open]
