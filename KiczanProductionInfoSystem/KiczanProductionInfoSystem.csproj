@@ -96,6 +96,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DAO.cs" />
+    <Compile Include="DataValidation.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
