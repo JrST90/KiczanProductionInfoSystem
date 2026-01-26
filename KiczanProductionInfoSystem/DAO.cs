@@ -49,5 +49,36 @@ namespace KiczanProductionInfoSystem
 
             return dataTable;
         }
+
+        //Count all records for PART_NUMBER_QUERY.
+        internal int partNumberQueryCount(string partNumber)
+        {
+            //Set initial value of totalRows.
+            int totalRows = 0;
+
+            //Connect to db.
+            MySqlConnection connection = new MySqlConnection(connectionString);
+            connection.Open();
+
+            //Get the stored procedure from the DB.
+            MySqlCommand command = new MySqlCommand("PART_NUMBER_QUERY_COUNT", connection);
+            command.CommandType = CommandType.StoredProcedure;
+
+            //Add wildcard to broaden search term.
+            String searchWildTerm = "%" + partNumber + "%";
+
+            //Paramaterized to prevent SQL Injection, bind values.
+            command.Parameters.AddWithValue("partNo", searchWildTerm);
+
+            //Execute query, save result in result object.
+            object result = command.ExecuteScalar();
+
+            //Convert result to Int and save in totalRows.
+            totalRows = Convert.ToInt32(result);
+
+            connection.Close();
+
+            return totalRows;
+        }
     }
 }

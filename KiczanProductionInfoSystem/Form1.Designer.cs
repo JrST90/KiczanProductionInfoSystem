@@ -66,7 +66,7 @@
             this.dataGridView1.RowHeadersWidth = 25;
             this.dataGridView1.Size = new System.Drawing.Size(2165, 740);
             this.dataGridView1.TabIndex = 0;
-            //TO DO: Add event handlers for dataGridView1
+            this.dataGridView1.CellMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGridView1_CellMouseClick);
             // 
             // comboBox1
             // 
@@ -80,7 +80,8 @@
             "Bending Work Query",
             "NC Machine Work Query",
             "Last 7 Days",
-            "Last 14 Days"});
+            "Last 14 Days",
+            "Search by Part Number in Archive"});
             this.comboBox1.Location = new System.Drawing.Point(25, 38);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(431, 33);
@@ -97,7 +98,7 @@
             this.button1.TabIndex = 14;
             this.button1.Text = "Search";
             this.button1.UseVisualStyleBackColor = false;
-            //TO DO: Add event handler for button1
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // textBox1
             // 
@@ -200,7 +201,7 @@
             this.button4.TabIndex = 25;
             this.button4.Text = "Next";
             this.button4.UseVisualStyleBackColor = true;
-            //TO DO: Add event handler for button4
+            this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
             // button5
             // 
@@ -210,7 +211,7 @@
             this.button5.TabIndex = 26;
             this.button5.Text = "Previous";
             this.button5.UseVisualStyleBackColor = true;
-            //TO DO: Add event handler for button5
+            this.button5.Click += new System.EventHandler(this.button5_Click);
             // 
             // contextMenuStrip1
             // 
