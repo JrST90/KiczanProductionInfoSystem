@@ -228,7 +228,7 @@
             this.updateRecordToolStripMenuItem.Name = "updateRecordToolStripMenuItem";
             this.updateRecordToolStripMenuItem.Size = new System.Drawing.Size(384, 38);
             this.updateRecordToolStripMenuItem.Text = "Update Record";
-            //TO DO: Add event handler for updateRecordToolStripMenuItem
+            this.updateRecordToolStripMenuItem.Click += new System.EventHandler(this.updateRecordToolStripMenuItem_Click);
             // 
             // deleteRecordArchiveToolStripMenuItem
             // 

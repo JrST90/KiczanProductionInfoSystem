@@ -366,5 +366,13 @@ namespace KiczanProductionInfoSystem
                 contextMenuStrip1.Show(Cursor.Position);
             }
         }
+
+        //Event handler for click event for Update Record on right click menu.
+        private void updateRecordToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            UpdateRecord updateRecord = new UpdateRecord();
+
+            updateRecord.Show();
+        }
     }
 }
