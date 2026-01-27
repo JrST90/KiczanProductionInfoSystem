@@ -12,7 +12,7 @@ namespace KiczanProductionInfoSystem
             //Regular expressions to check for invalid input.
             string patternOne = @"([\s])";
             string patternTwo = @"([!@#$%^&*=])";
-            string patternThree = @"([A-Z0-9-])";
+            string patternThree = @"([a-zA-Z0-9-])";
             Regex rgOne = new Regex(patternOne);
             Regex rgTwo = new Regex(patternTwo);
             Regex rgThree = new Regex(patternThree);
