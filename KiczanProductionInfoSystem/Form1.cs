@@ -49,7 +49,7 @@ namespace KiczanProductionInfoSystem
             {
                 case 1:
                     //Store user input from textBox1 into partNumber variable.
-                    partNumber = textBox1.Text.ToUpper();
+                    partNumber = textBox1.Text;
 
                     //If the partNumber is of the right format and the number of matching records is greater than 0, execute the search query.
                     if (newDV.validatePartNumber(partNumber) == true && newDAO.partNumberQueryCount(partNumber) > 0)
