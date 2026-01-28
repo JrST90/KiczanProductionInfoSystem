@@ -31,5 +31,5 @@
 ## 4. Bug Tracking
 * **Bug Description:** [Update Record Right Click Event]
 * **Severity:** [High] | **Fix Status:** [Fixed]
-* **Bug Description:** [Letter Casing in User Input for Search by Part Numbe]
+* **Bug Description:** [Letter Casing in User Input for Search by Part Number]
 * **Severity:** [High] | **Fix Status:** [Fixed]
