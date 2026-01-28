@@ -29,17 +29,21 @@ upon receiving new work orders, and update existing records in the event of erro
   - Main User Interface with layout
   - Search by Part Number Query with input validation
 ## Development Workflow
+# Planning
   - Plan and assign develop and test tasks on designated sprint project board defined by project management plan
   - Assign team members to tasks
   - Move sprint tasks into To Do column and through In Progess, Review, Requested Changes and Complete phases
-
+# Development
   - Create branches to contain feature development with feature commentary for each commit
   - Update README.md and SPRINT_LOG.md with development progress
   - Move tasks to appropriate columns for each phase of development
-
+# Review
   - Open pull requests to merge features into develop and main branches
   - Submit team member review for each pull request
   - Perform testing prior to merge approval to ensure user story criteria has been met
   - Submit merge approval once appropriate team member review has been made, and changes during review have been implemented
+# Wrap-Up
+  - Complete SPRINT_LOG.md with sprint updates
+  - Record Sprint Retrospective video
 ## Sprint Technical Logs
 ### See SPRINT_LOG.md
