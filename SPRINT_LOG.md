@@ -8,12 +8,19 @@
 | Task Description | Assigned Owner | Priority | Status |
 | :--- | :--- | :--- | :--- |
 | Sprint 1: Write & Deploy Database Script Development & Testing | Daniel Puharic, Josh Stanczyk, Justin Kisner, Elian Garcia | Medium | Completed |
-
-
+| Sprint 1: Main User Interface – Initial Application State – Develop & Test | Daniel Puharic, Josh Stanczyk, Justin Kisner, Elian Garcia | High | Completed |
+| Sprint 1: Main User Interface – Search by Part Number – Develop & Test | Daniel Puharic, Josh Stanczyk, Justin Kisner, Elian Garcia | High | Review |
+| Sprint 1: Main User Interface – Search by Due Date Range – Develop & Test | Daniel Puharic, Josh Stanczyk, Justin Kisner, Elian Garcia | Medium | In Progress |
 ## 2. Progress & Blockers
-* **Completed Work:** Sprint 1: Write & Deploy Database Script Development & Testing
-* **Incomplete Tasks:** [Reason for delay/blockers]
-* **Resolution Plan:** [How blockers were/will be resolved]
+* **Completed Work:**
+* Sprint 1: Write & Deploy Database Script Development & Testing
+* Sprint 1: Main User Interface – Initial Application State – Develop & Tes
+* **Incomplete Tasks:**
+* Sprint 1: Main User Interface – Search by Part Number – Develop & Test - Under Review by Team 2
+* Sprint 1: Main User Interface – Search by Due Date Range – Develop & Test - In Progress by Team 2
+* **Resolution Plan:**
+* Sprint 1: Main User Interface – Search by Part Number – Develop & Test - Complete Review
+* Sprint 1: Main User Interface – Search by Due Date Range – Develop & Test - Complete Task and Review by Team 2
 
 ## 3. System Test Report
 | Test Case | Type | Result | Evidence/PR # |
