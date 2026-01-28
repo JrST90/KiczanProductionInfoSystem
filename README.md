@@ -23,6 +23,7 @@ upon receiving new work orders, and update existing records in the event of erro
   - MySQL Workbench CE
   - MAMP to host SQL Server
   - IDE (Microsoft Visual Studio or Visual Studio Code)
+  - MySQL.Data package version 9.6.0 by Oracle Corporation
 ## Features & Usage
   - Initialized DB using build scripts
   - Main User Interface with layout
