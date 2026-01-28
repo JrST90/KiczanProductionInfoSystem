@@ -25,9 +25,11 @@
 ## 3. System Test Report
 | Test Case | Type | Result | Evidence/PR # |
 | :--- | :--- | :--- | :--- |
-| [Valid Login] | Unit | Passed | PR #12 |
-| [UI Layout]   | Manual | Passed | Screenshot in Repo |
+| [Update Record Right Click Event] | Unit | Passed | PR #8 |
+| [Letter Casing in User Input for Search by Part Number] | Unit | Passed | PR #8 |
 
 ## 4. Bug Tracking
-* **Bug Description:** [e.g., Login button unresponsive]
-* **Severity:** [High/Med/Low] | **Fix Status:** [Fixed/Open]
+* **Bug Description:** [Update Record Right Click Event]
+* **Severity:** [High] | **Fix Status:** [Fixed]
+* **Bug Description:** [Letter Casing in User Input for Search by Part Numbe]
+* **Severity:** [High] | **Fix Status:** [Fixed]
