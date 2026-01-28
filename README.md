@@ -42,4 +42,4 @@ upon receiving new work orders, and update existing records in the event of erro
   - Perform testing prior to merge approval to ensure user story criteria has been met
   - Submit merge approval once appropriate team member review has been made, and changes during review have been implemented
 ## Sprint Technical Logs
-### See SPRING_LOG.md
+### See SPRINT_LOG.md
