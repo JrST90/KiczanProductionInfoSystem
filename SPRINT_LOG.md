@@ -14,7 +14,7 @@
 ## 2. Progress & Blockers
 * **Completed Work:**
 * Sprint 1: Write & Deploy Database Script Development & Testing
-* Sprint 1: Main User Interface – Initial Application State – Develop & Tes
+* Sprint 1: Main User Interface – Initial Application State – Develop & Test
 * **Incomplete Tasks:**
 * Sprint 1: Main User Interface – Search by Part Number – Develop & Test - Under Review by Team 2
 * Sprint 1: Main User Interface – Search by Due Date Range – Develop & Test - In Progress by Team 2
