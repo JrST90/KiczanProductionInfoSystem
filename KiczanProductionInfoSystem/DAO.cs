@@ -12,85 +12,88 @@ namespace KiczanProductionInfoSystem
         //Set the connection string to establish a conncetion to the database
         private string connectionString = "datasource=localhost;port=3306;username=root;" +
             "password=root;database=kiczan_production_system;";
-            //Reads data from DB source, returns dataTable from DATE_DUE_RANGE_QUERY stored procedure. 
-            //Reads beginning date and end date from user input from text box on UI.
-internal DataTable dateDueRangeQuery(string dateRange, int pageSize, int currentPageIndex)
-{
-    //Create new dataTable to store query results.
-    DataTable dataTable = new DataTable();
 
-    //Create array to store date values from string input.
-    //Split date range at occurence of '-' character. EX: 01/01/2024-02/01/2024
-    string[] dateArray = dateRange.Split('-');
+        //Reads data from DB source, returns dataTable from DATE_DUE_RANGE_QUERY stored procedure. 
+        //Reads beginning date and end date from user input from text box on UI.
+        internal DataTable dateDueRangeQuery(string dateRange, int pageSize, int currentPageIndex)
+        {
+            //Create new dataTable to store query results.
+            DataTable dataTable = new DataTable();
 
-    //Connect to db.
-    MySqlConnection connection = new MySqlConnection(connectionString);
-    connection.Open();
+            //Create array to store date values from string input.
+            //Split date range at occurence of '-' character. EX: 01/01/2024-02/01/2024
+            string[] dateArray = dateRange.Split('-');
 
-    //Get stored procedure "DATE_DUE_RANGE_QUERY" from SQL server.
-    MySqlCommand command = new MySqlCommand("DATE_DUE_RANGE_QUERY", connection);
-    command.CommandType = CommandType.StoredProcedure;
+            //Connect to db.
+            MySqlConnection connection = new MySqlConnection(connectionString);
+            connection.Open();
 
-    //Set offset to be bound using currentPageIndex and pageSize arguments.
-    int offsetNum = ((currentPageIndex - 1) * pageSize);
+            //Get stored procedure "DATE_DUE_RANGE_QUERY" from SQL server.
+            MySqlCommand command = new MySqlCommand("DATE_DUE_RANGE_QUERY", connection);
+            command.CommandType = CommandType.StoredProcedure;
 
-    //Create new DateTime objects and use the Parse() function on dates
-    //from user input date range.
-    //stored in dateArray[0], and dateArray[1].
-    DateTime bd = DateTime.Parse(dateArray[0]);
-    DateTime ed = DateTime.Parse(dateArray[1]);
+            //Set offset to be bound using currentPageIndex and pageSize arguments.
+            int offsetNum = ((currentPageIndex - 1) * pageSize);
 
-    //Paramaterized to prevent SQL Injection, bind values.
-    command.Parameters.AddWithValue("dateB", bd);
-    command.Parameters.AddWithValue("dateE", ed);
-    command.Parameters.AddWithValue("pageSize", pageSize);
-    command.Parameters.AddWithValue("offsetNum", offsetNum);
+            //Create new DateTime objects and use the Parse() function on dates
+            //from user input date range.
+            //stored in dateArray[0], and dateArray[1].
+            DateTime bd = DateTime.Parse(dateArray[0]);
+            DateTime ed = DateTime.Parse(dateArray[1]);
 
-    //Use adapter object to fill dataTable with query results.
-    using (MySqlDataAdapter adapter = new MySqlDataAdapter(command))
-    {
-        adapter.Fill(dataTable);
-    }
+            //Paramaterized to prevent SQL Injection, bind values.
+            command.Parameters.AddWithValue("dateB", bd);
+            command.Parameters.AddWithValue("dateE", ed);
+            command.Parameters.AddWithValue("pageSize", pageSize);
+            command.Parameters.AddWithValue("offsetNum", offsetNum);
 
-    connection.Close();
+            //Use adapter object to fill dataTable with query results.
+            using (MySqlDataAdapter adapter = new MySqlDataAdapter(command))
+            {
+                adapter.Fill(dataTable);
+            }
 
-    return dataTable;
-}
-//Count all records for DATE_DUE_RANGE_QUERY.
-internal int dateDueRangeQueryCount(string dateRange)
-{
-    //Set initial value of totalRows.
-    int totalRows = 0;
+            connection.Close();
 
-    //Split dateRange at the occurence of a hyphen.
-    string[] dateArray = dateRange.Split('-');
+            return dataTable;
+        }
 
-    //Connect to db.
-    MySqlConnection connection = new MySqlConnection(connectionString);
-    connection.Open();
+        //Count all records for DATE_DUE_RANGE_QUERY.
+        internal int dateDueRangeQueryCount(string dateRange)
+        {
+            //Set initial value of totalRows.
+            int totalRows = 0;
 
-    //Get the stored procedure from the DB.
-    MySqlCommand command = new MySqlCommand("DATE_DUE_RANGE_QUERY_COUNT", connection);
-    command.CommandType = CommandType.StoredProcedure;
+            //Split dateRange at the occurence of a hyphen.
+            string[] dateArray = dateRange.Split('-');
 
-    //Parts date values stored in dateArray.
-    DateTime bd = DateTime.Parse(dateArray[0]);
-    DateTime ed = DateTime.Parse(dateArray[1]);
+            //Connect to db.
+            MySqlConnection connection = new MySqlConnection(connectionString);
+            connection.Open();
 
-    //Paramaterized to prevent SQL Injection, bind values.
-    command.Parameters.AddWithValue("dateB", bd);
-    command.Parameters.AddWithValue("dateE", ed);
+            //Get the stored procedure from the DB.
+            MySqlCommand command = new MySqlCommand("DATE_DUE_RANGE_QUERY_COUNT", connection);
+            command.CommandType = CommandType.StoredProcedure;
 
-    //Execute query, save result in result object
-    object result = command.ExecuteScalar();
+            //Parts date values stored in dateArray.
+            DateTime bd = DateTime.Parse(dateArray[0]);
+            DateTime ed = DateTime.Parse(dateArray[1]);
 
-    //Convert result to Int and save in totalRows.
-    totalRows = Convert.ToInt32(result);
+            //Paramaterized to prevent SQL Injection, bind values.
+            command.Parameters.AddWithValue("dateB", bd);
+            command.Parameters.AddWithValue("dateE", ed);
 
-    connection.Close();
+            //Execute query, save result in result object
+            object result = command.ExecuteScalar();
 
-    return totalRows;
-}
+            //Convert result to Int and save in totalRows.
+            totalRows = Convert.ToInt32(result);
+
+            connection.Close();
+
+            return totalRows;
+        }
+
         //Reads data from DB source, returns dataTable from PART_NUMBER_QUERY stored procedure.
         //Reads partNumber from user input in text box.
         internal DataTable partNumberQuery(string partNumber, int pageSize, int currentPageIndex)
