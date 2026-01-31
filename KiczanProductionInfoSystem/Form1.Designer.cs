@@ -235,12 +235,14 @@
             this.deleteRecordArchiveToolStripMenuItem.Name = "deleteRecordArchiveToolStripMenuItem";
             this.deleteRecordArchiveToolStripMenuItem.Size = new System.Drawing.Size(384, 38);
             this.deleteRecordArchiveToolStripMenuItem.Text = "Delete Record (Archive)";
+            this.deleteRecordArchiveToolStripMenuItem.Click += new System.EventHandler(this.deleteRecordToolStripMenuItem_Click);
             // 
             // restoreRecordMainTableToolStripMenuItem
             // 
             this.restoreRecordMainTableToolStripMenuItem.Name = "restoreRecordMainTableToolStripMenuItem";
             this.restoreRecordMainTableToolStripMenuItem.Size = new System.Drawing.Size(384, 38);
             this.restoreRecordMainTableToolStripMenuItem.Text = "Restore Record (Main Table)";
+            this.restoreRecordMainTableToolStripMenuItem.Click += new System.EventHandler(this.restoreRecordMainTableToolStripMenuItem_Click);
             // 
             // Form1
             // 
