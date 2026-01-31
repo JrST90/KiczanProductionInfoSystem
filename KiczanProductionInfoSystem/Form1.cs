@@ -1207,6 +1207,8 @@ namespace KiczanProductionInfoSystem
 
             //Pass the PART_HISTORY_ID value to the delete query for record update to mark for delete.
             newDAO.softDeleteQuery(convertedPartyHistoryID);
+            button1_Click(sender, e);
+          
         }
 
         //Event handler for click event for Restore Record on right click menu.
@@ -1242,6 +1244,7 @@ namespace KiczanProductionInfoSystem
 
             //Pass the PART_HISTORY_ID value to the restore query for record update to restore record.
             newDAO.restoreRecordQuery(convertedPartyHistoryID);
+            button1_Click(sender, e);
         }
     }
 }
