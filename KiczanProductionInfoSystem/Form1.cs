@@ -347,6 +347,9 @@ namespace KiczanProductionInfoSystem
                     //Clear textbox1.
                     textBox1.Clear();
 
+                    //Input example for date range search.
+                    textBox1.Text = "XX/XX/XXXX-XX/XX/XXXX";
+
                     //Clear the dataBaseSource.
                     dataBaseSource.DataSource = null;
 
