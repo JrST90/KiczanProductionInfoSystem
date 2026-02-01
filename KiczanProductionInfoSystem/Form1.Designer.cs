@@ -86,7 +86,7 @@
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(431, 33);
             this.comboBox1.TabIndex = 13;
-            //TO DO: Add event handler for comboBox1
+            this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
             // 
             // button1
             // 
@@ -235,12 +235,14 @@
             this.deleteRecordArchiveToolStripMenuItem.Name = "deleteRecordArchiveToolStripMenuItem";
             this.deleteRecordArchiveToolStripMenuItem.Size = new System.Drawing.Size(384, 38);
             this.deleteRecordArchiveToolStripMenuItem.Text = "Delete Record (Archive)";
+            this.deleteRecordArchiveToolStripMenuItem.Click += new System.EventHandler(this.deleteRecordToolStripMenuItem_Click);
             // 
             // restoreRecordMainTableToolStripMenuItem
             // 
             this.restoreRecordMainTableToolStripMenuItem.Name = "restoreRecordMainTableToolStripMenuItem";
             this.restoreRecordMainTableToolStripMenuItem.Size = new System.Drawing.Size(384, 38);
             this.restoreRecordMainTableToolStripMenuItem.Text = "Restore Record (Main Table)";
+            this.restoreRecordMainTableToolStripMenuItem.Click += new System.EventHandler(this.restoreRecordMainTableToolStripMenuItem_Click);
             // 
             // Form1
             // 
