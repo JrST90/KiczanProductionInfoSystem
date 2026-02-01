@@ -28,6 +28,9 @@ upon receiving new work orders, and update existing records in the event of erro
   - Initialized DB using build scripts
   - Main User Interface with layout
   - Search by Part Number Query with input validation
+  - Search by Due Date Range query with input validation
+  - Soft Delete & Restore
+  - Search by Part Number in Archive
 ## Development Workflow
 # Planning
   - Plan and assign develop and test tasks on designated sprint project board defined by project management plan
@@ -38,12 +41,12 @@ upon receiving new work orders, and update existing records in the event of erro
   - Update README.md and SPRINT_LOG.md with development progress
   - Move tasks to appropriate columns for each phase of development
 # Review
-  - Open pull requests to merge features into develop and main branches
+  - Open pull requests to merge features into develop/main branches and application-develop/application-main branches
   - Submit team member review for each pull request
   - Perform testing prior to merge approval to ensure user story criteria has been met
   - Submit merge approval once appropriate team member review has been made, and changes during review have been implemented
 # Wrap-Up
   - Complete SPRINT_LOG.md with sprint updates
-  - Record Sprint Retrospective video
+  - Record Sprint Retrospective video with new feature demonstration, and a discussion of what went well, challenges, lessons learned, and future goals.
 ## Sprint Technical Logs
 ### See SPRINT_LOG.md
