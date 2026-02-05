@@ -349,6 +349,41 @@ namespace KiczanProductionInfoSystem
                         label4.ForeColor = Color.Red;
                     }
                 break;
+                //Search by Fabrication Department.
+                case 3:
+                    //Set currentPageIndex for query.
+                    currentPageIndex = 1;
+
+                    //Bind dataBaseSource to fabricationDepartmentQuery results passing the arguments of pageSize, and currentPageIndex.
+                    dataBaseSource.DataSource = newDAO.fabricationDepartmentQuery(pageSize, currentPageIndex);
+
+                    //Bind dateGridView to dataBaseSource.
+                    dataGridView1.DataSource = dataBaseSource;
+
+                    //Get the total rows returned by fabricationDepartmentQueryCount.
+                    totalRows = newDAO.fabricationDepartmentQueryCount();
+
+                    //Divide the totalRows variable by the pageSize variable and set value to totalPages variable.
+                    totalPages = (int)Math.Ceiling((double)totalRows / pageSize);
+
+                    //Set label2's text value to the value of totalRows.
+                    label2.Text = "Number of Records: " + totalRows;
+
+                    //Set label5's text value to the value of totalPages.
+                    label5.Text = "Total Pages: " + totalPages;
+
+                    //Set label6's text value to the value of currentPageIndex.
+                    label6.Text = "Current Page: " + currentPageIndex;
+
+                    //Clear errorProvider1.
+                    errorProvider1.Clear();
+
+                    //Set label4's value to alert the user of a succsessful query.
+                    label4.Text = "QUERY SUCCESS";
+
+                    //Set label4's color to green.
+                    label4.ForeColor = Color.Green;
+                    break;
 
                 //Search By Part Number in Archive, gets value from textBox1.
                 case 8:
@@ -547,6 +582,39 @@ namespace KiczanProductionInfoSystem
                 case 1:
                     //Clear textbox1.
                     textBox1.Clear();
+
+                    //Clear the dataBaseSource.
+                    dataBaseSource.DataSource = null;
+
+                    //Clear the dataGridView1 source.
+                    dataGridView1.DataSource = null;
+
+                    //Clear the datagridView1 rows.
+                    dataGridView1.Rows.Clear();
+
+                    //Clear errorProvider1.
+                    errorProvider1.Clear();
+
+                    //Reset currentPageIndex.
+                    currentPageIndex = 1;
+
+                    //Clear all label text values.
+                    label2.Text = "";
+                    label3.Text = "";
+                    label4.Text = "";
+                    label5.Text = "";
+                    label6.Text = "";
+                break;
+                    //Search by Fabrication Department.
+                case 3:
+                    //Clear textbox1.
+                    textBox1.Clear();
+
+                    //Clear the list storing operators.
+                    //operators.Clear();
+
+                    //Clear the datasource for comboBox2.
+                    comboBox2.DataSource = null;
 
                     //Clear the dataBaseSource.
                     dataBaseSource.DataSource = null;
