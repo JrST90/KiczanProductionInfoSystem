@@ -163,7 +163,7 @@
             this.button2.TabIndex = 21;
             this.button2.Text = "Create Record";
             this.button2.UseVisualStyleBackColor = false;
-            //TO DO: Add event handler for button2
+            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // button3
             // 
