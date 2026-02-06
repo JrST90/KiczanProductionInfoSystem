@@ -1,4 +1,5 @@
-﻿using Mysqlx.Expr;
+﻿using KiczanProductionInformationSystem;
+using Mysqlx.Expr;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -519,7 +520,7 @@ namespace KiczanProductionInfoSystem
                     textBox1.Clear();
 
                     //Input example for date range search.
-                    textBox1.Text = "XX/XX/XXXX-XX/XX/XXXX";
+                    textBox1.Text = "MM/DD/YYYY-MM/DD/YYYY";
 
                     //Clear the dataBaseSource.
                     dataBaseSource.DataSource = null;
@@ -1172,6 +1173,14 @@ namespace KiczanProductionInfoSystem
 
             //Show the Update Record UI.
             updateRecord.Show();
+        }
+
+        //Event handler for the click event for the Create Record button.
+        private void button2_Click(object sender, EventArgs e)
+        {
+            CreateRecord createRecord = new CreateRecord();
+
+            createRecord.Show();
         }
 
         //Event handler for click event for Delete Record on right click menu.
