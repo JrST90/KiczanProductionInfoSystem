@@ -103,6 +103,12 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="CreateRecord.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CreateRecord.Designer.cs">
+      <DependentUpon>CreateRecord.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UpdateRecord.cs">
