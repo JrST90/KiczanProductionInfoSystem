@@ -351,6 +351,17 @@ namespace KiczanProductionInfoSystem
                 break;
                 //Search by Fabrication Department.
                 case 3:
+                    //Enable update and delete record options in menu strip.
+                    updateRecordToolStripMenuItem.Enabled = true;
+                    updateRecordToolStripMenuItem.Visible = true;
+
+                    //Enable delete record option in menu strip.
+                    deleteRecordArchiveToolStripMenuItem.Enabled = true;
+                    deleteRecordArchiveToolStripMenuItem.Visible = true;
+
+                    //Disable restore record option in menu strip.
+                    restoreRecordMainTableToolStripMenuItem.Enabled = false;
+                    restoreRecordMainTableToolStripMenuItem.Visible = false;
                     //Set currentPageIndex for query.
                     currentPageIndex = 1;
 
@@ -864,6 +875,21 @@ namespace KiczanProductionInfoSystem
                         }
                     break;
 
+                    case 3:
+                        //Incremement page counter index.
+                        currentPageIndex++;
+
+                        //Update page.
+                        label6.Text = "Current Page: " + currentPageIndex;
+
+                        //Query to update page.
+                        dataBaseSource.DataSource = newDAO.fabricationDepartmentQuery(pageSize, currentPageIndex);
+
+                        //Bind results to dataGridView1.
+                        dataGridView1.DataSource = dataBaseSource;
+
+                        break;
+
                     case 8:
                         //If the partNumber variable is still the same value as textBox1.Text and the next button is pressed.
                         if (partNumber == textBox1.Text)
@@ -1123,6 +1149,21 @@ namespace KiczanProductionInfoSystem
                             //Set label4's text color to red.
                             label4.ForeColor = Color.Red;
                         }
+                    break;
+
+                    case 3:
+                        // Decrement page counter index.
+                        currentPageIndex--;
+
+                        // Update page.
+                        label6.Text = "Current Page: " + currentPageIndex;
+
+                        // Query to update page.
+                        dataBaseSource.DataSource = newDAO.fabricationDepartmentQuery(pageSize, currentPageIndex);
+
+                        // Bind results to dataGridView1.
+                        dataGridView1.DataSource = dataBaseSource;
+
                     break;
 
                     case 8:
