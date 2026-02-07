@@ -269,5 +269,61 @@ namespace KiczanProductionInfoSystem
 
             connection.Close();
         }
+         //Reads data from DB source, returns dataTable from FABRICATION_DEPARTMENT_QUERY stored procedure.
+        internal DataTable fabricationDepartmentQuery(int pageSize, int currentPageIndex)
+        {
+            //Create new dataTable to store query results.
+            DataTable dataTable = new DataTable();
+
+            //Connect to db.
+            MySqlConnection connection = new MySqlConnection(connectionString);
+            connection.Open();
+
+            //Get stored procedure "NC_MACHINE_WORK_QUERY" from SQL server.
+            MySqlCommand command = new MySqlCommand("FABRICATION_DEPARTMENT_QUERY", connection);
+            command.CommandType = CommandType.StoredProcedure;
+
+            //Set offset to be bound using currentPageIndex and pageSize arguments.
+            int offsetNum = ((currentPageIndex - 1) * pageSize);
+
+            //Paramaterized to prevent SQL Injection, bind values.
+            command.Parameters.AddWithValue("pageSize", pageSize);
+            command.Parameters.AddWithValue("offsetNum", offsetNum);
+
+            //Use adapter object to fill dataTable with query results.
+            using (MySqlDataAdapter adapter = new MySqlDataAdapter(command))
+            {
+                adapter.Fill(dataTable);
+            }
+
+            connection.Close();
+
+            return dataTable;
+        }
+
+        //Count all records for FABRICATION_DEPARTMENT_QUERY.
+        internal int fabricationDepartmentQueryCount()
+        {
+            //Set initial value of totalRows.
+            int totalRows = 0;
+
+            //Connect to db.
+            MySqlConnection connection = new MySqlConnection(connectionString);
+            connection.Open();
+
+            //Get the stored procedure from the DB.
+            MySqlCommand command = new MySqlCommand("FABRICATION_DEPARTMENT_QUERY_COUNT", connection);
+            command.CommandType = CommandType.StoredProcedure;
+
+            //Execute query, save result in result object.
+            object result = command.ExecuteScalar();
+
+            //Convert result to Int and save in totalRows.
+            totalRows = Convert.ToInt32(result);
+
+            connection.Close();
+
+            return totalRows;
+        }
     }
 }
