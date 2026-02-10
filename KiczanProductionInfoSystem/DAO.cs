@@ -230,6 +230,78 @@ namespace KiczanProductionInfoSystem
             return totalRows;
         }
 
+        // Reads data from DB source, returns dataTable from OPERATOR_NAME_QUERY stored procedure.
+        // Reads operatorName from user input in text box.
+        internal DataTable operatorNameQuery(string operatorName, int pageSize, int currentPageIndex)
+ 
+        {
+            //Create new dataTable to store query results.
+            DataTable dataTable = new DataTable();
+
+            //Connect to db.
+            MySqlConnection connection = new MySqlConnection(connectionString);
+            connection.Open();
+
+            //Get stored procedure "OPERATOR_NAME_QUERY" from SQL server.
+            MySqlCommand command = new MySqlCommand("OPERATOR_NAME_QUERY", connection);
+            command.CommandType = CommandType.StoredProcedure;
+
+            //Set offset to be bound using currentPageIndex and pageSize arguments.
+            int offsetNum = ((currentPageIndex - 1) * pageSize);
+
+            //Add wildcard to broaden search term.
+            String searchWildTerm = "%" + operatorName + "%";
+
+            //Paramaterized to prevent SQL Injection.
+            command.Parameters.AddWithValue("opName", searchWildTerm);
+            command.Parameters.AddWithValue("pageSize", pageSize);
+            command.Parameters.AddWithValue("offsetNum", offsetNum);
+
+            //Use adapter object to fill dataTable with query results.
+            using (MySqlDataAdapter adapter = new MySqlDataAdapter(command))
+                
+                {
+                    adapter.Fill(dataTable);
+                }
+
+            connection.Close();
+
+            return dataTable;
+
+        }
+
+        // Count all records for OPERATOR_NAME_QUERY.
+        internal int operatorNameQueryCount(string operatorName)
+        
+        {
+            //Set initial value of totalRows.
+            int totalRows = 0;
+
+            //Connect to db.
+            MySqlConnection connection = new MySqlConnection(connectionString);
+            connection.Open();
+
+            //Get the stored procedure from the DB.
+            MySqlCommand command = new MySqlCommand("OPERATOR_NAME_QUERY_COUNT", connection);
+            command.CommandType = CommandType.StoredProcedure;
+
+            //Add wildcard to broaden search term.
+            String searchWildTerm = "%" + operatorName + "%";
+
+            //Paramaterized to prevent SQL Injection, bind values.
+            command.Parameters.AddWithValue("opName", searchWildTerm);
+
+            //Execute query, save result in result object.
+            object result = command.ExecuteScalar();
+            
+            //Convert result to Int and save in totalRows.
+            totalRows = Convert.ToInt32(result);
+
+            connection.Close();
+
+            return totalRows;
+        }   
+
         //Execute query to mark recorded as deleted.
         internal void softDeleteQuery(int part_history_id)
         {
