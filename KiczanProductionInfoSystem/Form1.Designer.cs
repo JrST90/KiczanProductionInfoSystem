@@ -135,7 +135,7 @@
             this.comboBox2.Name = "comboBox2";
             this.comboBox2.Size = new System.Drawing.Size(225, 33);
             this.comboBox2.TabIndex = 18;
-            //TO DO: Add event handler for comboBox2 if needed
+            this.comboBox2.SelectedIndexChanged += new System.EventHandler(this.comboBox2_SelectedIndexChanged);
             // 
             // label3
             // 

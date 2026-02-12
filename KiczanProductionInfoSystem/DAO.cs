@@ -1,4 +1,5 @@
 ﻿using MySql.Data.MySqlClient;
+using Mysqlx.Expr;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -396,6 +397,38 @@ namespace KiczanProductionInfoSystem
             connection.Close();
 
             return totalRows;
+        }
+
+        //Get operator names for drop down menu comboBox2
+        internal List<Operators> GetOperators()
+        {
+            //Create new List object.
+            List<Operators> returnList = new List<Operators>();
+
+            //Connect to db.
+            MySqlConnection connection = new MySqlConnection(connectionString);
+            connection.Open();
+
+            //Get the stored procedure from the DB.
+            MySqlCommand command = new MySqlCommand("GET_OPERATORS", connection);
+            command.CommandType = CommandType.StoredProcedure;
+
+            //Read returned values from query into returnList.
+            using (MySqlDataReader reader = command.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    Operators op = new Operators
+                    {
+                        OPERATOR_ID = reader.GetInt32(0),
+                        OPERATOR_NAME = reader.GetString(1),
+                    };
+                    returnList.Add(op);
+                }
+            }
+            connection.Close();
+
+            return returnList;
         }
     }
 }
