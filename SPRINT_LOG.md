@@ -56,23 +56,23 @@
 | :--- | :--- | :--- | :--- |
 | Sprint 2 :Main User Interface Wireframe – Search by Operator Name – Query Success State | Elian Garcia, Josh Stancyzk | Medium | Completed |
 | Sub Task |  Assigned Owner | Test Procedure | Status |
-| Operator Name Function (DAO.cs) | Elian Garcia | Boolean returns true in test enviromoent | Passed | 
-| Operator Query Function (DAO.cs) | Elian Garcia | Boolean returns true in test enviromoent | Passed |
-| Operator Query Count Function (DAO.cs) | Elian Garcia | Boolean returns true in test enviromoent | Passed |
+| Operator Name Function (DAO.cs) | Elian Garcia | Boolean returns true in test environment | Passed | 
+| Operator Query Function (DAO.cs) | Elian Garcia | Boolean returns true in test environment | Passed |
+| Operator Query Count Function (DAO.cs) | Elian Garcia | Boolean returns true in test environment | Passed |
 | Operator Query Event (Form1.cs) | Josh Stancyzk | Page was popualted to form1.cs | Passed |
 | Operator Selection on ComboBox1 Index Change (Form1.cs) | Josh Stancyzk | In test enviroment was able to return the corrent selected Index | Passed |
 | Operator Selection on ComboBox2 (Form1.cs) | Josh Stancyzk | Test popuplates combobox2 with a list and filters operator datagrid object query event | Passed |
-| Operatory Query Pagination (Form1.cs) | Josh Stancyzk | Test to page through forard and reverse encounted no errors | Passed |
+| Operatory Query Pagination (Form1.cs) | Josh Stancyzk | Test to page through forward and reverse encounted no errors | Passed |
 | Sprint 2: Main User Interface Wireframe – Search by Fabrication Department – Query Success State | Daniel Puharic, Justin Kisner | Medium | Completed |
 | Sub Task |  Assigned Owner | Test Procedure | Status |
-| Fabrication Query (DAO.cs) | Daniel Puharic | Boolean returns true in test enviromoent | Passed | 
-| Fabrication Query Count (DAO.cs) | Daniel Puharic | Boolean returns true in test enviromoent | Passed | 
+| Fabrication Query (DAO.cs) | Daniel Puharic | Boolean returns true in test environment | Passed | 
+| Fabrication Query Count (DAO.cs) | Daniel Puharic | Boolean returns true in test environment | Passed | 
 | Fabrication Query Event (Form1.cs) | Daniel Puharic | Page was popualted to form1.cs | Passed |
-| Fabrication Selection on ComboBox1 Index Change (Form1.cs) | Justin | In test enviroment was able to return the correct selected Index | Passed |
+| Fabrication Selection on ComboBox1 Index Change (Form1.cs) | Justin | In test environment was able to return the correct selected Index | Passed |
 | Fabrication Query Pagination (Form1.cs) | Justin Kisner | Test to page through forward and reverse encountered no errors | Passed |
 | Sprint 2: Create Record Interface Wireframe – Initial Empty State | Daniel Puharic, Josh Stanczyk,  | Medium | Completed |
 | Sub Task |  Assigned Owner | Test Procedure | Status |
-| Create the CreateRecord class form (CreateRecord.cs) | Daniel Puharic | test if the blank form appear to have the correct labels | Passed |
+| Create the CreateRecord class form (CreateRecord.cs) | Daniel Puharic | Test if the blank form appears to have the correct labels | Passed |
 | Create Record Button Event (Form1.cs) | Josh Stancyzk | Pass/Fail test if the blank form open on event trigger to have the correct labels | Passed |
 
 
@@ -87,6 +87,8 @@
 * All Sprint 2 Tasks Completed
 
 ## 3. System Test Report
+| Test Case | Type | Result | Evidence/PR # |
+| :--- | :--- | :--- | :--- |
 | [Fabrication Query (DAO.cs)] | System | Passed | PR #20 |
 | [Fabrication Query Count (DAO.cs)] | System | Passed | PR #20 |
 | [Fabrication Query Event (Form1.cs)] | Unit | Passed | PR #20 |
