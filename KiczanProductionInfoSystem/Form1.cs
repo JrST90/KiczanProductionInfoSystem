@@ -1,4 +1,5 @@
-﻿using Mysqlx.Expr;
+﻿using KiczanProductionInformationSystem;
+using Mysqlx.Expr;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -23,6 +24,9 @@ namespace KiczanProductionInfoSystem
 
         //Create and initialize a new BindingSource object.
         private BindingSource dataBaseSource = new BindingSource();
+
+        //List to hold operator names returned from function.
+        private List<Operators> operators = new List<Operators>();
 
         //set initial values for dateRange and partNumber to store user input for comparison.
         string partNumber = "";
@@ -349,6 +353,103 @@ namespace KiczanProductionInfoSystem
                         label4.ForeColor = Color.Red;
                     }
                 break;
+                //Search By Operator Name, gets value from comboBox2.
+                case 2:
+
+                    //Enable update and delete record options in menu strip.
+                    updateRecordToolStripMenuItem.Enabled = true;
+                    updateRecordToolStripMenuItem.Visible = true;
+
+                    //Enable delete record option in menu strip.
+                    deleteRecordArchiveToolStripMenuItem.Enabled = true;
+                    deleteRecordArchiveToolStripMenuItem.Visible = true;
+
+                    //Disable restore record option in menu strip.
+                    restoreRecordMainTableToolStripMenuItem.Enabled = false;
+                    restoreRecordMainTableToolStripMenuItem.Visible = false;
+
+                    //Set currentPageIndex for query.
+                    currentPageIndex = 1;
+
+                    //Bind dataBaseSource to operatorQuery results passing the arguments of the operator name from comboBox2, pageSize, and currentPageIndex.
+                    dataBaseSource.DataSource = newDAO.operatorNameQuery(comboBox2.Text, pageSize, currentPageIndex);
+
+                    //Bind dateGridView to dataBaseSource.
+                    dataGridView1.DataSource = dataBaseSource;
+
+                    //Get the total rows returned by operatorQueryCount with the passed argument of comboBox2's selected operator name and set to variable totalRows.
+                    totalRows = newDAO.operatorNameQueryCount(comboBox2.Text);
+
+                    //Divide the totalRows variable by the pageSize variable and set value to totalPages variable.
+                    totalPages = (int)Math.Ceiling((double)totalRows / pageSize);
+
+                    //Set label2's text value to the value of totalRows.
+                    label2.Text = "Number of Records: " + totalRows;
+
+                    //Set label5's text value to the value of totalPages.
+                    label5.Text = "Total Pages: " + totalPages;
+
+                    //Set label6's text value to the value of currentPageIndex.
+                    label6.Text = "Current Page: " + currentPageIndex;
+
+                    //Clear errorProvider1.
+                    errorProvider1.Clear();
+
+                    //Clear label3's text value of error state.
+                    label3.Text = "";
+
+                    //Set label4's value to alert the user of a succsessful query.
+                    label4.Text = "QUERY SUCCESS";
+
+                    //Set label4's color to green.
+                    label4.ForeColor = Color.Green;
+                break;
+                //Search by Fabrication Department.
+                case 3:
+                    //Enable update and delete record options in menu strip.
+                    updateRecordToolStripMenuItem.Enabled = true;
+                    updateRecordToolStripMenuItem.Visible = true;
+
+                    //Enable delete record option in menu strip.
+                    deleteRecordArchiveToolStripMenuItem.Enabled = true;
+                    deleteRecordArchiveToolStripMenuItem.Visible = true;
+
+                    //Disable restore record option in menu strip.
+                    restoreRecordMainTableToolStripMenuItem.Enabled = false;
+                    restoreRecordMainTableToolStripMenuItem.Visible = false;
+                    //Set currentPageIndex for query.
+                    currentPageIndex = 1;
+
+                    //Bind dataBaseSource to fabricationDepartmentQuery results passing the arguments of pageSize, and currentPageIndex.
+                    dataBaseSource.DataSource = newDAO.fabricationDepartmentQuery(pageSize, currentPageIndex);
+
+                    //Bind dateGridView to dataBaseSource.
+                    dataGridView1.DataSource = dataBaseSource;
+
+                    //Get the total rows returned by fabricationDepartmentQueryCount.
+                    totalRows = newDAO.fabricationDepartmentQueryCount();
+
+                    //Divide the totalRows variable by the pageSize variable and set value to totalPages variable.
+                    totalPages = (int)Math.Ceiling((double)totalRows / pageSize);
+
+                    //Set label2's text value to the value of totalRows.
+                    label2.Text = "Number of Records: " + totalRows;
+
+                    //Set label5's text value to the value of totalPages.
+                    label5.Text = "Total Pages: " + totalPages;
+
+                    //Set label6's text value to the value of currentPageIndex.
+                    label6.Text = "Current Page: " + currentPageIndex;
+
+                    //Clear errorProvider1.
+                    errorProvider1.Clear();
+
+                    //Set label4's value to alert the user of a succsessful query.
+                    label4.Text = "QUERY SUCCESS";
+
+                    //Set label4's color to green.
+                    label4.ForeColor = Color.Green;
+                    break;
 
                 //Search By Part Number in Archive, gets value from textBox1.
                 case 8:
@@ -519,7 +620,13 @@ namespace KiczanProductionInfoSystem
                     textBox1.Clear();
 
                     //Input example for date range search.
-                    textBox1.Text = "XX/XX/XXXX-XX/XX/XXXX";
+                    textBox1.Text = "MM/DD/YYYY-MM/DD/YYYY";
+
+                    //Clear the list storing operators.
+                    operators.Clear();
+
+                    //Clear the datasource for comboBox2.
+                    comboBox2.DataSource = null;
 
                     //Clear the dataBaseSource.
                     dataBaseSource.DataSource = null;
@@ -547,6 +654,84 @@ namespace KiczanProductionInfoSystem
                 case 1:
                     //Clear textbox1.
                     textBox1.Clear();
+
+                    //Clear the list storing operators.
+                    operators.Clear();
+
+                    //Clear the datasource for comboBox2.
+                    comboBox2.DataSource = null;
+
+                    //Clear the dataBaseSource.
+                    dataBaseSource.DataSource = null;
+
+                    //Clear the dataGridView1 source.
+                    dataGridView1.DataSource = null;
+
+                    //Clear the datagridView1 rows.
+                    dataGridView1.Rows.Clear();
+
+                    //Clear errorProvider1.
+                    errorProvider1.Clear();
+
+                    //Reset currentPageIndex.
+                    currentPageIndex = 1;
+
+                    //Clear all label text values.
+                    label2.Text = "";
+                    label3.Text = "";
+                    label4.Text = "";
+                    label5.Text = "";
+                    label6.Text = "";
+                break;
+                //Search By Operator Name.
+                case 2:
+                    //Clear all label text values.
+                    textBox1.Clear();
+
+                    //Set the operators List object to be populated with the list returned by GetOperators().
+                    operators = newDAO.GetOperators();
+
+                    //Bind comboBox2's datasource to the operators List.
+                    comboBox2.DataSource = operators;
+
+                    //Set the display values.
+                    comboBox2.DisplayMember = "OPERATOR_NAME";
+
+                    //Set the stored values.
+                    comboBox2.ValueMember = "OPERATOR_NAME";
+
+                    //Clear the dataBaseSource when the operator name is changed.
+                    dataBaseSource.DataSource = null;
+
+                    //Clear the dataGridView1 source when the operator name is changed.
+                    dataGridView1.DataSource = null;
+
+                    //Clear the rows when the operator name is changed.
+                    dataGridView1.Rows.Clear();
+
+                    //Clear errorProvider1.
+                    errorProvider1.Clear();
+
+                    //Reset currentPageIndex.
+                    currentPageIndex = 1;
+
+                    //Clear all label text values.
+                    label2.Text = "";
+                    label3.Text = "";
+                    label4.Text = "";
+                    label5.Text = "";
+                    label6.Text = "";
+                    break;
+                //Search by Fabrication Department.
+                case 3:
+                    //Clear textbox1.
+                    textBox1.Clear();
+
+                    //Clear the list storing operators.
+                    operators.Clear();
+
+                    //Clear the datasource for comboBox2.
+                    comboBox2.DataSource = null;
 
                     //Clear the dataBaseSource.
                     dataBaseSource.DataSource = null;
@@ -576,6 +761,12 @@ namespace KiczanProductionInfoSystem
                     //Clear textbox1.
                     textBox1.Clear();
 
+                    //Clear the list storing operators.
+                    operators.Clear();
+
+                    //Clear the datasource for comboBox2.
+                    comboBox2.DataSource = null;
+
                     //Clear the dataBaseSource.
                     dataBaseSource.DataSource = null;
 
@@ -599,6 +790,29 @@ namespace KiczanProductionInfoSystem
                     label6.Text = "";
                 break;
             }
+        }
+
+        //Event handler for the changing of an operator name in comboBox2.
+        private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            //Clear the dataBaseSource.
+            dataBaseSource.DataSource = null;
+
+            //Clear the dataGridView1 source.
+            dataGridView1.DataSource = null;
+
+            //Clear the datagridView1 rows.
+            dataGridView1.Rows.Clear();
+
+            //Reset currentPageIndex.
+            currentPageIndex = 1;
+
+            //Clear all label text values.
+            label2.Text = "";
+            label3.Text = "";
+            label4.Text = "";
+            label5.Text = "";
+            label6.Text = "";
         }
 
         //Event handler for Next Button.
@@ -795,6 +1009,35 @@ namespace KiczanProductionInfoSystem
                             label4.ForeColor = Color.Red;
                         }
                     break;
+
+                    case 2:
+                        //Incremement page counter index.
+                        currentPageIndex++;
+
+                        //Update page.
+                        label6.Text = "Current Page: " + currentPageIndex;
+
+                        //Query to update page.
+                        dataBaseSource.DataSource = newDAO.operatorNameQuery(comboBox2.Text, pageSize, currentPageIndex);
+
+                        //Bind results to dataGridView1.
+                        dataGridView1.DataSource = dataBaseSource;
+                    break;
+
+                    case 3:
+                        //Incremement page counter index.
+                        currentPageIndex++;
+
+                        //Update page.
+                        label6.Text = "Current Page: " + currentPageIndex;
+
+                        //Query to update page.
+                        dataBaseSource.DataSource = newDAO.fabricationDepartmentQuery(pageSize, currentPageIndex);
+
+                        //Bind results to dataGridView1.
+                        dataGridView1.DataSource = dataBaseSource;
+
+                        break;
 
                     case 8:
                         //If the partNumber variable is still the same value as textBox1.Text and the next button is pressed.
@@ -1057,6 +1300,35 @@ namespace KiczanProductionInfoSystem
                         }
                     break;
 
+                    case 2:
+                        //Decrement page counter index.
+                        currentPageIndex--;
+
+                        //Update page.
+                        label6.Text = "Current Page: " + currentPageIndex;
+
+                        //Query to update page.
+                        dataBaseSource.DataSource = newDAO.operatorNameQuery(comboBox2.Text, pageSize, currentPageIndex);
+
+                        //Bind results to dataGridView1.
+                        dataGridView1.DataSource = dataBaseSource;
+                    break;
+
+                    case 3:
+                        // Decrement page counter index.
+                        currentPageIndex--;
+
+                        // Update page.
+                        label6.Text = "Current Page: " + currentPageIndex;
+
+                        // Query to update page.
+                        dataBaseSource.DataSource = newDAO.fabricationDepartmentQuery(pageSize, currentPageIndex);
+
+                        // Bind results to dataGridView1.
+                        dataGridView1.DataSource = dataBaseSource;
+
+                    break;
+
                     case 8:
                         if (partNumber == textBox1.Text)
                         {
@@ -1172,6 +1444,14 @@ namespace KiczanProductionInfoSystem
 
             //Show the Update Record UI.
             updateRecord.Show();
+        }
+
+        //Event handler for the click event for the Create Record button.
+        private void button2_Click(object sender, EventArgs e)
+        {
+            CreateRecord createRecord = new CreateRecord();
+
+            createRecord.Show();
         }
 
         //Event handler for click event for Delete Record on right click menu.

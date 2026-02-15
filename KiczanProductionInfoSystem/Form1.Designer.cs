@@ -135,7 +135,7 @@
             this.comboBox2.Name = "comboBox2";
             this.comboBox2.Size = new System.Drawing.Size(225, 33);
             this.comboBox2.TabIndex = 18;
-            //TO DO: Add event handler for comboBox2 if needed
+            this.comboBox2.SelectedIndexChanged += new System.EventHandler(this.comboBox2_SelectedIndexChanged);
             // 
             // label3
             // 
@@ -163,7 +163,7 @@
             this.button2.TabIndex = 21;
             this.button2.Text = "Create Record";
             this.button2.UseVisualStyleBackColor = false;
-            //TO DO: Add event handler for button2
+            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // button3
             // 
