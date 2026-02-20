@@ -118,6 +118,9 @@
     <Compile Include="UpdateRecord.Designer.cs">
       <DependentUpon>UpdateRecord.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="CreateRecord.resx">
+      <DependentUpon>CreateRecord.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

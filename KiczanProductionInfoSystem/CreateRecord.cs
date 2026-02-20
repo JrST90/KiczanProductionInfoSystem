@@ -1,4 +1,6 @@
-﻿using System;
+﻿using KiczanProductionInfoSystem;
+using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -16,5 +18,77 @@ namespace KiczanProductionInformationSystem
         {
             InitializeComponent();
         }
+        //eventhandler for checkboxlist
+       private void checkedListBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            
+        }
+        
+
+
+        //eventhandler for create record button
+            private void button1_Click(object sender, EventArgs e) {
+            // check box logic to add selected items to a list with a comma to match database format
+            List<string> selectedItems = new List<string>();
+
+            foreach (var item in checkedListBox1.CheckedItems)
+            {
+                selectedItems.Add(item.ToString());
+            }
+            //save formated checklist options to pass as a paramater into insert statemen
+            string checkedOperations = string.Join(",", selectedItems);
+
+
+            //connnect to the database
+            string connectionString = "datasource=localhost;port=3306;username=root;" +
+            "password=root;database=kiczan_production_system;";
+
+            //string query to set the inset statement
+            string query = @" INSERT INTO PART_HISTORY 
+            (PART_HISTORY_ID, CUSTOMER_ID, OPERATOR_ID, PART_NUMBER, DATE_DUE, PURCHASE_ORDER_NUMBER, QTY, OPERATIONS, DATE_RECEIVED ,TO_DELETE)
+            VALUES 
+                (@PART_HISTORY_ID, @CUSTOMER_ID, @OPERATOR_ID, @PART_NUMBER, @DATE_DUE, @PURCHASE_ORDER_NUMBER, @QTY, @OPERATIONS, @DATE_RECEIVED , @TO_DELETE)";
+
+            var connection = new MySqlConnection(connectionString);
+
+            var command = new MySqlCommand(query, connection);
+
+
+
+
+
+
+
+            //current dummy values and a varible for the operations selceted. 
+            //TO DO change from addwithcalue to add with correct database datatypes
+            command.Parameters.AddWithValue("@PART_HISTORY_ID", 20000);
+            command.Parameters.AddWithValue("@CUSTOMER_ID", 17);
+            command.Parameters.AddWithValue("OPERATOR_ID", 4);
+            command.Parameters.AddWithValue("@PART_NUMBER", "7777");
+            command.Parameters.Add("@DATE_DUE", MySqlDbType.DateTime).Value = new DateTime(2525, 12, 25);
+            command.Parameters.AddWithValue("@PURCHASE_ORDER_NUMBER", "7777");
+            command.Parameters.AddWithValue("@QTY", 7777);
+            command.Parameters.AddWithValue("@OPERATIONS", checkedOperations);
+            command.Parameters.Add("@DATE_RECEIVED", MySqlDbType.DateTime).Value = new DateTime(2049, 6, 13);
+            command.Parameters.AddWithValue("@TO_DELETE", 0);
+            //exeception catching for the insert
+            try
+            {
+                connection.Open();
+                command.ExecuteNonQuery();
+
+                MessageBox.Show("Record inserted successfully!");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error: " + ex.Message);
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
     }
 }
+ 
