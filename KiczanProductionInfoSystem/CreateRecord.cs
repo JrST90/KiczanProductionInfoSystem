@@ -61,16 +61,16 @@ namespace KiczanProductionInformationSystem
 
             //current dummy values and a varible for the operations selceted. 
             //TO DO change from addwithcalue to add with correct database datatypes
-            command.Parameters.AddWithValue("@PART_HISTORY_ID", 20000);
-            command.Parameters.AddWithValue("@CUSTOMER_ID", 17);
-            command.Parameters.AddWithValue("OPERATOR_ID", 4);
-            command.Parameters.AddWithValue("@PART_NUMBER", "7777");
+            command.Parameters.Add("@PART_HISTORY_ID", MySqlDbType.Int32).Value = 30000;
+            command.Parameters.Add("@CUSTOMER_ID", MySqlDbType.Int32).Value = 17;
+            command.Parameters.Add("OPERATOR_ID", MySqlDbType.Int32).Value = 4;
+            command.Parameters.Add("@PART_NUMBER", MySqlDbType.VarChar).Value = "7777";
             command.Parameters.Add("@DATE_DUE", MySqlDbType.DateTime).Value = new DateTime(2525, 12, 25);
-            command.Parameters.AddWithValue("@PURCHASE_ORDER_NUMBER", "7777");
-            command.Parameters.AddWithValue("@QTY", 7777);
-            command.Parameters.AddWithValue("@OPERATIONS", checkedOperations);
+            command.Parameters.Add("@PURCHASE_ORDER_NUMBER", MySqlDbType.VarChar).Value = "7777";
+            command.Parameters.Add("@QTY", MySqlDbType.Int32).Value = 7777;
+            command.Parameters.Add("@OPERATIONS", MySqlDbType.VarChar).Value = checkedOperations;
             command.Parameters.Add("@DATE_RECEIVED", MySqlDbType.DateTime).Value = new DateTime(2049, 6, 13);
-            command.Parameters.AddWithValue("@TO_DELETE", 0);
+            command.Parameters.Add("@TO_DELETE", MySqlDbType.Binary).Value = 0;
             //exeception catching for the insert
             try
             {
