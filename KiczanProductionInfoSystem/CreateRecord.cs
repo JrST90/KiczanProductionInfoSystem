@@ -19,33 +19,76 @@ namespace KiczanProductionInformationSystem
             InitializeComponent();
         }
         //eventhandler for checkboxlist
-       private void checkedListBox1_SelectedIndexChanged(object sender, EventArgs e)
+        private void checkedListBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            
+
         }
-        
-       
 
         //eventhandler for create record button
-            private void button1_Click(object sender, EventArgs e) {
+        private void button1_Click(object sender, EventArgs e)
+        {
+            //Create new DataValidation Object for input validation.
+            DataValidation newDV = new DataValidation();
+
+            //Get quantity value from textBox1
+            string quantity = textBox1.Text;
+
+            //bool flag for final check before insert.
+            bool quantityFlag = false;
+            bool checkItemsFlag = false;
+
+            //Pass quantity to validateQuantity function for validation.
+            if (newDV.validateQuantity(quantity) != "")
+            {
+                errorProvider1.SetError(textBox1, newDV.validateQuantity(quantity));
+                label2.Text = newDV.validateQuantity(quantity);
+                quantityFlag = false;
+            }
+            else if (newDV.validateQuantity(quantity) == "")
+            {
+                ///Clear error messages after successful quantity validation.
+                errorProvider1.Clear();
+                //label2.Text = "";
+                quantityFlag = true;
+            }
+            // Prevent form submission or continue as needed
             if (checkedListBox1.CheckedItems.Count == 0)
             {
-                MessageBox.Show("Please select at least one option.");
-                // Prevent form submission or continue as needed
+                errorProvider2.SetError(checkedListBox1, "Record not Complete!\nPlease select at least one option.");
+                //label2.Text = "Record not Complete!\nPlease select at least one option.";
+                checkItemsFlag = false;
             }
-            else
+            else if (checkedListBox1.CheckedItems.Count != 0)
             {
-                // At least one item is checked, proceed
+                //Clear error messages after successful operation selection validation.
+                errorProvider2.Clear();
+                //label2.Text = "";
+                checkItemsFlag = true;
+            }
+            if (newDV.validateQuantity(quantity) == "")
+            {
+                label2.Text = "";
+                if (checkedListBox1.CheckedItems.Count == 0)
+                {
+                    label2.Text = "Record not Complete!\nPlease select at least one option.";
+                }
+            }
+            //Final logic check before record insertion and user record status update.
+            if (quantityFlag == true && checkItemsFlag == true)
+            {
+                label3.Text = "Record Status: Record Successfully Created!";
 
+                //Commented out for textbox input validation testing.
+                /*
+                // At least one item is checked, proceed
                 List<string> selectedItems = new List<string>();
 
                 foreach (var item in checkedListBox1.CheckedItems)
                 {
                     selectedItems.Add(item.ToString());
                 }
-                //save formated checklist options to pass as a paramater into insert statemen
+                //save formated checklist options to pass as a paramater into insert statement
                 string checkedOperations = string.Join(",", selectedItems);
-
 
                 //connnect to the database
                 string connectionString = "datasource=localhost;port=3306;username=root;" +
@@ -60,12 +103,6 @@ namespace KiczanProductionInformationSystem
                 var connection = new MySqlConnection(connectionString);
 
                 var command = new MySqlCommand(query, connection);
-
-
-
-
-
-
 
                 //current dummy values and a varible for the operations selceted. 
                 //TO DO change from addwithcalue to add with correct database datatypes
@@ -95,9 +132,31 @@ namespace KiczanProductionInformationSystem
                 {
                     connection.Close();
                 }
+                */
+            }
+            else
+            {
+                label3.Text = "Record Status: Record Creation Error!";
             }
         }
-
+        //Event handler for Clear button.
+        private void button2_Click(object sender, EventArgs e)
+        {
+            textBox1.Clear();
+            errorProvider1.Clear();
+            errorProvider2.Clear();
+            label2.Text = "";
+            label3.Text = "";
+            checkedListBox1.ClearSelected();
+            for (int i = 0; i < checkedListBox1.Items.Count; i++)
+            {
+                checkedListBox1.SetItemChecked(i, false);
+            }
+        }
+        //Event handle for Back to Menu button.
+        private void button3_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
     }
 }
- 

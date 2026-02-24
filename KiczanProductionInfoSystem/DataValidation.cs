@@ -100,5 +100,27 @@ namespace KiczanProductionInfoSystem
             }
             return flag;
         }
+
+        //Validate quantity input.
+        internal string validateQuantity(string input)
+        {
+            string message = "";
+            int quantity;
+
+
+            if (string.IsNullOrEmpty(input))
+            {
+                message = "Record not Complete!\nQuantity must not be empty,\nplease enter a value.";
+            }
+            else if (int.TryParse(input, out quantity) == false)
+            {
+                message = "Record not Complete!\nQuantity must be\na numerical value.";
+            }
+            else if (quantity <= 0)
+            {
+                message = "Record not Complete!\nQuantity must be an integer \ngreater than or equal to 1.";
+            }
+            return message;
+        }
     }
 }
