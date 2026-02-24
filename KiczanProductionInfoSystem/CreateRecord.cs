@@ -48,21 +48,18 @@ namespace KiczanProductionInformationSystem
             {
                 ///Clear error messages after successful quantity validation.
                 errorProvider1.Clear();
-                //label2.Text = "";
                 quantityFlag = true;
             }
             // Prevent form submission or continue as needed
             if (checkedListBox1.CheckedItems.Count == 0)
             {
                 errorProvider2.SetError(checkedListBox1, "Record not Complete!\nPlease select at least one option.");
-                //label2.Text = "Record not Complete!\nPlease select at least one option.";
                 checkItemsFlag = false;
             }
             else if (checkedListBox1.CheckedItems.Count != 0)
             {
                 //Clear error messages after successful operation selection validation.
                 errorProvider2.Clear();
-                //label2.Text = "";
                 checkItemsFlag = true;
             }
             if (newDV.validateQuantity(quantity) == "")
