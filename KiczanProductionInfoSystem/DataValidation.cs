@@ -122,5 +122,28 @@ namespace KiczanProductionInfoSystem
             }
             return message;
         }
+
+        //Validate purchase order number input.
+        public string validatePurchaseOrderNumber(string poNumber)
+        {
+            string message = "";
+
+            if (string.IsNullOrWhiteSpace(poNumber))
+            {
+                message = "Purchase Order Number is required. Please enter a valid Purchase Order Number!";
+            }
+
+            if (poNumber.Length < 4 || poNumber.Length > 20)
+            {
+                message = "PO Number must be between 4 and 20 characters.";
+            }
+
+            if (!Regex.IsMatch(poNumber, @"^[a-zA-Z0-9\-]+$"))
+            {
+                message = "PO can only contain letters, numbers, or hyphens.";
+            }
+
+            return message;
+        }
     }
 }

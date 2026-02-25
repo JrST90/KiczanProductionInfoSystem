@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace KiczanProductionInformationSystem
 {
@@ -33,9 +34,13 @@ namespace KiczanProductionInformationSystem
             //Get quantity value from textBox1
             string quantity = textBox1.Text;
 
+            // Get purchase order number from textboxPO
+            string poNumber = textboxPO.Text;
+
             //bool flag for final check before insert.
             bool quantityFlag = false;
             bool checkItemsFlag = false;
+            bool poFlag = false;
 
             //Pass quantity to validateQuantity function for validation.
             if (newDV.validateQuantity(quantity) != "")
@@ -70,8 +75,22 @@ namespace KiczanProductionInformationSystem
                     label2.Text = "Record not Complete!\nPlease select at least one option.";
                 }
             }
+
+            // Pass purchase order number to validatePurchaseOrderNumber function for validation.
+            string poError = newDV.validatePurchaseOrderNumber(poNumber);
+
+            if (poError != "")
+            {
+                errorProvider3.SetError(textboxPO, poError);
+            }
+            else
+            {
+                errorProvider3.SetError(textboxPO, "");
+                poFlag = true;
+            }
+
             //Final logic check before record insertion and user record status update.
-            if (quantityFlag == true && checkItemsFlag == true)
+            if (quantityFlag == true && checkItemsFlag == true && poFlag == true)
             {
                 label3.Text = "Record Status: Record Successfully Created!";
 
@@ -142,8 +161,10 @@ namespace KiczanProductionInformationSystem
             textBox1.Clear();
             errorProvider1.Clear();
             errorProvider2.Clear();
+            errorProvider3.Clear();
             label2.Text = "";
             label3.Text = "";
+            textboxPO.Text = "";
             checkedListBox1.ClearSelected();
             for (int i = 0; i < checkedListBox1.Items.Count; i++)
             {
