@@ -175,15 +175,5 @@ namespace KiczanProductionInformationSystem
         {
             this.Close();
         }
-
-        private void label5_Click_1(object sender, EventArgs e)
-        {
-
-        }
-
-        private void CreateRecord_Load(object sender, EventArgs e)
-        {
-
-        }
     }
 }

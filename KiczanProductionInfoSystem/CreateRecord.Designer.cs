@@ -194,7 +194,6 @@ namespace KiczanProductionInformationSystem
             this.labelPartNumber.Size = new System.Drawing.Size(82, 16);
             this.labelPartNumber.TabIndex = 12;
             this.labelPartNumber.Text = "Part Number";
-            this.labelPartNumber.Click += new System.EventHandler(this.label5_Click_1);
             // 
             // textBoxPartNumber
             // 
@@ -237,8 +236,7 @@ namespace KiczanProductionInformationSystem
             this.Controls.Add(this.button1);
             this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "CreateRecord";
-            this.Text = "CreateRecord";
-            this.Load += new System.EventHandler(this.CreateRecord_Load);
+            this.Text = "CreateRecord"; 
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider3)).EndInit();
