@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace KiczanProductionInformationSystem
 {
@@ -36,10 +37,14 @@ namespace KiczanProductionInformationSystem
             //Get quantity value from textBox1
             string quantity = textBox1.Text;
 
+            // Get purchase order number value from textBoxPO
+            string poNumber = textBoxPO.Text;
+
             //bool flag for final check before insert.
             bool partNumberFlag = false;
             bool quantityFlag = false;
-            bool checkItemsFlag = false;
+            bool checkItemsFlag = false; 
+            bool poFlag = false;
 
             //Pass part number to validatePartNumber function for validation.
             if (newDV.validatePartNumber(partNumber) == false)
@@ -88,8 +93,23 @@ namespace KiczanProductionInformationSystem
                     label2.Text = "Record not Complete!\nPlease select at least one option.";
                 }
             }
+            // Pass purchase order number to validatePurchaseOrderNumber function for validation.
+            string poError = newDV.validatePurchaseOrderNumber(poNumber);
+
+            if (poError != "")
+            {
+                errorProvider3.SetError(textBoxPO, poError);
+                label2.Text = poError;
+                poFlag = false;
+            }
+            else
+            {
+                errorProvider3.SetError(textBoxPO, "");
+                poFlag = true;
+            }
+
             //Final logic check before record insertion and user record status update.
-            if (partNumberFlag == true && quantityFlag == true && checkItemsFlag == true )
+            if (partNumberFlag == true && quantityFlag == true && checkItemsFlag == true && poFlag == true)
             {
                 label3.Text = "Record Status: Record Successfully Created!";
 
@@ -159,9 +179,11 @@ namespace KiczanProductionInformationSystem
         {
             textBoxPartNumber.Clear();
             textBox1.Clear();
+            textBoxPO.Clear();
             errorProvider1.Clear();
             errorProvider2.Clear();
             errorProviderPartNumber.Clear();
+            errorProvider3.Clear();
             label2.Text = "";
             label3.Text = "";
             checkedListBox1.ClearSelected();
