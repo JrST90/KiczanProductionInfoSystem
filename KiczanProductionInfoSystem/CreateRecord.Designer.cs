@@ -235,7 +235,7 @@ namespace KiczanProductionInformationSystem
             this.labelPartNumberError.Name = "labelPartNumberError";
             this.labelPartNumberError.Size = new System.Drawing.Size(35, 13);
             this.labelPartNumberError.TabIndex = 17;
-            this.labelPartNumberError.Text = "label5";
+            this.labelPartNumberError.Text = "";
             // 
             // labelQuantityError
             // 
@@ -244,7 +244,7 @@ namespace KiczanProductionInformationSystem
             this.labelQuantityError.Name = "labelQuantityError";
             this.labelQuantityError.Size = new System.Drawing.Size(35, 13);
             this.labelQuantityError.TabIndex = 18;
-            this.labelQuantityError.Text = "label2";
+            this.labelQuantityError.Text = "";
             // 
             // labelOperationsError
             // 
@@ -253,7 +253,7 @@ namespace KiczanProductionInformationSystem
             this.labelOperationsError.Name = "labelOperationsError";
             this.labelOperationsError.Size = new System.Drawing.Size(35, 13);
             this.labelOperationsError.TabIndex = 19;
-            this.labelOperationsError.Text = "label5";
+            this.labelOperationsError.Text = "";
             // 
             // labelPOError
             // 
@@ -262,7 +262,7 @@ namespace KiczanProductionInformationSystem
             this.labelPOError.Name = "labelPOError";
             this.labelPOError.Size = new System.Drawing.Size(35, 13);
             this.labelPOError.TabIndex = 20;
-            this.labelPOError.Text = "label6";
+            this.labelPOError.Text = "";
             // 
             // CreateRecord
             // 
