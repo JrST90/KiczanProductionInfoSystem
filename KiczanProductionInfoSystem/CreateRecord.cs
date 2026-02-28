@@ -64,7 +64,7 @@ namespace KiczanProductionInformationSystem
             if (newDV.validateQuantity(quantity) != "")
             {
                 errorProvider1.SetError(textBox1, newDV.validateQuantity(quantity));
-                label2.Text = newDV.validateQuantity(quantity);
+                //label2.Text = newDV.validateQuantity(quantity);
                 quantityFlag = false;
             }
             else if (newDV.validateQuantity(quantity) == "")
@@ -85,21 +85,12 @@ namespace KiczanProductionInformationSystem
                 errorProvider2.Clear();
                 checkItemsFlag = true;
             }
-            if (newDV.validateQuantity(quantity) == "")
-            {
-                label2.Text = "";
-                if (checkedListBox1.CheckedItems.Count == 0)
-                {
-                    label2.Text = "Record not Complete!\nPlease select at least one option.";
-                }
-            }
             // Pass purchase order number to validatePurchaseOrderNumber function for validation.
             string poError = newDV.validatePurchaseOrderNumber(poNumber);
 
             if (poError != "")
             {
                 errorProvider3.SetError(textBoxPO, poError);
-                label2.Text = poError;
                 poFlag = false;
             }
             else
@@ -107,6 +98,37 @@ namespace KiczanProductionInformationSystem
                 errorProvider3.SetError(textBoxPO, "");
                 poFlag = true;
             }
+            if (newDV.validatePartNumber(partNumber) == true)
+            {
+                label2.Text = "";
+                if (newDV.validateQuantity(quantity) != "")
+                {
+                    label2.Text = newDV.validateQuantity(quantity);
+                }
+                else if (newDV.validateQuantity(quantity) == "")
+                {
+                    label2.Text = "";
+
+                    if (checkedListBox1.CheckedItems.Count == 0)
+                    {
+                        label2.Text = "Record not Complete!\nPlease select at least one option.";
+                    }
+                    else if (checkedListBox1.CheckedItems.Count != 0)
+                    {
+                        label2.Text = "";
+
+                        if (poError != "")
+                        {
+                            label2.Text = poError;
+                        }
+                        else if (poError == "")
+                        {
+                            label2.Text = "";
+                        }
+                    }
+                }
+            }
+            
 
             //Final logic check before record insertion and user record status update.
             if (partNumberFlag == true && quantityFlag == true && checkItemsFlag == true && poFlag == true)
