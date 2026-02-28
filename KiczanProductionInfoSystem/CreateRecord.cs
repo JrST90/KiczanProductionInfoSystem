@@ -64,7 +64,6 @@ namespace KiczanProductionInformationSystem
             if (newDV.validateQuantity(quantity) != "")
             {
                 errorProvider1.SetError(textBox1, newDV.validateQuantity(quantity));
-                //label2.Text = newDV.validateQuantity(quantity);
                 quantityFlag = false;
             }
             else if (newDV.validateQuantity(quantity) == "")
