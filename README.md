@@ -143,11 +143,35 @@ upon receiving new work orders, and update existing records in the event of erro
       - **Usage Example:**
           - **Input:** Select "Search by Fabrication Department" for first drop down selector selection.
           - **Result:** The system displays all records whose JOB_ID are equal to 1,2,3, & 4, representing job roles assigned to the Fabrication Department.
-  - **Feature:** Create Record (Initial State)
+  - **Feature:** Create Record (In Progress)
       - **Description:** A button on the main UI "Create Record" that upon clicking, opens a new UI form for the creation of new records to be entered into the system. Record attribute fields are input by the user and are supported by input validation.
       - **Usage Instructions:**
           - Click on the Create Record button.
-          - The Create Record form is brought up (Initial State).
+          - The Create Record form is brought up.
+          - Available to the user are currently four input fields: Part Number, Quantity, Operations, Order Number.
+      - **Usage Example:**
+          - **Input:** Inputting a Part Number of "3156," a Quantity of "10," selecting the Operations check box items of Laser and Press Brake, inputting a Order Number of "7190," and pressing the "Submit" button.
+          - **Result:** The system displays a status update to the user upon successful field input "Record Status: Record Successfully Created!"
+          - **Input:** Leaving the Part Number field empty during form input and pressing the "Submit" button.
+          - **Result:** The system displays a status update to the user upon unsuccessful field input "Record Status: Record Creation Error!", and next to the input field on the form an error provider and message is displayed to the user stating "Part Number must not be empty and may only contain letters, numbers, or hyphens."
+          - **Input:** Inputting a Part Number of "3156$" and pressing the "Submit" button.
+          - - **Result:** The system displays a status update to the user upon unsuccessful field input "Record Status: Record Creation Error!", and next to the input field on the form an error provider and message is displayed to the user stating "Part Number must not be empty and may only contain letters, numbers, or hyphens."
+          - **Input:** Leaving the Quantity field empty during form input and pressing the "Submit" button.
+          - **Result:** The system displays a status update to the user upon unsuccessful field input "Record Status: Record Creation Error!", and next to the input field on the form an error provider and message is displayed to the user stating "Record not Complete! Quantity must not be empty, please enter a value."
+          - **Input:** Inputting a Quantity of "-1" and pressing the "Submit" button.
+          - **Result:** The system displays a status update to the user upon unsuccessful field input "Record Status: Record Creation Error!", and next to the input field on the form an error provider and message is displayed to the user stating "Record not Complete! Quantity must be an integer greater than or equal to 1."
+          - **Input:** Inputting a Quantity of "abc" and pressing the "Submit" button.
+          - **Result:** The system displays a status update to the user upon unsuccessful field input "Record Status: Record Creation Error!", and next to the input field on the form an error provider and message is displayed to the user stating "Record not Complete! Quantity must be a numerical value."
+          - **Input:** Leaving the Operations check box selection area blank and not selecting atleast one operation, then pressing the "Submit" button.
+          - **Result:** The system displays a status update to the user upon unsuccessful field input "Record Status: Record Creation Error!", and next to the input field on the form an error provider and message is displayed to the user stating "Please select at least one operation"
+          - **Input:** Leaving the Order Number field empty during form input and pressing the "Submit" button.
+          - **Result:** The system displays a status update to the user upon unsuccessful field input "Record Status: Record Creation Error!", and next to the input field on the form an error provider and message is displayed to the user stating "Purchase Order Number is required."
+          - **Input:** Inputting an Order Number of "717" and pressing the "Submit" button.
+          - **Result:** The system displays a status update to the user upon unsuccessful field input "Record Status: Record Creation Error!", and next to the input field on the form an error provider and message is displayed to the user stating "Order Number must be between 4 and 20 characters."
+          - **Input:** Inputting an Order Number of "717890999415886009343" and pressing the "Submit" button.
+          - **Result:** The system displays a status update to the user upon unsuccessful field input "Record Status: Record Creation Error!", and next to the input field on the form an error provider and message is displayed to the user stating "Order Number must be between 4 and 20 characters."
+          - **Input:** Inputting an Order Number of "7175&" and pressing the "Submit" button.
+          - **Result:** The system displays a status update to the user upon unsuccessful field input "Record Status: Record Creation Error!", and next to the input field on the form an error provider and message is displayed to the user stating "Order Number can only contain letters, numbers, and hyphens."
 ## Development Workflow
 # Planning
   - Plan and assign develop and test tasks on designated Sprint project board defined by project management plan.
