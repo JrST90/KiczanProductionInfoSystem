@@ -108,3 +108,44 @@
 * **Bug Description:** [Updated the default date format
 from XX/XX/XXXX-XX/XX/XXXX to MM/DD/YYYY-MM/DD/YYYY]
 * **Severity:** [High] | **Fix Status:** [Fixed]
+
+
+# Sprint 3 Technical Log
+
+## 1. Planning & Assignments
+* **Sprint Dates:** 2026-02-16 to 2026-03-01
+* **Team Name:** Team 2 | **Members Present:** Daniel Puharic, Elian Garica, Justin Kisner, Josh Stanczyk
+* **Sprint Goals:** Completion of Sprint 3 goals which include, Create Record Interface – Part Number & Purchase Order Number Validation – Develop & Test & Create Record Interface – Quantity & Operations Validation – Develop & Test.
+
+| Task Description | Assigned Owner | Priority | Status |
+| :--- | :--- | :--- | :--- |
+| Sprint 3 :Create Record Interface Wireframe – Part Number & Purchase Order Number Validation – Develop & Test | Elian Garcia, Justin Kisner | High | Completed |
+| Sub Task |  Assigned Owner | Test Procedure | Status |
+| Create Record Interface Wireframe – Part Number Error Validation State | Elian Garcia | Boolean returns true in test environment | Passed |
+| Create Record Interface Wireframe – Purchase Order Number Error | Justin Kisner | String returns empty or with error message in test environment | Passed | 
+| Sprint 3 :Create Record Interface – Quantity & Operations Validation – Develop & Test | Daniel Puharic, Josh Stanczyk | High | Completed |
+| Sub Task |  Assigned Owner | Test Procedure | Status |
+| Create Record Interface Wireframe – Quantity Error Validation State | Josh Stanczyk | String returns empty or with error message in test environment | Passed |
+| Create Record Interface Wireframe – Operations Error Validation State | Daniel Puharic | String concatenates selected items successfully or outputs error message in test environment | Passed |
+
+## 2. Progress & Blockers
+* **Completed Work:**
+* Sprint 3: Create Record Interface – Part Number & Purchase Order Number Validation – Develop & Test 
+* Sprint 3: Create Record Interface – Quantity & Operations Validation – Develop & Test
+* **Incomplete Tasks:**
+* All Sprint 3 Tasks Completed
+* **Resolution Plan:**
+* All Sprint 3 Tasks Completed
+
+## 3. System Test Report
+| Test Case | Type | Result | Evidence/PR # |
+| :--- | :--- | :--- | :--- |
+| [Feature-Operations input and insert functionality.] | Unit | Passed | PR #29 |
+| [Feature: Quantity Form Input Validation.] | Unit | Passed | PR #30 |
+| [Feature: added Part Number field and validation to CreateRecord] | Unit | Passed | PR #32 |
+| [Feature: Adds PO number to CreateRecord.cs and DataValidation.cs] | Unit | Passed | PR #33 |
+| [Fix: Conditional Logic for Error Output] | Unit | Passed | PR #34 |
+
+## 4. Bug Tracking
+* **Bug Description:** [No Bug Present During Sprint 3 Development]
+* **Severity:** [None] | **Fix Status:** [None]
