@@ -172,7 +172,10 @@ namespace KiczanProductionInformationSystem
             errorProvider2.Clear();
             errorProviderPartNumber.Clear();
             errorProvider3.Clear();
+            labelPartNumberError.Text = "";
+            labelPOError.Text = "";
             labelQuantityError.Text = "";
+            labelOperationsError.Text = "";
             label3.Text = "";
             checkedListBox1.ClearSelected();
             for (int i = 0; i < checkedListBox1.Items.Count; i++)
