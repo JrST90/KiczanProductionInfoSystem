@@ -104,11 +104,11 @@
 
 
 
-
 ## 4. Bug Tracking
 * **Bug Description:** [Updated the default date format
 from XX/XX/XXXX-XX/XX/XXXX to MM/DD/YYYY-MM/DD/YYYY]
 * **Severity:** [High] | **Fix Status:** [Fixed]
+
 
 # Sprint 3 Technical Log
 
@@ -147,5 +147,6 @@ from XX/XX/XXXX-XX/XX/XXXX to MM/DD/YYYY-MM/DD/YYYY]
 | [Fix: Conditional Logic for Error Output] | Unit | Passed | PR #34 |
 
 ## 4. Bug Tracking
-* **Bug Description:** [No Bug Present During Sprint 3 Development]
-* **Severity:** [None] | **Fix Status:** [None]
+* **Bug Description:** [Updated Error Labels in Create Record Form to clear
+* when the "clear" button is selected in the form]
+* **Severity:** [High] | **Fix Status:** [Fixed]

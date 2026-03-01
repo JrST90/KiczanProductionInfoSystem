@@ -100,5 +100,45 @@ namespace KiczanProductionInfoSystem
             }
             return flag;
         }
+
+        //Validate quantity input.
+        internal string validateQuantity(string input)
+        {
+            string message = "";
+            int quantity;
+
+
+            if (string.IsNullOrEmpty(input))
+            {
+                message = "Record not Complete!\nQuantity must not be empty,\nplease enter a value.";
+            }
+            else if (int.TryParse(input, out quantity) == false)
+            {
+                message = "Record not Complete!\nQuantity must be\na numerical value.";
+            }
+            else if (quantity <= 0)
+            {
+                message = "Record not Complete!\nQuantity must be an integer \ngreater than or equal to 1.";
+            }
+            return message;
+        }
+
+        // Validate purchase order number input.
+        public string validatePurchaseOrderNumber(string poNumber)
+        {
+            string message = "";
+            poNumber = poNumber.Trim();
+
+            if (string.IsNullOrWhiteSpace(poNumber))
+                message = "Purchase Order Number \nis required.";
+
+            else if (poNumber.Length < 4 || poNumber.Length > 20)
+                message = "Order Number must be between \n4 and 20 characters.";
+
+            else if (!Regex.IsMatch(poNumber, @"^[a-zA-Z0-9\-]+$"))
+                message = "Order Number can only contain \nletters, numbers, and hyphens.";
+
+            return message;
+        }
     }
 }
