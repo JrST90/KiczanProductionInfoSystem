@@ -172,6 +172,10 @@ upon receiving new work orders, and update existing records in the event of erro
           - **Result:** The system displays a status update to the user upon unsuccessful field input "Record Status: Record Creation Error!", and next to the input field on the form an error provider and message is displayed to the user stating "Order Number must be between 4 and 20 characters."
           - **Input:** Inputting an Order Number of "7175&" and pressing the "Submit" button.
           - **Result:** The system displays a status update to the user upon unsuccessful field input "Record Status: Record Creation Error!", and next to the input field on the form an error provider and message is displayed to the user stating "Order Number can only contain letters, numbers, and hyphens."
+          - **Input:** Pressing the "Clear" button on the Create Record form.
+          - **Result:** All input fields on the Create Record form are cleared of inputs.
+          - **Input:** Pressing the "Back to Menu" button the Create Record form.
+          - **Result:** The Create Record form is closed, and the user is returned to the main user interface.
 ## Development Workflow
 # Planning
   - Plan and assign develop and test tasks on designated Sprint project board defined by project management plan.
