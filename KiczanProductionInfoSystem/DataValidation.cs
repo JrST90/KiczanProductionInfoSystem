@@ -124,7 +124,7 @@ namespace KiczanProductionInfoSystem
         }
 
         // Validate purchase order number input.
-        public string validatePurchaseOrderNumber(string poNumber)
+        internal string validatePurchaseOrderNumber(string poNumber)
         {
             string message = "";
             poNumber = poNumber.Trim();
@@ -137,6 +137,32 @@ namespace KiczanProductionInfoSystem
 
             else if (!Regex.IsMatch(poNumber, @"^[a-zA-Z0-9\-]+$"))
                 message = "Order Number can only contain \nletters, numbers, and hyphens.";
+
+            return message;
+        }
+
+        // Validate operator selection input.
+        internal string validateOperatorSelection(int input)
+        {
+            string message  = "";
+
+            if(input == 0)
+            {
+                message = "Record not Complete!\nPlease select an Operator.";
+            }
+
+            return message;
+        }
+
+        // Validate customer selection input.
+        internal string validateCustomerSelection(int input)
+        {
+            string message = "";
+
+            if (input == 0)
+            {
+                message = "Record not Complete!\nPlease select a Customer.";
+            }
 
             return message;
         }

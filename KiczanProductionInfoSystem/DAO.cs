@@ -399,7 +399,7 @@ namespace KiczanProductionInfoSystem
             return totalRows;
         }
 
-        //Get operator names for drop down menu comboBox2
+        //Get operator names for drop down menu comboBox2 and operatorComboBox
         internal List<Operators> GetOperators()
         {
             //Create new List object.
@@ -422,6 +422,38 @@ namespace KiczanProductionInfoSystem
                     {
                         OPERATOR_ID = reader.GetInt32(0),
                         OPERATOR_NAME = reader.GetString(1),
+                    };
+                    returnList.Add(op);
+                }
+            }
+            connection.Close();
+
+            return returnList;
+        }
+
+        //Get customer names for customerComboBox
+        internal List<Customers> GetCustomers()
+        {
+            //Create new List object.
+            List<Customers> returnList = new List<Customers>();
+
+            //Connect to db.
+            MySqlConnection connection = new MySqlConnection(connectionString);
+            connection.Open();
+
+            //Get the stored procedure from the DB.
+            MySqlCommand command = new MySqlCommand("GET_CUSTOMERS", connection);
+            command.CommandType = CommandType.StoredProcedure;
+
+            //Read returned values from query into returnList.
+            using (MySqlDataReader reader = command.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    Customers op = new Customers
+                    {
+                        CUSTOMER_ID = reader.GetInt32(0),
+                        CUSTOMER_NAME = reader.GetString(1),
                     };
                     returnList.Add(op);
                 }
