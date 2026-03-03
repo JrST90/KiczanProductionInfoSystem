@@ -236,6 +236,8 @@ namespace KiczanProductionInformationSystem
         {
             operatorComboBox.SelectedIndex = -1;
             customerComboBox.SelectedIndex = -1;
+            errorProviderOperator.Clear();
+            errorProviderCustomer.Clear();
             textBoxPartNumber.Clear();
             textBoxQuantity.Clear();
             textBoxPO.Clear();
@@ -248,6 +250,7 @@ namespace KiczanProductionInformationSystem
             labelQuantityError.Text = "";
             labelOperationsError.Text = "";
             labelOperatorError.Text = "";
+            labelCustomerError.Text = "";
             labelRecordStatus.Text = "";
             checkedListBox1.ClearSelected();
             for (int i = 0; i < checkedListBox1.Items.Count; i++)
