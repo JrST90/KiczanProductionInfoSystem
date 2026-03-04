@@ -98,7 +98,7 @@ namespace KiczanProductionInformationSystem
             labelPOError.Text = "";
             labelOperatorError.Text = "";
             labelCustomerError.Text = "";
-
+            string checkedOperations = "";
             errorProviderPartNumber.Clear();
             errorProviderOperator.Clear();
             errorProviderCustomer.Clear();
@@ -108,7 +108,7 @@ namespace KiczanProductionInformationSystem
 
             //Customer validation.
             string customerError = newDV.validateCustomerSelection(custID);
-            if(!string.IsNullOrEmpty(customerError))
+            if (!string.IsNullOrEmpty(customerError))
             {
                 labelCustomerError.Text = customerError;
                 errorProviderCustomer.SetError(customerComboBox, customerError);
@@ -117,13 +117,13 @@ namespace KiczanProductionInformationSystem
 
             //Operator validation.
             string operatorError = newDV.validateOperatorSelection(opID);
-            if(!string.IsNullOrEmpty(operatorError))
+            if (!string.IsNullOrEmpty(operatorError))
             {
                 labelOperatorError.Text = operatorError;
                 errorProviderOperator.SetError(operatorComboBox, operatorError);
                 isValid = false;
             }
-           
+
             //part number validation
             if (!newDV.validatePartNumber(partNumber))
             {
@@ -150,7 +150,20 @@ namespace KiczanProductionInformationSystem
                 errorProvider2.SetError(checkedListBox1, message);
                 isValid = false;
             }
+            else
+            {
+                // At least one item is checked, proceed
+                List<string> checkedItems = new List<string>();
 
+                foreach (var item in checkedListBox1.CheckedItems)
+                {
+                    checkedItems.Add(item.ToString());
+                    //save formated checklist options to pass as a paramater into insert statement
+                    checkedOperations = string.Join(", ", checkedItems);
+                    Console.WriteLine(checkedOperations);
+                }
+
+            }
             //purchase order number validation
             string poError = newDV.validatePurchaseOrderNumber(poNumber);
             if (!string.IsNullOrEmpty(poError))
@@ -162,76 +175,106 @@ namespace KiczanProductionInformationSystem
 
             //final check before to comfirm
             if (isValid)
-            {
-                labelRecordStatus.Text = "Record Status: Record Successfully Created!";
-                // Run your insert logic here
+            { //connnect to the database
+                string connectionString = "datasource=localhost;port=3306;username=root;" +
+                "password=root;database=kiczan_production_system;";
+
+                MySqlConnection connection = new MySqlConnection(connectionString);
+               
+
+                MySqlParameter[] pms = new MySqlParameter[10];
+
+
+                //current dummy values and a varible for the operations selceted. 
+                pms[0] = new MySqlParameter("PART_HISTORY_ID", MySqlDbType.Int32);
+                pms[0].Value = 75000;
+
+
+
+
+                //    command.Parameters.Add("@CUSTOMER_ID", MySqlDbType.Int32).Value = 17;
+                pms[1] = new MySqlParameter("CUSTOMER_ID", MySqlDbType.Int32);
+                pms[1].Value = custID;
+
+
+
+
+                //   command.Parameters.Add("OPERATOR_ID", MySqlDbType.Int32).Value = 4;
+                pms[2] = new MySqlParameter("OPERATOR_ID", MySqlDbType.Int32);
+                pms[2].Value = opID;
+
+
+
+
+                //  command.Parameters.Add("@PART_NUMBER", MySqlDbType.VarChar).Value = "7777";
+                pms[3] = new MySqlParameter("PART_NUMBER", MySqlDbType.VarChar);
+                pms[3].Value = partNumber;
+
+
+
+
+                //   command.Parameters.Add("@DATE_DUE", MySqlDbType.DateTime).Value = new DateTime(2525, 12, 25);
+                pms[4] = new MySqlParameter("DATE_DUE", MySqlDbType.DateTime);
+                pms[4].Value = new DateTime(2525, 12, 25);
+
+
+
+                //   command.Parameters.Add("@PURCHASE_ORDER_NUMBER", MySqlDbType.VarChar).Value = "7777";
+                pms[5] = new MySqlParameter("PURCHASE_ORDER_NUMBER", MySqlDbType.VarChar);
+                pms[5].Value = poNumber;
+
+
+
+                //  command.Parameters.Add("@QTY", MySqlDbType.Int32).Value = 7777;
+                pms[6] = new MySqlParameter("QTY", MySqlDbType.Int32);
+                pms[6].Value = quantity;
+
+
+
+
+                //  command.Parameters.Add("@OPERATIONS", MySqlDbType.VarChar).Value = checkedOperations;
+                pms[7] = new MySqlParameter("OPERATIONS", MySqlDbType.VarChar);
+                pms[7].Value = checkedOperations;
+
+
+
+                //  command.Parameters.Add("@DATE_RECEIVED", MySqlDbType.DateTime).Value = new DateTime(2049, 6, 13);
+                pms[8] = new MySqlParameter("DATE_RECEIVED", MySqlDbType.DateTime);
+                pms[8].Value = new DateTime(2049, 6, 13);
+
+
+
+
+                // command.Parameters.Add("@TO_DELETE", MySqlDbType.Binary).Value = 0;
+                pms[9] = new MySqlParameter("TO_DELETE", MySqlDbType.Binary);
+                pms[9].Value = 0;
+
+                MySqlCommand command = new MySqlCommand();
+                command.Connection = connection;
+                command.CommandType = CommandType.StoredProcedure;
+                command.CommandText = "CREATE_RECORD";
+                //command.Parameters.Clear();
+                command.Parameters.AddRange(pms);
+                connection.Open();
+
+
+                if (command.ExecuteNonQuery() == 1)
+                {
+
+
+                    labelRecordStatus.Text = "Record Status: Record Successfully Created!";
+
+                }
+                else
+                {
+
+                    labelRecordStatus.Text = "Record Status: Record Creation Error!";
+                }
+                connection.Close();
+
+
             }
-            else
-            {
-                labelRecordStatus.Text = "Record Status: Record Creation Error!";
-            }
-
         }
-    
-        //Commented out for textbox input validation testing.
-        /*
-        // At least one item is checked, proceed
-        List<string> selectedItems = new List<string>();
-
-        foreach (var item in checkedListBox1.CheckedItems)
-        {
-            selectedItems.Add(item.ToString());
-        }
-        //save formated checklist options to pass as a paramater into insert statement
-        string checkedOperations = string.Join(",", selectedItems);
-
-        //connnect to the database
-        string connectionString = "datasource=localhost;port=3306;username=root;" +
-        "password=root;database=kiczan_production_system;";
-
-        //string query to set the inset statement
-        string query = @" INSERT INTO PART_HISTORY 
-    (PART_HISTORY_ID, CUSTOMER_ID, OPERATOR_ID, PART_NUMBER, DATE_DUE, PURCHASE_ORDER_NUMBER, QTY, OPERATIONS, DATE_RECEIVED ,TO_DELETE)
-    VALUES 
-        (@PART_HISTORY_ID, @CUSTOMER_ID, @OPERATOR_ID, @PART_NUMBER, @DATE_DUE, @PURCHASE_ORDER_NUMBER, @QTY, @OPERATIONS, @DATE_RECEIVED , @TO_DELETE)";
-
-        var connection = new MySqlConnection(connectionString);
-
-        var command = new MySqlCommand(query, connection);
-
-        //current dummy values and a varible for the operations selceted. 
-        //TO DO change from addwithcalue to add with correct database datatypes
-        command.Parameters.Add("@PART_HISTORY_ID", MySqlDbType.Int32).Value = 50000;
-        command.Parameters.Add("@CUSTOMER_ID", MySqlDbType.Int32).Value = 17;
-        command.Parameters.Add("OPERATOR_ID", MySqlDbType.Int32).Value = 4;
-        command.Parameters.Add("@PART_NUMBER", MySqlDbType.VarChar).Value = "7777";
-        command.Parameters.Add("@DATE_DUE", MySqlDbType.DateTime).Value = new DateTime(2525, 12, 25);
-        command.Parameters.Add("@PURCHASE_ORDER_NUMBER", MySqlDbType.VarChar).Value = "7777";
-        command.Parameters.Add("@QTY", MySqlDbType.Int32).Value = 7777;
-        command.Parameters.Add("@OPERATIONS", MySqlDbType.VarChar).Value = checkedOperations;
-        command.Parameters.Add("@DATE_RECEIVED", MySqlDbType.DateTime).Value = new DateTime(2049, 6, 13);
-        command.Parameters.Add("@TO_DELETE", MySqlDbType.Binary).Value = 0;
-        //exeception catching for the insert
-        try
-        {
-            connection.Open();
-            command.ExecuteNonQuery();
-
-            MessageBox.Show("Record inserted successfully!");
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show("Error: " + ex.Message);
-        }
-        finally
-        {
-            connection.Close();
-        }
-        */
-    
-           
-   
-        //Event handler for Clear button.
         private void button2_Click(object sender, EventArgs e)
         {
             operatorComboBox.SelectedIndex = -1;
@@ -268,5 +311,6 @@ namespace KiczanProductionInformationSystem
         {
 
         }
+        
     }
 }
