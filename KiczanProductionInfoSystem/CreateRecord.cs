@@ -187,7 +187,7 @@ namespace KiczanProductionInformationSystem
 
                 //current dummy values and a varible for the operations selceted. 
                 pms[0] = new MySqlParameter("PART_HISTORY_ID", MySqlDbType.Int32);
-                pms[0].Value = 75000;
+                pms[0].Value = null;
 
 
 
