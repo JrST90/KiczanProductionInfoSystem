@@ -16,9 +16,47 @@ namespace KiczanProductionInformationSystem
 {
     public partial class CreateRecord : Form
     {
+        //List to hold operator names returned from function.
+        private List<Operators> operators = new List<Operators>();
+
+        //List to hold customer names returned from function.
+        private List<Customers> customers = new List<Customers>();
         public CreateRecord()
         {
             InitializeComponent();
+
+            //Create new DAO object for query.
+            DAO newDAO = new DAO();
+
+            //Set the operators List object to be populated with the list returned by GetOperators().
+            operators = newDAO.GetOperators();
+
+            //Set the customers List object to be populated with the list returned by GetCustomers().
+            customers = newDAO.GetCustomers();
+
+            //Bind operatorComboBox datasource to the operators list.
+            operatorComboBox.DataSource = operators;
+
+            //Bind customerComboBox datasource to the customers list.
+            customerComboBox.DataSource = customers;
+
+            //Set the display values for operatorComboBox.
+            operatorComboBox.DisplayMember = "OPERATOR_NAME";
+
+            //Set the stored values for operatorComboBox.
+            operatorComboBox.ValueMember = "OPERATOR_ID";
+
+            //Set the display values for customerComboBox.
+            customerComboBox.DisplayMember = "CUSTOMER_NAME";
+
+            //Set the stored values for customerComboBox.
+            customerComboBox.ValueMember = "CUSTOMER_ID";
+
+            //Set the initial value of operatorComboBox to empty.
+            operatorComboBox.SelectedIndex = -1;
+
+            //Set the initial value of customerComboBox to empty.
+            customerComboBox.SelectedIndex = -1;
         }
         //eventhandler for checkboxlist
         private void checkedListBox1_SelectedIndexChanged(object sender, EventArgs e)
@@ -36,24 +74,55 @@ namespace KiczanProductionInformationSystem
             string partNumber = textBoxPartNumber.Text;
 
             //Get quantity value from textBox1
-            string quantity = textBox1.Text;
+            string quantity = textBoxQuantity.Text;
 
             // Get purchase order number value from textBoxPO
             string poNumber = textBoxPO.Text;
+
+            //Get OPERATOR_ID from operatorComboBox
+            int opID = Convert.ToInt32(operatorComboBox.SelectedValue);
+
+            //Get the CUSTOMER_ID from customerComboBox
+            int custID = Convert.ToInt32(customerComboBox.SelectedValue);
+
             //validation flag
             bool isValid = true;
+
+            Console.WriteLine(opID);
+            Console.WriteLine(custID);
+
             // Clear all error labels first
             labelPartNumberError.Text = "";
             labelQuantityError.Text = "";
             labelOperationsError.Text = "";
             labelPOError.Text = "";
+            labelOperatorError.Text = "";
+            labelCustomerError.Text = "";
 
             errorProviderPartNumber.Clear();
+            errorProviderOperator.Clear();
+            errorProviderCustomer.Clear();
             errorProvider1.Clear();
             errorProvider2.Clear();
             errorProvider3.Clear();
 
-      
+            //Customer validation.
+            string customerError = newDV.validateCustomerSelection(custID);
+            if(!string.IsNullOrEmpty(customerError))
+            {
+                labelCustomerError.Text = customerError;
+                errorProviderCustomer.SetError(customerComboBox, customerError);
+                isValid = false;
+            }
+
+            //Operator validation.
+            string operatorError = newDV.validateOperatorSelection(opID);
+            if(!string.IsNullOrEmpty(operatorError))
+            {
+                labelOperatorError.Text = operatorError;
+                errorProviderOperator.SetError(operatorComboBox, operatorError);
+                isValid = false;
+            }
            
             //part number validation
             if (!newDV.validatePartNumber(partNumber))
@@ -69,7 +138,7 @@ namespace KiczanProductionInformationSystem
             if (!string.IsNullOrEmpty(quantityError))
             {
                 labelQuantityError.Text = quantityError;
-                errorProvider1.SetError(textBox1, quantityError);
+                errorProvider1.SetError(textBoxQuantity, quantityError);
                 isValid = false;
             }
 
@@ -94,12 +163,12 @@ namespace KiczanProductionInformationSystem
             //final check before to comfirm
             if (isValid)
             {
-                label3.Text = "Record Status: Record Successfully Created!";
+                labelRecordStatus.Text = "Record Status: Record Successfully Created!";
                 // Run your insert logic here
             }
             else
             {
-                label3.Text = "Record Status: Record Creation Error!";
+                labelRecordStatus.Text = "Record Status: Record Creation Error!";
             }
 
         }
@@ -165,8 +234,12 @@ namespace KiczanProductionInformationSystem
         //Event handler for Clear button.
         private void button2_Click(object sender, EventArgs e)
         {
+            operatorComboBox.SelectedIndex = -1;
+            customerComboBox.SelectedIndex = -1;
+            errorProviderOperator.Clear();
+            errorProviderCustomer.Clear();
             textBoxPartNumber.Clear();
-            textBox1.Clear();
+            textBoxQuantity.Clear();
             textBoxPO.Clear();
             errorProvider1.Clear();
             errorProvider2.Clear();
@@ -176,7 +249,9 @@ namespace KiczanProductionInformationSystem
             labelPOError.Text = "";
             labelQuantityError.Text = "";
             labelOperationsError.Text = "";
-            label3.Text = "";
+            labelOperatorError.Text = "";
+            labelCustomerError.Text = "";
+            labelRecordStatus.Text = "";
             checkedListBox1.ClearSelected();
             for (int i = 0; i < checkedListBox1.Items.Count; i++)
             {

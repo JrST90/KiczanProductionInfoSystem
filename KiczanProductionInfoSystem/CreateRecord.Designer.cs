@@ -34,19 +34,16 @@ namespace KiczanProductionInformationSystem
             this.button1 = new System.Windows.Forms.Button();
             this.checkedListBox1 = new System.Windows.Forms.CheckedListBox();
             this.errorProvider1 = new System.Windows.Forms.ErrorProvider(this.components);
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this.textBoxQuantity = new System.Windows.Forms.TextBox();
+            this.labelQuantity = new System.Windows.Forms.Label();
             this.errorProvider2 = new System.Windows.Forms.ErrorProvider(this.components);
             this.errorProvider3 = new System.Windows.Forms.ErrorProvider(this.components);
-            this.label4 = new System.Windows.Forms.Label();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.panel2 = new System.Windows.Forms.Panel();
+            this.labelOperations = new System.Windows.Forms.Label();
             this.button2 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
-            this.label3 = new System.Windows.Forms.Label();
+            this.labelRecordStatus = new System.Windows.Forms.Label();
             this.labelPartNumber = new System.Windows.Forms.Label();
             this.textBoxPartNumber = new System.Windows.Forms.TextBox();
-            this.panel3 = new System.Windows.Forms.Panel();
             this.errorProviderPartNumber = new System.Windows.Forms.ErrorProvider(this.components);
             this.labelPO = new System.Windows.Forms.Label();
             this.textBoxPO = new System.Windows.Forms.TextBox();
@@ -54,19 +51,30 @@ namespace KiczanProductionInformationSystem
             this.labelQuantityError = new System.Windows.Forms.Label();
             this.labelOperationsError = new System.Windows.Forms.Label();
             this.labelPOError = new System.Windows.Forms.Label();
+            this.operatorComboBox = new System.Windows.Forms.ComboBox();
+            this.labelOperator = new System.Windows.Forms.Label();
+            this.labelOperatorError = new System.Windows.Forms.Label();
+            this.errorProviderOperator = new System.Windows.Forms.ErrorProvider(this.components);
+            this.labelCustomerError = new System.Windows.Forms.Label();
+            this.labelCustomer = new System.Windows.Forms.Label();
+            this.customerComboBox = new System.Windows.Forms.ComboBox();
+            this.errorProviderCustomer = new System.Windows.Forms.ErrorProvider(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.errorProviderPartNumber)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.errorProviderOperator)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.errorProviderCustomer)).BeginInit();
             this.SuspendLayout();
             // 
             // button1
             // 
             this.button1.BackColor = System.Drawing.Color.Green;
             this.button1.ForeColor = System.Drawing.Color.White;
-            this.button1.Location = new System.Drawing.Point(270, 377);
+            this.button1.Location = new System.Drawing.Point(532, 808);
+            this.button1.Margin = new System.Windows.Forms.Padding(6);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(100, 23);
+            this.button1.Size = new System.Drawing.Size(200, 44);
             this.button1.TabIndex = 0;
             this.button1.Text = "Submit";
             this.button1.UseVisualStyleBackColor = false;
@@ -81,9 +89,10 @@ namespace KiczanProductionInformationSystem
             "Water Jet",
             "Punch",
             "Press Brake"});
-            this.checkedListBox1.Location = new System.Drawing.Point(397, 148);
+            this.checkedListBox1.Location = new System.Drawing.Point(786, 586);
+            this.checkedListBox1.Margin = new System.Windows.Forms.Padding(6);
             this.checkedListBox1.Name = "checkedListBox1";
-            this.checkedListBox1.Size = new System.Drawing.Size(120, 79);
+            this.checkedListBox1.Size = new System.Drawing.Size(236, 144);
             this.checkedListBox1.TabIndex = 1;
             this.checkedListBox1.SelectedIndexChanged += new System.EventHandler(this.checkedListBox1_SelectedIndexChanged);
             // 
@@ -91,23 +100,24 @@ namespace KiczanProductionInformationSystem
             // 
             this.errorProvider1.ContainerControl = this;
             // 
-            // textBox1
+            // textBoxQuantity
             // 
-            this.textBox1.Location = new System.Drawing.Point(397, 84);
-            this.textBox1.Margin = new System.Windows.Forms.Padding(2);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(120, 20);
-            this.textBox1.TabIndex = 3;
+            this.textBoxQuantity.Location = new System.Drawing.Point(786, 420);
+            this.textBoxQuantity.Margin = new System.Windows.Forms.Padding(4);
+            this.textBoxQuantity.Name = "textBoxQuantity";
+            this.textBoxQuantity.Size = new System.Drawing.Size(236, 31);
+            this.textBoxQuantity.TabIndex = 3;
             // 
-            // label1
+            // labelQuantity
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(334, 87);
-            this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(46, 13);
-            this.label1.TabIndex = 2;
-            this.label1.Text = "Quantity";
+            this.labelQuantity.AutoSize = true;
+            this.labelQuantity.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelQuantity.Location = new System.Drawing.Point(629, 423);
+            this.labelQuantity.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelQuantity.Name = "labelQuantity";
+            this.labelQuantity.Size = new System.Drawing.Size(93, 26);
+            this.labelQuantity.TabIndex = 2;
+            this.labelQuantity.Text = "Quantity";
             // 
             // errorProvider2
             // 
@@ -117,42 +127,25 @@ namespace KiczanProductionInformationSystem
             // 
             this.errorProvider3.ContainerControl = this;
             // 
-            // label4
+            // labelOperations
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(329, 177);
-            this.label4.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(58, 13);
-            this.label4.TabIndex = 6;
-            this.label4.Text = "Operations";
-            // 
-            // panel1
-            // 
-            this.panel1.BackColor = System.Drawing.Color.Black;
-            this.panel1.Location = new System.Drawing.Point(325, 103);
-            this.panel1.Margin = new System.Windows.Forms.Padding(2);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(55, 1);
-            this.panel1.TabIndex = 7;
-            // 
-            // panel2
-            // 
-            this.panel2.BackColor = System.Drawing.Color.Black;
-            this.panel2.Location = new System.Drawing.Point(332, 203);
-            this.panel2.Margin = new System.Windows.Forms.Padding(2);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(55, 1);
-            this.panel2.TabIndex = 8;
+            this.labelOperations.AutoSize = true;
+            this.labelOperations.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelOperations.Location = new System.Drawing.Point(629, 641);
+            this.labelOperations.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelOperations.Name = "labelOperations";
+            this.labelOperations.Size = new System.Drawing.Size(118, 26);
+            this.labelOperations.TabIndex = 6;
+            this.labelOperations.Text = "Operations";
             // 
             // button2
             // 
             this.button2.BackColor = System.Drawing.Color.Red;
             this.button2.ForeColor = System.Drawing.Color.White;
-            this.button2.Location = new System.Drawing.Point(397, 377);
-            this.button2.Margin = new System.Windows.Forms.Padding(2);
+            this.button2.Location = new System.Drawing.Point(786, 808);
+            this.button2.Margin = new System.Windows.Forms.Padding(4);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(100, 23);
+            this.button2.Size = new System.Drawing.Size(200, 44);
             this.button2.TabIndex = 9;
             this.button2.Text = "Clear";
             this.button2.UseVisualStyleBackColor = false;
@@ -162,50 +155,42 @@ namespace KiczanProductionInformationSystem
             // 
             this.button3.BackColor = System.Drawing.Color.Blue;
             this.button3.ForeColor = System.Drawing.Color.White;
-            this.button3.Location = new System.Drawing.Point(538, 377);
-            this.button3.Margin = new System.Windows.Forms.Padding(2);
+            this.button3.Location = new System.Drawing.Point(1068, 808);
+            this.button3.Margin = new System.Windows.Forms.Padding(4);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(100, 23);
+            this.button3.Size = new System.Drawing.Size(200, 44);
             this.button3.TabIndex = 10;
             this.button3.Text = "Back to Menu";
             this.button3.UseVisualStyleBackColor = false;
             this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
-            // label3
+            // labelRecordStatus
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(344, 347);
-            this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(0, 13);
-            this.label3.TabIndex = 11;
+            this.labelRecordStatus.AutoSize = true;
+            this.labelRecordStatus.Location = new System.Drawing.Point(725, 755);
+            this.labelRecordStatus.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelRecordStatus.Name = "labelRecordStatus";
+            this.labelRecordStatus.Size = new System.Drawing.Size(0, 25);
+            this.labelRecordStatus.TabIndex = 11;
             // 
             // labelPartNumber
             // 
             this.labelPartNumber.AutoSize = true;
-            this.labelPartNumber.Location = new System.Drawing.Point(329, 30);
-            this.labelPartNumber.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.labelPartNumber.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelPartNumber.Location = new System.Drawing.Point(628, 183);
+            this.labelPartNumber.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelPartNumber.Name = "labelPartNumber";
-            this.labelPartNumber.Size = new System.Drawing.Size(66, 13);
+            this.labelPartNumber.Size = new System.Drawing.Size(136, 26);
             this.labelPartNumber.TabIndex = 12;
             this.labelPartNumber.Text = "Part Number";
             // 
             // textBoxPartNumber
             // 
-            this.textBoxPartNumber.Location = new System.Drawing.Point(397, 30);
-            this.textBoxPartNumber.Margin = new System.Windows.Forms.Padding(2);
+            this.textBoxPartNumber.Location = new System.Drawing.Point(786, 180);
+            this.textBoxPartNumber.Margin = new System.Windows.Forms.Padding(4);
             this.textBoxPartNumber.Name = "textBoxPartNumber";
-            this.textBoxPartNumber.Size = new System.Drawing.Size(120, 20);
+            this.textBoxPartNumber.Size = new System.Drawing.Size(236, 31);
             this.textBoxPartNumber.TabIndex = 13;
-            // 
-            // panel3
-            // 
-            this.panel3.BackColor = System.Drawing.Color.Black;
-            this.panel3.Location = new System.Drawing.Point(332, 45);
-            this.panel3.Margin = new System.Windows.Forms.Padding(2);
-            this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(55, 1);
-            this.panel3.TabIndex = 14;
             // 
             // errorProviderPartNumber
             // 
@@ -215,79 +200,145 @@ namespace KiczanProductionInformationSystem
             // 
             this.labelPO.AutoSize = true;
             this.labelPO.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelPO.Location = new System.Drawing.Point(318, 276);
+            this.labelPO.Location = new System.Drawing.Point(628, 303);
+            this.labelPO.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.labelPO.Name = "labelPO";
-            this.labelPO.Size = new System.Drawing.Size(73, 13);
+            this.labelPO.Size = new System.Drawing.Size(151, 26);
             this.labelPO.TabIndex = 15;
             this.labelPO.Text = "Order Number";
             // 
             // textBoxPO
             // 
-            this.textBoxPO.Location = new System.Drawing.Point(397, 276);
+            this.textBoxPO.Location = new System.Drawing.Point(786, 303);
+            this.textBoxPO.Margin = new System.Windows.Forms.Padding(6);
             this.textBoxPO.Name = "textBoxPO";
-            this.textBoxPO.Size = new System.Drawing.Size(120, 20);
+            this.textBoxPO.Size = new System.Drawing.Size(236, 31);
             this.textBoxPO.TabIndex = 16;
             // 
             // labelPartNumberError
             // 
             this.labelPartNumberError.AutoSize = true;
-            this.labelPartNumberError.Location = new System.Drawing.Point(72, 30);
+            this.labelPartNumberError.Location = new System.Drawing.Point(144, 184);
+            this.labelPartNumberError.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.labelPartNumberError.Name = "labelPartNumberError";
-            this.labelPartNumberError.Size = new System.Drawing.Size(35, 13);
+            this.labelPartNumberError.Size = new System.Drawing.Size(0, 25);
             this.labelPartNumberError.TabIndex = 17;
-            this.labelPartNumberError.Text = "";
             // 
             // labelQuantityError
             // 
             this.labelQuantityError.AutoSize = true;
-            this.labelQuantityError.Location = new System.Drawing.Point(72, 87);
+            this.labelQuantityError.Location = new System.Drawing.Point(144, 424);
+            this.labelQuantityError.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.labelQuantityError.Name = "labelQuantityError";
-            this.labelQuantityError.Size = new System.Drawing.Size(35, 13);
+            this.labelQuantityError.Size = new System.Drawing.Size(0, 25);
             this.labelQuantityError.TabIndex = 18;
-            this.labelQuantityError.Text = "";
             // 
             // labelOperationsError
             // 
             this.labelOperationsError.AutoSize = true;
-            this.labelOperationsError.Location = new System.Drawing.Point(72, 177);
+            this.labelOperationsError.Location = new System.Drawing.Point(144, 642);
+            this.labelOperationsError.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.labelOperationsError.Name = "labelOperationsError";
-            this.labelOperationsError.Size = new System.Drawing.Size(35, 13);
+            this.labelOperationsError.Size = new System.Drawing.Size(0, 25);
             this.labelOperationsError.TabIndex = 19;
-            this.labelOperationsError.Text = "";
             // 
             // labelPOError
             // 
             this.labelPOError.AutoSize = true;
-            this.labelPOError.Location = new System.Drawing.Point(72, 276);
+            this.labelPOError.Location = new System.Drawing.Point(144, 306);
+            this.labelPOError.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.labelPOError.Name = "labelPOError";
-            this.labelPOError.Size = new System.Drawing.Size(35, 13);
+            this.labelPOError.Size = new System.Drawing.Size(0, 25);
             this.labelPOError.TabIndex = 20;
-            this.labelPOError.Text = "";
+            // 
+            // operatorComboBox
+            // 
+            this.operatorComboBox.FormattingEnabled = true;
+            this.operatorComboBox.Location = new System.Drawing.Point(786, 106);
+            this.operatorComboBox.Name = "operatorComboBox";
+            this.operatorComboBox.Size = new System.Drawing.Size(236, 33);
+            this.operatorComboBox.TabIndex = 21;
+            // 
+            // labelOperator
+            // 
+            this.labelOperator.AutoSize = true;
+            this.labelOperator.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelOperator.Location = new System.Drawing.Point(633, 106);
+            this.labelOperator.Name = "labelOperator";
+            this.labelOperator.Size = new System.Drawing.Size(97, 26);
+            this.labelOperator.TabIndex = 22;
+            this.labelOperator.Text = "Operator";
+            // 
+            // labelOperatorError
+            // 
+            this.labelOperatorError.AutoSize = true;
+            this.labelOperatorError.Location = new System.Drawing.Point(144, 109);
+            this.labelOperatorError.Name = "labelOperatorError";
+            this.labelOperatorError.Size = new System.Drawing.Size(0, 25);
+            this.labelOperatorError.TabIndex = 23;
+            // 
+            // errorProviderOperator
+            // 
+            this.errorProviderOperator.ContainerControl = this;
+            // 
+            // labelCustomerError
+            // 
+            this.labelCustomerError.AutoSize = true;
+            this.labelCustomerError.Location = new System.Drawing.Point(144, 32);
+            this.labelCustomerError.Name = "labelCustomerError";
+            this.labelCustomerError.Size = new System.Drawing.Size(0, 25);
+            this.labelCustomerError.TabIndex = 24;
+            // 
+            // labelCustomer
+            // 
+            this.labelCustomer.AutoSize = true;
+            this.labelCustomer.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelCustomer.Location = new System.Drawing.Point(633, 32);
+            this.labelCustomer.Name = "labelCustomer";
+            this.labelCustomer.Size = new System.Drawing.Size(107, 26);
+            this.labelCustomer.TabIndex = 25;
+            this.labelCustomer.Text = "Customer";
+            // 
+            // customerComboBox
+            // 
+            this.customerComboBox.FormattingEnabled = true;
+            this.customerComboBox.Location = new System.Drawing.Point(786, 24);
+            this.customerComboBox.Name = "customerComboBox";
+            this.customerComboBox.Size = new System.Drawing.Size(236, 33);
+            this.customerComboBox.TabIndex = 26;
+            // 
+            // errorProviderCustomer
+            // 
+            this.errorProviderCustomer.ContainerControl = this;
             // 
             // CreateRecord
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(1600, 865);
+            this.Controls.Add(this.customerComboBox);
+            this.Controls.Add(this.labelCustomer);
+            this.Controls.Add(this.labelCustomerError);
+            this.Controls.Add(this.labelOperatorError);
+            this.Controls.Add(this.labelOperator);
+            this.Controls.Add(this.operatorComboBox);
             this.Controls.Add(this.labelPOError);
             this.Controls.Add(this.labelOperationsError);
             this.Controls.Add(this.labelQuantityError);
             this.Controls.Add(this.labelPartNumberError);
             this.Controls.Add(this.textBoxPO);
             this.Controls.Add(this.labelPO);
-            this.Controls.Add(this.panel3);
             this.Controls.Add(this.textBoxPartNumber);
             this.Controls.Add(this.labelPartNumber);
-            this.Controls.Add(this.label3);
+            this.Controls.Add(this.labelRecordStatus);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button2);
-            this.Controls.Add(this.panel2);
-            this.Controls.Add(this.panel1);
-            this.Controls.Add(this.label4);
-            this.Controls.Add(this.textBox1);
-            this.Controls.Add(this.label1);
+            this.Controls.Add(this.labelOperations);
+            this.Controls.Add(this.textBoxQuantity);
+            this.Controls.Add(this.labelQuantity);
             this.Controls.Add(this.checkedListBox1);
             this.Controls.Add(this.button1);
+            this.Margin = new System.Windows.Forms.Padding(6);
             this.Name = "CreateRecord";
             this.Text = "CreateRecord";
             this.Load += new System.EventHandler(this.CreateRecord_Load);
@@ -295,6 +346,8 @@ namespace KiczanProductionInformationSystem
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider3)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.errorProviderPartNumber)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.errorProviderOperator)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.errorProviderCustomer)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -304,18 +357,15 @@ namespace KiczanProductionInformationSystem
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.CheckedListBox checkedListBox1;
         private System.Windows.Forms.ErrorProvider errorProvider1;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.Label labelQuantity;
+        private System.Windows.Forms.TextBox textBoxQuantity;
         private System.Windows.Forms.ErrorProvider errorProvider2;
         private System.Windows.Forms.ErrorProvider errorProvider3;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.Label labelOperations;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label labelRecordStatus;
         private System.Windows.Forms.Label labelPartNumber;
-        private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.TextBox textBoxPartNumber;
         private System.Windows.Forms.ErrorProvider errorProviderPartNumber;
         private System.Windows.Forms.TextBox textBoxPO;
@@ -324,5 +374,13 @@ namespace KiczanProductionInformationSystem
         private System.Windows.Forms.Label labelPOError;
         private System.Windows.Forms.Label labelOperationsError;
         private System.Windows.Forms.Label labelQuantityError;
+        private System.Windows.Forms.ComboBox operatorComboBox;
+        private System.Windows.Forms.Label labelOperator;
+        private System.Windows.Forms.Label labelOperatorError;
+        private System.Windows.Forms.ErrorProvider errorProviderOperator;
+        private System.Windows.Forms.ComboBox customerComboBox;
+        private System.Windows.Forms.Label labelCustomer;
+        private System.Windows.Forms.Label labelCustomerError;
+        private System.Windows.Forms.ErrorProvider errorProviderCustomer;
     }
 }
