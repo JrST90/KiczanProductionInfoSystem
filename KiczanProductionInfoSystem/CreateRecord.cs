@@ -173,16 +173,16 @@ namespace KiczanProductionInformationSystem
                 errorProvider3.SetError(textBoxPO, poError);
                 isValid = false;
             }
-            partHistoryDAO dao = new partHistoryDAO();
-
            
+
 
 
             //final check before to comfirm
             if (isValid)
             {
+                DAO newDAO = new DAO();
+                newDAO.CreateRecord(custID, opID, partNumber, DateTime.Now, poNumber, quantity, checkedOperations, DateTime.Now, 0);
 
-               dao.CreateRecord(custID, opID, partNumber, DateTime.Now, poNumber, quantity, checkedOperations, DateTime.Now, 0);
                 labelRecordStatus.Text = "Record Status: Record Successfully Created!";
                    
             }

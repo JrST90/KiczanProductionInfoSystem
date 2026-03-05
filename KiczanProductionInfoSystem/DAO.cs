@@ -5,7 +5,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Security.Cryptography;
+using ZstdSharp.Unsafe;
 
 namespace KiczanProductionInfoSystem
 {
@@ -463,13 +465,9 @@ namespace KiczanProductionInfoSystem
 
             return returnList;
         }
-        public class partHistoryDAO
-        {
-            //connnect to the database
-            string connectionString = "datasource=localhost;port=3306;username=root;" +
-            "password=root;database=kiczan_production_system;";
+       
 
-            public bool CreateRecord(int custID, int opID, string partNumber, DateTime dateDue, string poNumber, string quantity, string checkedOperations, DateTime dateReceived, int toDelete)
+            internal bool CreateRecord(int custID, int opID, string partNumber, DateTime dateDue, string poNumber, string quantity, string checkedOperations, DateTime dateReceived, int toDelete)
 
             {
 
@@ -483,7 +481,7 @@ namespace KiczanProductionInfoSystem
 
                 //current dummy values and a varible for the operations selceted. 
                 pms[0] = new MySqlParameter("PART_HISTORY_ID", MySqlDbType.Int32);
-                pms[0].Value = null;
+                pms[0].Value = DBNull.Value;
 
 
 
@@ -545,6 +543,7 @@ namespace KiczanProductionInfoSystem
                 pms[9] = new MySqlParameter("TO_DELETE", MySqlDbType.Binary);
                 pms[9].Value = toDelete;
 
+
                 MySqlCommand command = new MySqlCommand();
                 command.Connection = connection;
                 command.CommandType = CommandType.StoredProcedure;
@@ -552,14 +551,13 @@ namespace KiczanProductionInfoSystem
                 //command.Parameters.Clear();
                 command.Parameters.AddRange(pms);
                 connection.Open();
-                return command.ExecuteNonQuery() > 0;
+                int rowsAffected = command.ExecuteNonQuery();
+                connection.Close();
+                return rowsAffected > 0;
 
-
-   
             }
-
-
+        
         }
     }
-}
+
 
