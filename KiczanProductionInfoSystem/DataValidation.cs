@@ -154,6 +154,29 @@ namespace KiczanProductionInfoSystem
             return message;
         }
 
+        // Validate date received input.
+        internal string validateDateReceived(string input)
+        {
+            string message = "";
+            DateTime parsedDate;
+
+            if (string.IsNullOrWhiteSpace(input))
+            {
+                message = "Record not Complete!\nDate must not be empty,\nplease enter a value.";
+            }
+            else if (!DateTime.TryParseExact(
+                input,
+                "MM/dd/yyyy",
+                CultureInfo.InvariantCulture,
+                DateTimeStyles.None,
+                out parsedDate))
+            {
+                message = "Record not Complete!\nDate must be in MM/DD/YYYY format.";
+            }
+
+            return message;
+        }
+
         // Validate customer selection input.
         internal string validateCustomerSelection(int input)
         {
