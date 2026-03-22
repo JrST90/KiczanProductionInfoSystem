@@ -81,6 +81,9 @@ namespace KiczanProductionInformationSystem
             // Get Date Received value
             string dateReceived = textBoxDateReceived.Text;
 
+            // Get Due Date value from textboxDueDate
+            string dateDue = textboxDueDate.Text;
+
             // Get purchase order number value from textBoxPO
             string poNumber = textBoxPO.Text;
 
@@ -104,6 +107,7 @@ namespace KiczanProductionInformationSystem
             labelOperatorError.Text = "";
             labelCustomerError.Text = "";
             labelDateReceivedError.Text = "";
+            labelDueDateError.Text = "";
             string checkedOperations = "";
             errorProviderPartNumber.Clear();
             errorProviderOperator.Clear();
@@ -190,14 +194,25 @@ namespace KiczanProductionInformationSystem
                 isValid = false;
             }
 
+            // due date validation
+            string dateDueError = newDV.validateDueDate(dateDue);
+
+            if (!string.IsNullOrEmpty(dateDueError))
+            {
+                labelDueDateError.Text = dateDueError;
+                errorProvider3.SetError(textboxDueDate, dateDueError);
+                isValid = false;
+            }
+
 
             //final check before to comfirm
             if (isValid)
             {
                 DateTime parsedDateReceived = DateTime.ParseExact(dateReceived, "MM/dd/yyyy", CultureInfo.InvariantCulture);
+                DateTime parsedDueDate = DateTime.ParseExact(dateDue, "MM/dd/yyyy", CultureInfo.InvariantCulture);
 
                 DAO newDAO = new DAO();
-                newDAO.CreateRecord(custID, opID, partNumber, parsedDateReceived, poNumber, quantity, checkedOperations, DateTime.Now, 0);
+                newDAO.CreateRecord(custID, opID, partNumber, parsedDueDate, poNumber, quantity, checkedOperations, parsedDateReceived, 0);
 
                 labelRecordStatus.Text = "Record Status: Record Successfully Created!";
                    
@@ -212,10 +227,6 @@ namespace KiczanProductionInformationSystem
             
         }
 
-
-
-
-
 private void button2_Click(object sender, EventArgs e)
         {
             operatorComboBox.SelectedIndex = -1;
@@ -226,6 +237,7 @@ private void button2_Click(object sender, EventArgs e)
             textBoxQuantity.Clear();
             textBoxPO.Clear();
             textBoxDateReceived.Clear();
+            textboxDueDate.Clear();
             errorProviderDateReceived.Clear();
             errorProvider1.Clear();
             errorProvider2.Clear();
@@ -239,6 +251,7 @@ private void button2_Click(object sender, EventArgs e)
             labelCustomerError.Text = "";
             labelRecordStatus.Text = "";
             labelDateReceivedError.Text = "";
+            labelDueDateError.Text = "";
             checkedListBox1.ClearSelected();
             for (int i = 0; i < checkedListBox1.Items.Count; i++)
             {
