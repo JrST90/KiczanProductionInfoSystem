@@ -177,6 +177,28 @@ namespace KiczanProductionInfoSystem
             return message;
         }
 
+        // Validate Due Date input.
+        internal string validateDueDate(string dueDateText)
+        {
+            string message = "";
+            DateTime dueDate;
+
+            if (string.IsNullOrWhiteSpace(dueDateText))
+            {
+                message = "Record not Complete!\nDate must not be empty,\nplease enter a value.";
+            }
+            else if (!DateTime.TryParseExact(
+                dueDateText,
+                "MM/dd/yyyy",
+                CultureInfo.InvariantCulture,
+                DateTimeStyles.None,
+                out dueDate))
+            {
+                message = "Record not Complete!\nDate must be in MM/DD/YYYY format.";
+            }
+            return message;
+        }
+
         // Validate customer selection input.
         internal string validateCustomerSelection(int input)
         {
