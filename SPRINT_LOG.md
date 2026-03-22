@@ -150,3 +150,45 @@ from XX/XX/XXXX-XX/XX/XXXX to MM/DD/YYYY-MM/DD/YYYY]
 * **Bug Description:** [Updated Error Labels in Create Record Form to clear
 * when the "clear" button is selected in the form]
 * **Severity:** [High] | **Fix Status:** [Fixed]
+
+
+# Sprint 4 Technical Log
+
+## 1. Planning & Assignments
+* **Sprint Dates:** 2026-02-16 to 2026-03-01
+* **Team Name:** Team 2 | **Members Present:** Daniel Puharic, Elian Garica, Justin Kisner, Josh Stanczyk
+* **Sprint Goals:** Completion of Sprint 4 goals which include, Create Record Interface – Date Received/Due Validation – Develop & Test & Create Record Interface – Customer & Operator Validation/Record Insertion.
+
+| Task Description | Assigned Owner | Priority | Status |
+| :--- | :--- | :--- | :--- |
+| Sprint 4: Create Record Interface – Date Received/Due Validation – Develop & Tes | Elian Garcia, Justin Kisner | High | Completed |
+| Sub Task |  Assigned Owner | Test Procedure | Status |
+| Create Record Interface Wireframe – Date Received Format Error Validation State | Elian Garcia | String returns empty or with error message in test environment | Passed |
+| Create Record Interface Wireframe – Date Due Format Error Validation State | Justin Kisner | String returns empty or with error message in test environment | Passed | 
+| Sprint 4: Create Record Interface – Customer & Operator Validation/Record Insertion – Develop & Test | Daniel Puharic, Josh Stanczyk | High | Completed |
+| Sub Task |  Assigned Owner | Test Procedure | Status |
+| Create Record Interface Wireframe – Customer/Operator Error Validation State | Josh Stanczyk | String returns empty or with error message in test environment | Passed |
+| Create Record Interface Wireframe – Record Insertion Success State | Daniel Puharic | Record is successfully inserted into DB upon passing through form input validation constraints | Passed |
+
+## 2. Progress & Blockers
+* **Completed Work:**
+* Sprint 4: Create Record Interface – Date Received/Due Validation – Develop & Test 
+* Sprint 4: Create Record Interface – Customer & Operator Validation/Record Insertion – Develop & Test
+* **Incomplete Tasks:**
+* All Sprint 4 Tasks Completed
+* **Resolution Plan:**
+* All Sprint 4 Tasks Completed
+
+## 3. System Test Report
+| Test Case | Type | Result | Evidence/PR # |
+| :--- | :--- | :--- | :--- |
+| [Feature: Feature/Create-Record/Due-Date] | Unit | Passed | PR #43 |
+| [Feature: Create Record Date Received Functionality] | Unit | Passed | PR #42 |
+| [Feature: Feature/ Create record logic and tethered stored procedure] | System | Passed | PR #41 |
+| [Feature: Create Record Operator and Customer Selection] | Unit | Passed | PR #40 |
+
+## 4. Bug Tracking
+* **Bug Description:** [Else block was unreachable when updating Record Status from either Successful or Unsuccessful, providing a blank form element that did not alert user above buttons of errors existing on form.]
+* **Severity:** [Medium] | **Fix Status:** [Fixed]
+* **Bug Description:** [Migrate Record Insertion process from CreateRecord.cs to its own function within DAO.cs for modularity.]
+* **Severity:** [Medium] | **Fix Status:** [Fixed]
