@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -77,6 +78,9 @@ namespace KiczanProductionInformationSystem
             //Get quantity value from textBox1
             string quantity = textBoxQuantity.Text;
 
+            // Get Date Received value
+            string dateReceived = textBoxDateReceived.Text;
+
             // Get purchase order number value from textBoxPO
             string poNumber = textBoxPO.Text;
 
@@ -99,10 +103,12 @@ namespace KiczanProductionInformationSystem
             labelPOError.Text = "";
             labelOperatorError.Text = "";
             labelCustomerError.Text = "";
+            labelDateReceivedError.Text = "";
             string checkedOperations = "";
             errorProviderPartNumber.Clear();
             errorProviderOperator.Clear();
             errorProviderCustomer.Clear();
+            errorProviderDateReceived.Clear();
             errorProvider1.Clear();
             errorProvider2.Clear();
             errorProvider3.Clear();
@@ -165,6 +171,7 @@ namespace KiczanProductionInformationSystem
                 }
 
             }
+
             //purchase order number validation
             string poError = newDV.validatePurchaseOrderNumber(poNumber);
             if (!string.IsNullOrEmpty(poError))
@@ -173,15 +180,24 @@ namespace KiczanProductionInformationSystem
                 errorProvider3.SetError(textBoxPO, poError);
                 isValid = false;
             }
-           
 
+            // date received validation
+            string dateReceivedError = newDV.validateDateReceived(dateReceived);
+            if (!string.IsNullOrEmpty(dateReceivedError))
+            {
+                labelDateReceivedError.Text = dateReceivedError;
+                errorProviderDateReceived.SetError(textBoxDateReceived, dateReceivedError);
+                isValid = false;
+            }
 
 
             //final check before to comfirm
             if (isValid)
             {
+                DateTime parsedDateReceived = DateTime.ParseExact(dateReceived, "MM/dd/yyyy", CultureInfo.InvariantCulture);
+
                 DAO newDAO = new DAO();
-                newDAO.CreateRecord(custID, opID, partNumber, DateTime.Now, poNumber, quantity, checkedOperations, DateTime.Now, 0);
+                newDAO.CreateRecord(custID, opID, partNumber, parsedDateReceived, poNumber, quantity, checkedOperations, DateTime.Now, 0);
 
                 labelRecordStatus.Text = "Record Status: Record Successfully Created!";
                    
@@ -209,6 +225,8 @@ private void button2_Click(object sender, EventArgs e)
             textBoxPartNumber.Clear();
             textBoxQuantity.Clear();
             textBoxPO.Clear();
+            textBoxDateReceived.Clear();
+            errorProviderDateReceived.Clear();
             errorProvider1.Clear();
             errorProvider2.Clear();
             errorProviderPartNumber.Clear();
@@ -220,6 +238,7 @@ private void button2_Click(object sender, EventArgs e)
             labelOperatorError.Text = "";
             labelCustomerError.Text = "";
             labelRecordStatus.Text = "";
+            labelDateReceivedError.Text = "";
             checkedListBox1.ClearSelected();
             for (int i = 0; i < checkedListBox1.Items.Count; i++)
             {
