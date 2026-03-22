@@ -161,7 +161,7 @@ from XX/XX/XXXX-XX/XX/XXXX to MM/DD/YYYY-MM/DD/YYYY]
 
 | Task Description | Assigned Owner | Priority | Status |
 | :--- | :--- | :--- | :--- |
-| Sprint 4: Create Record Interface – Date Received/Due Validation – Develop & Tes | Elian Garcia, Justin Kisner | High | Completed |
+| Sprint 4: Create Record Interface – Date Received/Due Validation – Develop & Test | Elian Garcia, Justin Kisner | High | Completed |
 | Sub Task |  Assigned Owner | Test Procedure | Status |
 | Create Record Interface Wireframe – Date Received Format Error Validation State | Elian Garcia | String returns empty or with error message in test environment | Passed |
 | Create Record Interface Wireframe – Date Due Format Error Validation State | Justin Kisner | String returns empty or with error message in test environment | Passed | 
