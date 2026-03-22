@@ -155,7 +155,7 @@ from XX/XX/XXXX-XX/XX/XXXX to MM/DD/YYYY-MM/DD/YYYY]
 # Sprint 4 Technical Log
 
 ## 1. Planning & Assignments
-* **Sprint Dates:** 2026-02-16 to 2026-03-01
+* **Sprint Dates:** 2026-03-01 to 2026-03-22
 * **Team Name:** Team 2 | **Members Present:** Daniel Puharic, Elian Garica, Justin Kisner, Josh Stanczyk
 * **Sprint Goals:** Completion of Sprint 4 goals which include, Create Record Interface – Date Received/Due Validation – Develop & Test & Create Record Interface – Customer & Operator Validation/Record Insertion.
 
