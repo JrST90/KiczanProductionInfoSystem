@@ -151,7 +151,7 @@ upon receiving new work orders, and update existing records in the event of erro
           - Available to the user are currently all input fields: Customer, Operator, Part Number, Quantity, Operations, Order Number, Date Received, Due Date.
       - **Usage Example:**
           - **Input:** Selecting a Customer of "Alstom," selecting an Operator of "Dave," inputting a Part Number of "3156," a Quantity of "10," selecting the Operations check box items of Laser and Press Brake, inputting a Order Number of "7190," inputting a Date Received of "03/22/2026," inputting a Due Date of "03/22/2026" and pressing the "Submit" button.
-          - **Result:** The system displays a status update to the user upon successful field input "Record Status: Record Successfully Created!" The record is added to the PART_HISTORY_TABLE and the ID value is autoincremented.
+          - **Result:** The system displays a status update to the user upon successful field input "Record Status: Record Successfully Created!" The record is added to the PART_HISTORY table and the ID value is autoincremented.
           - **Input:** Leaving the Part Number field empty during form input and pressing the "Submit" button.
           - **Result:** The system displays a status update to the user upon unsuccessful field input "Record Status: Record Creation Error!", and next to the input field on the form an error provider and message is displayed to the user stating "Part Number must not be empty and may only contain letters, numbers, or hyphens."
           - **Input:** Inputting a Part Number of "3156$" and pressing the "Submit" button.
