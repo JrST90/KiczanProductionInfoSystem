@@ -124,7 +124,7 @@ namespace KiczanProductionInfoSystem
         }
 
         // Validate purchase order number input.
-        public string validatePurchaseOrderNumber(string poNumber)
+        internal string validatePurchaseOrderNumber(string poNumber)
         {
             string message = "";
             poNumber = poNumber.Trim();
@@ -137,6 +137,77 @@ namespace KiczanProductionInfoSystem
 
             else if (!Regex.IsMatch(poNumber, @"^[a-zA-Z0-9\-]+$"))
                 message = "Order Number can only contain \nletters, numbers, and hyphens.";
+
+            return message;
+        }
+
+        // Validate operator selection input.
+        internal string validateOperatorSelection(int input)
+        {
+            string message  = "";
+
+            if(input == 0)
+            {
+                message = "Record not Complete!\nPlease select an Operator.";
+            }
+
+            return message;
+        }
+
+        // Validate date received input.
+        internal string validateDateReceived(string input)
+        {
+            string message = "";
+            DateTime parsedDate;
+
+            if (string.IsNullOrWhiteSpace(input))
+            {
+                message = "Record not Complete!\nDate must not be empty,\nplease enter a value.";
+            }
+            else if (!DateTime.TryParseExact(
+                input,
+                "MM/dd/yyyy",
+                CultureInfo.InvariantCulture,
+                DateTimeStyles.None,
+                out parsedDate))
+            {
+                message = "Record not Complete!\nDate must be in MM/DD/YYYY format.";
+            }
+
+            return message;
+        }
+
+        // Validate Due Date input.
+        internal string validateDueDate(string dueDateText)
+        {
+            string message = "";
+            DateTime dueDate;
+
+            if (string.IsNullOrWhiteSpace(dueDateText))
+            {
+                message = "Record not Complete!\nDate must not be empty,\nplease enter a value.";
+            }
+            else if (!DateTime.TryParseExact(
+                dueDateText,
+                "MM/dd/yyyy",
+                CultureInfo.InvariantCulture,
+                DateTimeStyles.None,
+                out dueDate))
+            {
+                message = "Record not Complete!\nDate must be in MM/DD/YYYY format.";
+            }
+            return message;
+        }
+
+        // Validate customer selection input.
+        internal string validateCustomerSelection(int input)
+        {
+            string message = "";
+
+            if (input == 0)
+            {
+                message = "Record not Complete!\nPlease select a Customer.";
+            }
 
             return message;
         }

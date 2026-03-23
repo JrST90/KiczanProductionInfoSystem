@@ -5,20 +5,60 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Windows.Forms;
+using static KiczanProductionInfoSystem.DAO;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace KiczanProductionInformationSystem
 {
     public partial class CreateRecord : Form
     {
+        //List to hold operator names returned from function.
+        private List<Operators> operators = new List<Operators>();
+
+        //List to hold customer names returned from function.
+        private List<Customers> customers = new List<Customers>();
         public CreateRecord()
         {
             InitializeComponent();
+
+            //Create new DAO object for query.
+            DAO newDAO = new DAO();
+
+            //Set the operators List object to be populated with the list returned by GetOperators().
+            operators = newDAO.GetOperators();
+
+            //Set the customers List object to be populated with the list returned by GetCustomers().
+            customers = newDAO.GetCustomers();
+
+            //Bind operatorComboBox datasource to the operators list.
+            operatorComboBox.DataSource = operators;
+
+            //Bind customerComboBox datasource to the customers list.
+            customerComboBox.DataSource = customers;
+
+            //Set the display values for operatorComboBox.
+            operatorComboBox.DisplayMember = "OPERATOR_NAME";
+
+            //Set the stored values for operatorComboBox.
+            operatorComboBox.ValueMember = "OPERATOR_ID";
+
+            //Set the display values for customerComboBox.
+            customerComboBox.DisplayMember = "CUSTOMER_NAME";
+
+            //Set the stored values for customerComboBox.
+            customerComboBox.ValueMember = "CUSTOMER_ID";
+
+            //Set the initial value of operatorComboBox to empty.
+            operatorComboBox.SelectedIndex = -1;
+
+            //Set the initial value of customerComboBox to empty.
+            customerComboBox.SelectedIndex = -1;
         }
         //eventhandler for checkboxlist
         private void checkedListBox1_SelectedIndexChanged(object sender, EventArgs e)
@@ -36,25 +76,65 @@ namespace KiczanProductionInformationSystem
             string partNumber = textBoxPartNumber.Text;
 
             //Get quantity value from textBox1
-            string quantity = textBox1.Text;
+            string quantity = textBoxQuantity.Text;
+
+            // Get Date Received value
+            string dateReceived = textBoxDateReceived.Text;
+
+            // Get Due Date value from textboxDueDate
+            string dateDue = textboxDueDate.Text;
 
             // Get purchase order number value from textBoxPO
             string poNumber = textBoxPO.Text;
+
+            //Get OPERATOR_ID from operatorComboBox
+            int opID = Convert.ToInt32(operatorComboBox.SelectedValue);
+
+            //Get the CUSTOMER_ID from customerComboBox
+            int custID = Convert.ToInt32(customerComboBox.SelectedValue);
+
             //validation flag
             bool isValid = true;
+
+            Console.WriteLine(opID);
+            Console.WriteLine(custID);
+
             // Clear all error labels first
             labelPartNumberError.Text = "";
             labelQuantityError.Text = "";
             labelOperationsError.Text = "";
             labelPOError.Text = "";
-
+            labelOperatorError.Text = "";
+            labelCustomerError.Text = "";
+            labelDateReceivedError.Text = "";
+            labelDueDateError.Text = "";
+            string checkedOperations = "";
             errorProviderPartNumber.Clear();
+            errorProviderOperator.Clear();
+            errorProviderCustomer.Clear();
+            errorProviderDateReceived.Clear();
             errorProvider1.Clear();
             errorProvider2.Clear();
             errorProvider3.Clear();
 
-      
-           
+            //Customer validation.
+            string customerError = newDV.validateCustomerSelection(custID);
+            if (!string.IsNullOrEmpty(customerError))
+            {
+                labelCustomerError.Text = customerError;
+                errorProviderCustomer.SetError(customerComboBox, customerError);
+                isValid = false;
+            }
+
+            //Operator validation.
+            string operatorError = newDV.validateOperatorSelection(opID);
+            if (!string.IsNullOrEmpty(operatorError))
+            {
+                labelOperatorError.Text = operatorError;
+                errorProviderOperator.SetError(operatorComboBox, operatorError);
+                isValid = false;
+            }
+
             //part number validation
             if (!newDV.validatePartNumber(partNumber))
             {
@@ -69,7 +149,7 @@ namespace KiczanProductionInformationSystem
             if (!string.IsNullOrEmpty(quantityError))
             {
                 labelQuantityError.Text = quantityError;
-                errorProvider1.SetError(textBox1, quantityError);
+                errorProvider1.SetError(textBoxQuantity, quantityError);
                 isValid = false;
             }
 
@@ -81,6 +161,20 @@ namespace KiczanProductionInformationSystem
                 errorProvider2.SetError(checkedListBox1, message);
                 isValid = false;
             }
+            else
+            {
+                // At least one item is checked, proceed
+                List<string> checkedItems = new List<string>();
+
+                foreach (var item in checkedListBox1.CheckedItems)
+                {
+                    checkedItems.Add(item.ToString());
+                    //save formated checklist options to pass as a paramater into insert statement
+                    checkedOperations = string.Join(", ", checkedItems);
+                    Console.WriteLine(checkedOperations);
+                }
+
+            }
 
             //purchase order number validation
             string poError = newDV.validatePurchaseOrderNumber(poNumber);
@@ -91,83 +185,60 @@ namespace KiczanProductionInformationSystem
                 isValid = false;
             }
 
+            // date received validation
+            string dateReceivedError = newDV.validateDateReceived(dateReceived);
+            if (!string.IsNullOrEmpty(dateReceivedError))
+            {
+                labelDateReceivedError.Text = dateReceivedError;
+                errorProviderDateReceived.SetError(textBoxDateReceived, dateReceivedError);
+                isValid = false;
+            }
+
+            // due date validation
+            string dateDueError = newDV.validateDueDate(dateDue);
+
+            if (!string.IsNullOrEmpty(dateDueError))
+            {
+                labelDueDateError.Text = dateDueError;
+                errorProvider3.SetError(textboxDueDate, dateDueError);
+                isValid = false;
+            }
+
+
             //final check before to comfirm
             if (isValid)
             {
-                label3.Text = "Record Status: Record Successfully Created!";
-                // Run your insert logic here
+                DateTime parsedDateReceived = DateTime.ParseExact(dateReceived, "MM/dd/yyyy", CultureInfo.InvariantCulture);
+                DateTime parsedDueDate = DateTime.ParseExact(dateDue, "MM/dd/yyyy", CultureInfo.InvariantCulture);
+
+                DAO newDAO = new DAO();
+                newDAO.CreateRecord(custID, opID, partNumber, parsedDueDate, poNumber, quantity, checkedOperations, parsedDateReceived, 0);
+
+                labelRecordStatus.Text = "Record Status: Record Successfully Created!";
+                   
             }
+
             else
             {
-                label3.Text = "Record Status: Record Creation Error!";
+
+                labelRecordStatus.Text = "Record Status: Record Creation Error!";
+
             }
-
+            
         }
-    
-        //Commented out for textbox input validation testing.
-        /*
-        // At least one item is checked, proceed
-        List<string> selectedItems = new List<string>();
 
-        foreach (var item in checkedListBox1.CheckedItems)
+private void button2_Click(object sender, EventArgs e)
         {
-            selectedItems.Add(item.ToString());
-        }
-        //save formated checklist options to pass as a paramater into insert statement
-        string checkedOperations = string.Join(",", selectedItems);
-
-        //connnect to the database
-        string connectionString = "datasource=localhost;port=3306;username=root;" +
-        "password=root;database=kiczan_production_system;";
-
-        //string query to set the inset statement
-        string query = @" INSERT INTO PART_HISTORY 
-    (PART_HISTORY_ID, CUSTOMER_ID, OPERATOR_ID, PART_NUMBER, DATE_DUE, PURCHASE_ORDER_NUMBER, QTY, OPERATIONS, DATE_RECEIVED ,TO_DELETE)
-    VALUES 
-        (@PART_HISTORY_ID, @CUSTOMER_ID, @OPERATOR_ID, @PART_NUMBER, @DATE_DUE, @PURCHASE_ORDER_NUMBER, @QTY, @OPERATIONS, @DATE_RECEIVED , @TO_DELETE)";
-
-        var connection = new MySqlConnection(connectionString);
-
-        var command = new MySqlCommand(query, connection);
-
-        //current dummy values and a varible for the operations selceted. 
-        //TO DO change from addwithcalue to add with correct database datatypes
-        command.Parameters.Add("@PART_HISTORY_ID", MySqlDbType.Int32).Value = 50000;
-        command.Parameters.Add("@CUSTOMER_ID", MySqlDbType.Int32).Value = 17;
-        command.Parameters.Add("OPERATOR_ID", MySqlDbType.Int32).Value = 4;
-        command.Parameters.Add("@PART_NUMBER", MySqlDbType.VarChar).Value = "7777";
-        command.Parameters.Add("@DATE_DUE", MySqlDbType.DateTime).Value = new DateTime(2525, 12, 25);
-        command.Parameters.Add("@PURCHASE_ORDER_NUMBER", MySqlDbType.VarChar).Value = "7777";
-        command.Parameters.Add("@QTY", MySqlDbType.Int32).Value = 7777;
-        command.Parameters.Add("@OPERATIONS", MySqlDbType.VarChar).Value = checkedOperations;
-        command.Parameters.Add("@DATE_RECEIVED", MySqlDbType.DateTime).Value = new DateTime(2049, 6, 13);
-        command.Parameters.Add("@TO_DELETE", MySqlDbType.Binary).Value = 0;
-        //exeception catching for the insert
-        try
-        {
-            connection.Open();
-            command.ExecuteNonQuery();
-
-            MessageBox.Show("Record inserted successfully!");
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show("Error: " + ex.Message);
-        }
-        finally
-        {
-            connection.Close();
-        }
-        */
-    
-           
-   
-        //Event handler for Clear button.
-        private void button2_Click(object sender, EventArgs e)
-        {
+            operatorComboBox.SelectedIndex = -1;
+            customerComboBox.SelectedIndex = -1;
+            errorProviderOperator.Clear();
+            errorProviderCustomer.Clear();
             textBoxPartNumber.Clear();
-            textBox1.Clear();
+            textBoxQuantity.Clear();
             textBoxPO.Clear();
+            textBoxDateReceived.Clear();
+            textboxDueDate.Clear();
+            errorProviderDateReceived.Clear();
             errorProvider1.Clear();
             errorProvider2.Clear();
             errorProviderPartNumber.Clear();
@@ -176,7 +247,11 @@ namespace KiczanProductionInformationSystem
             labelPOError.Text = "";
             labelQuantityError.Text = "";
             labelOperationsError.Text = "";
-            label3.Text = "";
+            labelOperatorError.Text = "";
+            labelCustomerError.Text = "";
+            labelRecordStatus.Text = "";
+            labelDateReceivedError.Text = "";
+            labelDueDateError.Text = "";
             checkedListBox1.ClearSelected();
             for (int i = 0; i < checkedListBox1.Items.Count; i++)
             {
@@ -193,5 +268,6 @@ namespace KiczanProductionInformationSystem
         {
 
         }
+        
     }
 }

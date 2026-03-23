@@ -5,6 +5,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
+using System.Runtime.InteropServices.WindowsRuntime;
+using System.Security.Cryptography;
+using ZstdSharp.Unsafe;
 
 namespace KiczanProductionInfoSystem
 {
@@ -234,7 +237,7 @@ namespace KiczanProductionInfoSystem
         // Reads data from DB source, returns dataTable from OPERATOR_NAME_QUERY stored procedure.
         // Reads operatorName from user input in text box.
         internal DataTable operatorNameQuery(string operatorName, int pageSize, int currentPageIndex)
- 
+
         {
             //Create new dataTable to store query results.
             DataTable dataTable = new DataTable();
@@ -260,10 +263,10 @@ namespace KiczanProductionInfoSystem
 
             //Use adapter object to fill dataTable with query results.
             using (MySqlDataAdapter adapter = new MySqlDataAdapter(command))
-                
-                {
-                    adapter.Fill(dataTable);
-                }
+
+            {
+                adapter.Fill(dataTable);
+            }
 
             connection.Close();
 
@@ -273,7 +276,7 @@ namespace KiczanProductionInfoSystem
 
         // Count all records for OPERATOR_NAME_QUERY.
         internal int operatorNameQueryCount(string operatorName)
-        
+
         {
             //Set initial value of totalRows.
             int totalRows = 0;
@@ -294,14 +297,14 @@ namespace KiczanProductionInfoSystem
 
             //Execute query, save result in result object.
             object result = command.ExecuteScalar();
-            
+
             //Convert result to Int and save in totalRows.
             totalRows = Convert.ToInt32(result);
 
             connection.Close();
 
             return totalRows;
-        }   
+        }
 
         //Execute query to mark recorded as deleted.
         internal void softDeleteQuery(int part_history_id)
@@ -342,7 +345,7 @@ namespace KiczanProductionInfoSystem
 
             connection.Close();
         }
-         //Reads data from DB source, returns dataTable from FABRICATION_DEPARTMENT_QUERY stored procedure.
+        //Reads data from DB source, returns dataTable from FABRICATION_DEPARTMENT_QUERY stored procedure.
         internal DataTable fabricationDepartmentQuery(int pageSize, int currentPageIndex)
         {
             //Create new dataTable to store query results.
@@ -399,7 +402,7 @@ namespace KiczanProductionInfoSystem
             return totalRows;
         }
 
-        //Get operator names for drop down menu comboBox2
+        //Get operator names for drop down menu comboBox2 and operatorComboBox
         internal List<Operators> GetOperators()
         {
             //Create new List object.
@@ -430,5 +433,131 @@ namespace KiczanProductionInfoSystem
 
             return returnList;
         }
+
+        //Get customer names for customerComboBox
+        internal List<Customers> GetCustomers()
+        {
+            //Create new List object.
+            List<Customers> returnList = new List<Customers>();
+
+            //Connect to db.
+            MySqlConnection connection = new MySqlConnection(connectionString);
+            connection.Open();
+
+            //Get the stored procedure from the DB.
+            MySqlCommand command = new MySqlCommand("GET_CUSTOMERS", connection);
+            command.CommandType = CommandType.StoredProcedure;
+
+            //Read returned values from query into returnList.
+            using (MySqlDataReader reader = command.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    Customers op = new Customers
+                    {
+                        CUSTOMER_ID = reader.GetInt32(0),
+                        CUSTOMER_NAME = reader.GetString(1),
+                    };
+                    returnList.Add(op);
+                }
+            }
+            connection.Close();
+
+            return returnList;
+        }
+       
+
+            internal bool CreateRecord(int custID, int opID, string partNumber, DateTime dateDue, string poNumber, string quantity, string checkedOperations, DateTime dateReceived, int toDelete)
+
+            {
+
+
+
+                MySqlConnection connection = new MySqlConnection(connectionString);
+
+
+                MySqlParameter[] pms = new MySqlParameter[10];
+
+
+                //current dummy values and a varible for the operations selceted. 
+                pms[0] = new MySqlParameter("PART_HISTORY_ID", MySqlDbType.Int32);
+                pms[0].Value = DBNull.Value;
+
+
+
+
+                //    command.Parameters.Add("@CUSTOMER_ID", MySqlDbType.Int32).Value = 17;
+                pms[1] = new MySqlParameter("CUSTOMER_ID", MySqlDbType.Int32);
+                pms[1].Value = custID;
+
+
+
+
+                //   command.Parameters.Add("OPERATOR_ID", MySqlDbType.Int32).Value = 4;
+                pms[2] = new MySqlParameter("OPERATOR_ID", MySqlDbType.Int32);
+                pms[2].Value = opID;
+
+
+
+
+                //  command.Parameters.Add("@PART_NUMBER", MySqlDbType.VarChar).Value = "7777";
+                pms[3] = new MySqlParameter("PART_NUMBER", MySqlDbType.VarChar);
+                pms[3].Value = partNumber;
+
+
+
+
+                //   command.Parameters.Add("@DATE_DUE", MySqlDbType.DateTime).Value = new DateTime(2525, 12, 25);
+                pms[4] = new MySqlParameter("DATE_DUE", MySqlDbType.DateTime);
+                pms[4].Value = dateDue;
+
+
+
+                //   command.Parameters.Add("@PURCHASE_ORDER_NUMBER", MySqlDbType.VarChar).Value = "7777";
+                pms[5] = new MySqlParameter("PURCHASE_ORDER_NUMBER", MySqlDbType.VarChar);
+                pms[5].Value = poNumber;
+
+
+
+                //  command.Parameters.Add("@QTY", MySqlDbType.Int32).Value = 7777;
+                pms[6] = new MySqlParameter("QTY", MySqlDbType.Int32);
+                pms[6].Value = quantity;
+
+
+
+
+                //  command.Parameters.Add("@OPERATIONS", MySqlDbType.VarChar).Value = checkedOperations;
+                pms[7] = new MySqlParameter("OPERATIONS", MySqlDbType.VarChar);
+                pms[7].Value = checkedOperations;
+
+
+
+                //  command.Parameters.Add("@DATE_RECEIVED", MySqlDbType.DateTime).Value = new DateTime(2049, 6, 13);
+                pms[8] = new MySqlParameter("DATE_RECEIVED", MySqlDbType.DateTime);
+                pms[8].Value = dateReceived;
+
+
+
+
+                // command.Parameters.Add("@TO_DELETE", MySqlDbType.Binary).Value = 0;
+                pms[9] = new MySqlParameter("TO_DELETE", MySqlDbType.Binary);
+                pms[9].Value = toDelete;
+
+
+                MySqlCommand command = new MySqlCommand();
+                command.Connection = connection;
+                command.CommandType = CommandType.StoredProcedure;
+                command.CommandText = "CREATE_RECORD";
+                //command.Parameters.Clear();
+                command.Parameters.AddRange(pms);
+                connection.Open();
+                int rowsAffected = command.ExecuteNonQuery();
+                connection.Close();
+                return rowsAffected > 0;
+
+            }
+        
+        }
     }
-}
+
+
