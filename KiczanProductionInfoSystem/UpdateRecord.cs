@@ -1,12 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace KiczanProductionInfoSystem
@@ -18,7 +12,7 @@ namespace KiczanProductionInfoSystem
 
         //List to hold customer names returned from function.
         private List<Customers> customers = new List<Customers>();
-        public UpdateRecord()
+        public UpdateRecord(int convertedPartHistoryID, string retrievedCustomerName, string retrievedOperatorName, string retrievedPartNumber, string retrievedPurchaseOrderNumber, string retrievedQuantity, string retrievedDateReceived, string retrievedDateDue, string retrievedOperations)
         {
             InitializeComponent();
 
@@ -49,18 +43,57 @@ namespace KiczanProductionInfoSystem
             //Set the stored values for customerComboBox.
             customerComboBox.ValueMember = "CUSTOMER_ID";
 
-            //Set the initial value of operatorComboBox to empty.
-            operatorComboBox.SelectedIndex = -1;
-
-            //Set the initial value of customerComboBox to empty.
-            customerComboBox.SelectedIndex = -1;
+            //Set form values to values retrieved from selected record.
+            int partHistoryID = convertedPartHistoryID;
+            int customerIndex = customerComboBox.FindString(retrievedCustomerName);
+            int operatorIndex = operatorComboBox.FindString(retrievedOperatorName);
+            customerComboBox.SelectedIndex = customerIndex;
+            operatorComboBox.SelectedIndex = operatorIndex;
+            textBoxPartNumber.Text = retrievedPartNumber;
+            textBoxPO.Text = retrievedPurchaseOrderNumber;
+            textBoxQuantity.Text = retrievedQuantity;
+            textBoxDateReceived.Text = retrievedDateReceived;
+            textboxDueDate.Text = retrievedDateDue;
+            //Get checked box values from selected record and display on UpdateRecord form.
+            if(retrievedOperations.Contains("Laser"))
+            {
+                int checkedListBoxIndex = checkedListBox1.FindStringExact("Laser");
+                if (checkedListBoxIndex != -1)
+                {
+                    checkedListBox1.SetItemChecked(checkedListBoxIndex, true);
+                }
+            }
+            if (retrievedOperations.Contains("Water Jet"))
+            {
+                int checkedListBoxIndex = checkedListBox1.FindStringExact("Water Jet");
+                if (checkedListBoxIndex != -1)
+                {
+                    checkedListBox1.SetItemChecked(checkedListBoxIndex, true);
+                }
+            }
+            if (retrievedOperations.Contains("Punch"))
+            {
+                int checkedListBoxIndex = checkedListBox1.FindStringExact("Punch");
+                if (checkedListBoxIndex != -1)
+                {
+                    checkedListBox1.SetItemChecked(checkedListBoxIndex, true);
+                }
+            }
+            if (retrievedOperations.Contains("Press Brake"))
+            {
+                int checkedListBoxIndex = checkedListBox1.FindStringExact("Press Brake");
+                if (checkedListBoxIndex != -1)
+                {
+                    checkedListBox1.SetItemChecked(checkedListBoxIndex, true);
+                }
+            }
         }
         //eventhandler for checkboxlist
         private void checkedListBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
 
         }
-        //eventhandler for create record button
+        //eventhandler for update record button
         private void button1_Click(object sender, EventArgs e)
         {
             //Create new DataValidation Object for input validation.
@@ -111,25 +144,13 @@ namespace KiczanProductionInfoSystem
             errorProvider2.Clear();
             errorProvider3.Clear();
 
-            //Customer validation.
-            string customerError = newDV.validateCustomerSelection(custID);
-            if (!string.IsNullOrEmpty(customerError))
-            {
-                labelCustomerError.Text = customerError;
-                errorProviderCustomer.SetError(customerComboBox, customerError);
-                isValid = false;
-            }
+            //TO DO: Customer validation.
 
-            //Operator validation.
-            string operatorError = newDV.validateOperatorSelection(opID);
-            if (!string.IsNullOrEmpty(operatorError))
-            {
-                labelOperatorError.Text = operatorError;
-                errorProviderOperator.SetError(operatorComboBox, operatorError);
-                isValid = false;
-            }
 
-            //part number validation
+            //TO DO: Operator validation.
+
+
+            //Part number validation
             if (!newDV.validatePartNumber(partNumber))
             {
                 string message = "Part Number must not be empty and may only \n contain letters, numbers, or hyphen.";
@@ -138,39 +159,13 @@ namespace KiczanProductionInfoSystem
                 isValid = false;
             }
 
-            //quantity validation
-            string quantityError = newDV.validateQuantity(quantity);
-            if (!string.IsNullOrEmpty(quantityError))
-            {
-                labelQuantityError.Text = quantityError;
-                errorProvider1.SetError(textBoxQuantity, quantityError);
-                isValid = false;
-            }
+            //TO DO: Quantity validation
 
-            //operations validation
-            if (checkedListBox1.CheckedItems.Count == 0)
-            {
-                string message = "Please select at least one operation.";
-                labelOperationsError.Text = message;
-                errorProvider2.SetError(checkedListBox1, message);
-                isValid = false;
-            }
-            else
-            {
-                // At least one item is checked, proceed
-                List<string> checkedItems = new List<string>();
 
-                foreach (var item in checkedListBox1.CheckedItems)
-                {
-                    checkedItems.Add(item.ToString());
-                    //save formated checklist options to pass as a paramater into insert statement
-                    checkedOperations = string.Join(", ", checkedItems);
-                    Console.WriteLine(checkedOperations);
-                }
+            //TO DO: Operations validation
 
-            }
 
-            //purchase order number validation
+            //Purchase order number validation
             string poError = newDV.validatePurchaseOrderNumber(poNumber);
             if (!string.IsNullOrEmpty(poError))
             {
@@ -179,7 +174,7 @@ namespace KiczanProductionInfoSystem
                 isValid = false;
             }
 
-            // date received validation
+            //Date received validation
             string dateReceivedError = newDV.validateDateReceived(dateReceived);
             if (!string.IsNullOrEmpty(dateReceivedError))
             {
@@ -188,7 +183,7 @@ namespace KiczanProductionInfoSystem
                 isValid = false;
             }
 
-            // due date validation
+            //Due date validation
             string dateDueError = newDV.validateDueDate(dateDue);
 
             if (!string.IsNullOrEmpty(dateDueError))
@@ -199,7 +194,7 @@ namespace KiczanProductionInfoSystem
             }
 
 
-            //final check before to comfirm
+            //final check before to confirm
             if (isValid)
             {
                 DateTime parsedDateReceived = DateTime.ParseExact(dateReceived, "MM/dd/yyyy", CultureInfo.InvariantCulture);

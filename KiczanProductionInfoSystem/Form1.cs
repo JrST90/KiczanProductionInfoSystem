@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -1414,33 +1415,161 @@ namespace KiczanProductionInfoSystem
         //Event handler for click event for Update Record on right click menu.
         private void updateRecordToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //Create new UpdateRecord form object.
-            UpdateRecord updateRecord = new UpdateRecord();
-
             //Retrieve the selected row.
             DataGridViewRow selectedRow = dataGridView1.SelectedRows[0];
 
             //Initialize variable to hold part history id as a string.
-            string retreivedPartHistoryID;
+            string retrievedPartHistoryID;
 
             //Initialize variable to hold party history id converted from string to int.
-            int convertedPartyHistoryID;
+            int convertedPartHistoryID;
+
+            //Initialize variable to hold customer name as a string.
+            string retrievedCustomerName;
+
+            //Initialize variable to holde operator name as a string.
+            string retrievedOperatorName;
+
+            //Initialize variable to hold part number as a string.
+            string retrievedPartNumber;
+
+            //Initialize variable to hold quantity as a string.
+            string retrievedQuantity;
+
+            //Initialize variable to hold date received as a string.
+            string retrievedDateReceived;
+
+            //Initialize variable to hold date due as a string.
+            string retrievedDateDue;
+
+            //Initialize variable to hold operations as a string.
+            string retrievedOperations;
+
+            //Initialize variable to hold purchase order number as a string.
+            string retrievedPurchaseOrderNumber;
 
             //Retrieve the value of the first column of the selected row (PART_HISTORY_ID).
-            object cellValueByIndex = selectedRow.Cells[0].Value;
+            object cellValueByIndexZero = selectedRow.Cells[0].Value;
+
+            //Retrieve the value of the second column of the selected row (CUSTOMER_NAME).
+            object cellValueByIndexOne = selectedRow.Cells[1].Value;
+
+            //Retrieve the value of the second column of the selected row (OPERATOR_NAME).
+            object cellValueByIndexTwo = selectedRow.Cells[2].Value;
+
+            //Retrieve the value of the third column of the selected row (PART_NUMBER).
+            object cellValueByIndexThree = selectedRow.Cells[3].Value;
+
+            //Retrieve the value of the fourth column of the selected row (QTY).
+            object cellValueByIndexFour = selectedRow.Cells[4].Value;
+
+            //Retrieve the value of the fifth column of the selected row (DATE_RECEIVED).
+            object cellValueByIndexFive = selectedRow.Cells[5].Value;
+
+            //Retrieve the value of the sixth column of the selected row (DATE_DUE).
+            object cellValueByIndexSix = selectedRow.Cells[6].Value;
+
+            //Retrieve the value of the seventh column of the selected row (OPERATIONS).
+            object cellValueByIndexSeven = selectedRow.Cells[7].Value;
+
+            //Retrieve the value of the eighth column of the selected row (PURCHASE_ORDER_NUMBER).
+            object cellValueByIndexEight = selectedRow.Cells[8].Value;
 
             //Validate, convert PART_HISTORY_ID to string if not null.
-            if (cellValueByIndex != null)
+            if (cellValueByIndexZero != null)
             {
-                retreivedPartHistoryID = cellValueByIndex.ToString();
+                retrievedPartHistoryID = cellValueByIndexZero.ToString();
             }
             else
             {
-                retreivedPartHistoryID = string.Empty;
+                retrievedPartHistoryID = string.Empty;
+            }
+
+            //Validate, convert CUSTOMER_NAME to string if not null.
+            if (cellValueByIndexOne != null)
+            {
+                retrievedCustomerName = cellValueByIndexOne.ToString();
+            }
+            else
+            {
+                retrievedCustomerName = string.Empty;
+            }
+
+            //Validate, convert OPERATOR_NAME to string if not null.
+            if (cellValueByIndexTwo != null)
+            {
+                retrievedOperatorName = cellValueByIndexTwo.ToString();
+            }
+            else
+            {
+                retrievedOperatorName = string.Empty;
+            }
+
+            //Validate, convert PART_NUMBER to string if not null.
+            if (cellValueByIndexThree != null)
+            {
+                retrievedPartNumber = cellValueByIndexThree.ToString();
+            }
+            else
+            {
+                retrievedPartNumber = string.Empty;
+            }
+
+            //Validate, convert QTY to string if not null.
+            if (cellValueByIndexFour != null)
+            {
+                retrievedQuantity = cellValueByIndexFour.ToString();
+            }
+            else
+            {
+                retrievedQuantity = string.Empty;
+            }
+
+            //Validate, convert DATE_RECEIVED to string if not null.
+            if (cellValueByIndexFive != null)
+            {
+                retrievedDateReceived = Convert.ToDateTime(cellValueByIndexFive).ToString("MM/dd/yyyy");
+            }
+            else
+            {
+                retrievedDateReceived = string.Empty;
+            }
+
+            //Validate, convert DATE_DUE to string if not null.
+            if (cellValueByIndexSix != null)
+            {
+                retrievedDateDue = Convert.ToDateTime(cellValueByIndexSix).ToString("MM/dd/yyyy");
+            }
+            else
+            {
+                retrievedDateDue = string.Empty;
+            }
+
+            //Validate, convert OPERATIONS to string if not null.
+            if (cellValueByIndexSeven != null)
+            {
+                retrievedOperations = cellValueByIndexSeven.ToString();
+            }
+            else
+            {
+                retrievedOperations = string.Empty;
+            }
+
+            //Validate, convert PURCHASE_ORDER_NUMBER to string if not null.
+            if (cellValueByIndexEight != null)
+            {
+                retrievedPurchaseOrderNumber = cellValueByIndexEight.ToString();
+            }
+            else
+            {
+                retrievedPurchaseOrderNumber = string.Empty;
             }
 
             //Convert the string value to an int for processing.
-            convertedPartyHistoryID = int.Parse(retreivedPartHistoryID);
+            convertedPartHistoryID = int.Parse(retrievedPartHistoryID);
+
+            //Create new UpdateRecord form object, pass retrieved values to UpdateRecord form.
+            UpdateRecord updateRecord = new UpdateRecord(convertedPartHistoryID, retrievedCustomerName, retrievedOperatorName, retrievedPartNumber, retrievedPurchaseOrderNumber, retrievedQuantity, retrievedDateReceived, retrievedDateDue, retrievedOperations);
 
             //Show the Update Record UI.
             updateRecord.Show();
@@ -1467,7 +1596,7 @@ namespace KiczanProductionInfoSystem
             string retreivedPartHistoryID;
 
             //Initialize variable to hold party history id converted from string to int.
-            int convertedPartyHistoryID;
+            int convertedPartHistoryID;
 
             //Retrieve the value of the first column of the selected row (PART_HISTORY_ID).
             object cellValueByIndex = selectedRow.Cells[0].Value;
@@ -1483,10 +1612,10 @@ namespace KiczanProductionInfoSystem
             }
 
             //Convert the string value to an int for processing.
-            convertedPartyHistoryID = int.Parse(retreivedPartHistoryID);
+            convertedPartHistoryID = int.Parse(retreivedPartHistoryID);
 
             //Pass the PART_HISTORY_ID value to the delete query for record update to mark for delete.
-            newDAO.softDeleteQuery(convertedPartyHistoryID);
+            newDAO.softDeleteQuery(convertedPartHistoryID);
             button1_Click(sender, e);
           
         }
@@ -1504,7 +1633,7 @@ namespace KiczanProductionInfoSystem
             string retreivedPartHistoryID;
 
             //Initialize variable to hold party history id converted from string to int.
-            int convertedPartyHistoryID;
+            int convertedPartHistoryID;
 
             //Retrieve the value of the first column of the selected row (PART_HISTORY_ID).
             object cellValueByIndex = selectedRow.Cells[0].Value;
@@ -1520,10 +1649,10 @@ namespace KiczanProductionInfoSystem
             }
 
             //Convert the string value to an int for processing.
-            convertedPartyHistoryID = int.Parse(retreivedPartHistoryID);
+            convertedPartHistoryID = int.Parse(retreivedPartHistoryID);
 
             //Pass the PART_HISTORY_ID value to the restore query for record update to restore record.
-            newDAO.restoreRecordQuery(convertedPartyHistoryID);
+            newDAO.restoreRecordQuery(convertedPartHistoryID);
             button1_Click(sender, e);
         }
     }
