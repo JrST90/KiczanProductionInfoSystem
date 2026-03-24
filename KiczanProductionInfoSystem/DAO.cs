@@ -1,13 +1,7 @@
 ﻿using MySql.Data.MySqlClient;
-using Mysqlx.Expr;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Data.SqlClient;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Security.Cryptography;
-using ZstdSharp.Unsafe;
 
 namespace KiczanProductionInfoSystem
 {
@@ -466,98 +460,64 @@ namespace KiczanProductionInfoSystem
             return returnList;
         }
        
+        internal bool CreateRecord(int custID, int opID, string partNumber, DateTime dateDue, string poNumber, string quantity, string checkedOperations, DateTime dateReceived, int toDelete)
+        {
+            MySqlConnection connection = new MySqlConnection(connectionString);
 
-            internal bool CreateRecord(int custID, int opID, string partNumber, DateTime dateDue, string poNumber, string quantity, string checkedOperations, DateTime dateReceived, int toDelete)
+            MySqlParameter[] pms = new MySqlParameter[10];
 
-            {
+            //current dummy values and a varible for the operations selceted. 
+            pms[0] = new MySqlParameter("PART_HISTORY_ID", MySqlDbType.Int32);
+            pms[0].Value = DBNull.Value;
 
+            //    command.Parameters.Add("@CUSTOMER_ID", MySqlDbType.Int32).Value = 17;
+            pms[1] = new MySqlParameter("CUSTOMER_ID", MySqlDbType.Int32);
+            pms[1].Value = custID;
 
+            //   command.Parameters.Add("OPERATOR_ID", MySqlDbType.Int32).Value = 4;
+            pms[2] = new MySqlParameter("OPERATOR_ID", MySqlDbType.Int32);
+            pms[2].Value = opID;
 
-                MySqlConnection connection = new MySqlConnection(connectionString);
+            //  command.Parameters.Add("@PART_NUMBER", MySqlDbType.VarChar).Value = "7777";
+            pms[3] = new MySqlParameter("PART_NUMBER", MySqlDbType.VarChar);
+            pms[3].Value = partNumber;
 
+            //   command.Parameters.Add("@DATE_DUE", MySqlDbType.DateTime).Value = new DateTime(2525, 12, 25);
+            pms[4] = new MySqlParameter("DATE_DUE", MySqlDbType.DateTime);
+            pms[4].Value = dateDue;
 
-                MySqlParameter[] pms = new MySqlParameter[10];
+            //   command.Parameters.Add("@PURCHASE_ORDER_NUMBER", MySqlDbType.VarChar).Value = "7777";
+            pms[5] = new MySqlParameter("PURCHASE_ORDER_NUMBER", MySqlDbType.VarChar);
+            pms[5].Value = poNumber;
 
+            //  command.Parameters.Add("@QTY", MySqlDbType.Int32).Value = 7777;
+            pms[6] = new MySqlParameter("QTY", MySqlDbType.Int32);
+            pms[6].Value = quantity;
 
-                //current dummy values and a varible for the operations selceted. 
-                pms[0] = new MySqlParameter("PART_HISTORY_ID", MySqlDbType.Int32);
-                pms[0].Value = DBNull.Value;
+            //  command.Parameters.Add("@OPERATIONS", MySqlDbType.VarChar).Value = checkedOperations;
+            pms[7] = new MySqlParameter("OPERATIONS", MySqlDbType.VarChar);
+            pms[7].Value = checkedOperations;
 
+            //  command.Parameters.Add("@DATE_RECEIVED", MySqlDbType.DateTime).Value = new DateTime(2049, 6, 13);
+            pms[8] = new MySqlParameter("DATE_RECEIVED", MySqlDbType.DateTime);
+            pms[8].Value = dateReceived;
 
+            // command.Parameters.Add("@TO_DELETE", MySqlDbType.Binary).Value = 0;
+            pms[9] = new MySqlParameter("TO_DELETE", MySqlDbType.Binary);
+            pms[9].Value = toDelete;
 
-
-                //    command.Parameters.Add("@CUSTOMER_ID", MySqlDbType.Int32).Value = 17;
-                pms[1] = new MySqlParameter("CUSTOMER_ID", MySqlDbType.Int32);
-                pms[1].Value = custID;
-
-
-
-
-                //   command.Parameters.Add("OPERATOR_ID", MySqlDbType.Int32).Value = 4;
-                pms[2] = new MySqlParameter("OPERATOR_ID", MySqlDbType.Int32);
-                pms[2].Value = opID;
-
-
-
-
-                //  command.Parameters.Add("@PART_NUMBER", MySqlDbType.VarChar).Value = "7777";
-                pms[3] = new MySqlParameter("PART_NUMBER", MySqlDbType.VarChar);
-                pms[3].Value = partNumber;
-
-
-
-
-                //   command.Parameters.Add("@DATE_DUE", MySqlDbType.DateTime).Value = new DateTime(2525, 12, 25);
-                pms[4] = new MySqlParameter("DATE_DUE", MySqlDbType.DateTime);
-                pms[4].Value = dateDue;
-
-
-
-                //   command.Parameters.Add("@PURCHASE_ORDER_NUMBER", MySqlDbType.VarChar).Value = "7777";
-                pms[5] = new MySqlParameter("PURCHASE_ORDER_NUMBER", MySqlDbType.VarChar);
-                pms[5].Value = poNumber;
-
-
-
-                //  command.Parameters.Add("@QTY", MySqlDbType.Int32).Value = 7777;
-                pms[6] = new MySqlParameter("QTY", MySqlDbType.Int32);
-                pms[6].Value = quantity;
-
-
-
-
-                //  command.Parameters.Add("@OPERATIONS", MySqlDbType.VarChar).Value = checkedOperations;
-                pms[7] = new MySqlParameter("OPERATIONS", MySqlDbType.VarChar);
-                pms[7].Value = checkedOperations;
-
-
-
-                //  command.Parameters.Add("@DATE_RECEIVED", MySqlDbType.DateTime).Value = new DateTime(2049, 6, 13);
-                pms[8] = new MySqlParameter("DATE_RECEIVED", MySqlDbType.DateTime);
-                pms[8].Value = dateReceived;
-
-
-
-
-                // command.Parameters.Add("@TO_DELETE", MySqlDbType.Binary).Value = 0;
-                pms[9] = new MySqlParameter("TO_DELETE", MySqlDbType.Binary);
-                pms[9].Value = toDelete;
-
-
-                MySqlCommand command = new MySqlCommand();
-                command.Connection = connection;
-                command.CommandType = CommandType.StoredProcedure;
-                command.CommandText = "CREATE_RECORD";
-                //command.Parameters.Clear();
-                command.Parameters.AddRange(pms);
-                connection.Open();
-                int rowsAffected = command.ExecuteNonQuery();
-                connection.Close();
-                return rowsAffected > 0;
-
-            }
-        
+            MySqlCommand command = new MySqlCommand();
+            command.Connection = connection;
+            command.CommandType = CommandType.StoredProcedure;
+            command.CommandText = "CREATE_RECORD";
+            //command.Parameters.Clear();
+            command.Parameters.AddRange(pms);
+            connection.Open();
+            int rowsAffected = command.ExecuteNonQuery();
+            connection.Close();
+            return rowsAffected > 0;
         }
     }
+}
 
 

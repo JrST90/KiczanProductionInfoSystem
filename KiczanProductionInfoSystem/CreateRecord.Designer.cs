@@ -1,6 +1,6 @@
 ﻿using System.Drawing;
 
-namespace KiczanProductionInformationSystem
+namespace KiczanProductionInfoSystem
 {
     partial class CreateRecord
     {
