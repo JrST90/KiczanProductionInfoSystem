@@ -14,7 +14,7 @@ using System.Windows.Forms;
 using static KiczanProductionInfoSystem.DAO;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
-namespace KiczanProductionInformationSystem
+namespace KiczanProductionInfoSystem
 {
     public partial class CreateRecord : Form
     {
@@ -227,7 +227,7 @@ namespace KiczanProductionInformationSystem
             
         }
 
-private void button2_Click(object sender, EventArgs e)
+        private void button2_Click(object sender, EventArgs e)
         {
             operatorComboBox.SelectedIndex = -1;
             customerComboBox.SelectedIndex = -1;

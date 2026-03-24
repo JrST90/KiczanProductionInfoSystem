@@ -1,4 +1,4 @@
-﻿using KiczanProductionInformationSystem;
+﻿using KiczanProductionInfoSystem;
 using Mysqlx.Expr;
 using System;
 using System.Collections.Generic;
