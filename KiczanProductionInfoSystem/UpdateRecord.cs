@@ -12,6 +12,8 @@ namespace KiczanProductionInfoSystem
 
         //List to hold customer names returned from function.
         private List<Customers> customers = new List<Customers>();
+        
+        private int partHistoryID;
         public UpdateRecord(int convertedPartHistoryID, string retrievedCustomerName, string retrievedOperatorName, string retrievedPartNumber, string retrievedPurchaseOrderNumber, string retrievedQuantity, string retrievedDateReceived, string retrievedDateDue, string retrievedOperations)
         {
             InitializeComponent();
@@ -24,6 +26,8 @@ namespace KiczanProductionInfoSystem
 
             //Set the customers List object to be populated with the list returned by GetCustomers().
             customers = newDAO.GetCustomers();
+           
+           
 
             //Bind operatorComboBox datasource to the operators list.
             operatorComboBox.DataSource = operators;
@@ -44,7 +48,7 @@ namespace KiczanProductionInfoSystem
             customerComboBox.ValueMember = "CUSTOMER_ID";
 
             //Set form values to values retrieved from selected record.
-            int partHistoryID = convertedPartHistoryID;
+            partHistoryID = convertedPartHistoryID;
             int customerIndex = customerComboBox.FindString(retrievedCustomerName);
             int operatorIndex = operatorComboBox.FindString(retrievedOperatorName);
             customerComboBox.SelectedIndex = customerIndex;
@@ -99,6 +103,10 @@ namespace KiczanProductionInfoSystem
             //Create new DataValidation Object for input validation.
             DataValidation newDV = new DataValidation();
 
+
+            
+
+
             //Get part number value
             string partNumber = textBoxPartNumber.Text;
 
@@ -119,12 +127,15 @@ namespace KiczanProductionInfoSystem
 
             //Get the CUSTOMER_ID from customerComboBox
             int custID = Convert.ToInt32(customerComboBox.SelectedValue);
+            //Set the partID for the update query.
+            
 
             //validation flag
             bool isValid = true;
 
             Console.WriteLine(opID);
             Console.WriteLine(custID);
+            
 
             // Clear all error labels first
             labelPartNumberError.Text = "";
@@ -199,10 +210,10 @@ namespace KiczanProductionInfoSystem
             {
                 DateTime parsedDateReceived = DateTime.ParseExact(dateReceived, "MM/dd/yyyy", CultureInfo.InvariantCulture);
                 DateTime parsedDueDate = DateTime.ParseExact(dateDue, "MM/dd/yyyy", CultureInfo.InvariantCulture);
-
+       
                 //TO DO: Create DAO object and Function call to Update Record.
-                //DAO newDAO = new DAO();
-                //newDAO.CreateRecord(custID, opID, partNumber, parsedDueDate, poNumber, quantity, checkedOperations, parsedDateReceived, 0);
+                DAO newDAO = new DAO();
+                newDAO.UpdateRecord(partHistoryID, custID, opID, partNumber, parsedDueDate, poNumber, quantity, checkedOperations, parsedDateReceived, 0);
 
                 labelRecordStatus.Text = "Record Status: Record Successfully Updated!";
 
