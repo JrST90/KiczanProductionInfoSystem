@@ -188,6 +188,17 @@ upon receiving new work orders, and update existing records in the event of erro
           - **Result:** The system displays a status update to the user upon unsuccessful field input "Record Status: Record Creation Error!", and next to the input field on the form an error provider and message is displayed to the user stating "Record not Complete! Date must be in MM/DD/YYYY format."
           - **Input:** Entering 3/22/2026 as the date into the Date Received or Due Date fields.
           - **Result:** The system displays a status update to the user upon unsuccessful field input "Record Status: Record Creation Error!", and next to the input field on the form an error provider and message is displayed to the user stating "Record not Complete! Date must be in MM/DD/YYYY format."
+       
+## Test Credentials
+  - Prior to production, testing will be performed with all developers on Team 2 having full CRUD access to ensure the expected functionality exsists for Create, Read, Update, and Delete processes.
+  - Once the application has been deployed to production, and the applications associated database has been deployed and populated with existing data authentication will be performed as follows:
+    - Current Kiczan management personel usernames will be added to the USERS table within the database.
+    - An authentication function will exist within Form1.cs that:
+      - Retrieves the current Windows session username.
+      - Queries the USERS table to check if the current Windows session username exists within the table.
+      - If the Windows session username exists within the USERS table, the function will then retrieve the associated USER_ID from the USERS table to query the USER_ROLES table.
+      - Finally, the associated usernames USER_ID will be used to query and retrieve the USER_ID's associated ROLE_ID from the USER_ROLES table, and use the ROLE_ID to query the ROLES table to verify which role the current user has, which will regulate permissions and access when using the application as it interacts with the data contained within the database.
+
 ## Development Workflow
 # Planning
   - Plan and assign develop and test tasks on designated Sprint project board defined by project management plan.
