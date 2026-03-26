@@ -192,3 +192,41 @@ from XX/XX/XXXX-XX/XX/XXXX to MM/DD/YYYY-MM/DD/YYYY]
 * **Severity:** [Medium] | **Fix Status:** [Fixed]
 * **Bug Description:** [Migrate Record Insertion process from CreateRecord.cs to its own function within DAO.cs for modularity.]
 * **Severity:** [Medium] | **Fix Status:** [Fixed]
+
+
+# Sprint 5 Technical Log
+
+## 1. Planning & Assignments
+* **Sprint Dates:** 2026-03-23 to 2026-04-05
+* **Team Name:** Team 2 | **Members Present:** Daniel Puharic, Elian Garica, Justin Kisner, Josh Stanczyk
+* **Sprint Goals:** Completion of Sprint 4 goals which include, Update Record Interface – Customer & Operator Validation/ Operations & Quantity Validation – Develop & Test & Update Record Interface – Part & Order Number Validation/Date Received & Date Due Validation/Update Record/Clean & Menu Buttons – Develop & Test.
+
+| Task Description | Assigned Owner | Priority | Status |
+| :--- | :--- | :--- | :--- |
+| Sprint 5: Update Record Interface – Customer & Operator Validation/Operations & Quantity Validation – Develop & Test | Elian Garcia, Justin Kisner | High | In Progress |
+| Sub Task |  Assigned Owner | Test Procedure | Status |
+| Update Record Interface Wireframe – Customer & Operator Validation – Develop & Test | Elian Garcia |  | In Progress |
+| Update Record Interface Wireframe – Operations & Quantity Validation – Develop & Test | Justin Kisner |  | In Progress | 
+| Sprint 5: Update Record Interface – Part & Order Number Validation/Date Received & Date Due Validation/Update Record/Clear & Menu Buttons – Develop & Test | Daniel Puharic, Josh Stanczyk | High | In Review |
+| Sub Task |  Assigned Owner | Test Procedure | Status |
+| Update Record Interface Wireframe – Part & Order Number Validation – Develop & Test Date Received/Date Due Validation – Develop & Test | Josh Stanczyk | Boolean returns true in test environment. String returns empty or with error message in test environment | Passed |
+| Update Record Interface Wireframe – Update Insertion Success State Clear & Menu Buttons | Daniel Puharic |  | In Review |
+
+## 2. Progress & Blockers
+* **Completed Work:**
+* Sprint 5: Update Record Interface – Part & Order Number Validation/Date Received & Date Due Validation – Develop & Test
+* **Incomplete Tasks:**
+* Sprint 5: Update Record Interface – Customer & Operator Validation/ Operations & Quantity Validation – Develop & Test
+* Sprint 5: Update Record Interface – Update Record/Clear & Menu Buttons – Develop & Test
+* **Resolution Plan:**
+* Complete Sprint 5 tasks and their associated subtasks, review PRs for individual tasks, merge Sprint 5 task feature branches into Application-Develop branch
+
+## 3. System Test Report
+| Test Case | Type | Result | Evidence/PR # |
+| :--- | :--- | :--- | :--- |
+| [Feature/Part-&-Order-Number-Validation-+-Date-Received-&-Due-Validation] | Unit | Passed | PR #47 |
+| [Feature/Part-&-Order-Number-Validation-+-Date-Received-&-Due-Validation] | UI | Passed | PR #47 |
+
+## 4. Bug Tracking
+* **Bug Description:**
+* **Severity:**
