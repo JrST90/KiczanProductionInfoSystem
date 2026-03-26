@@ -199,7 +199,7 @@ from XX/XX/XXXX-XX/XX/XXXX to MM/DD/YYYY-MM/DD/YYYY]
 ## 1. Planning & Assignments
 * **Sprint Dates:** 2026-03-23 to 2026-04-05
 * **Team Name:** Team 2 | **Members Present:** Daniel Puharic, Elian Garica, Justin Kisner, Josh Stanczyk
-* **Sprint Goals:** Completion of Sprint 4 goals which include, Update Record Interface – Customer & Operator Validation/ Operations & Quantity Validation – Develop & Test & Update Record Interface – Part & Order Number Validation/Date Received & Date Due Validation/Update Record/Clean & Menu Buttons – Develop & Test.
+* **Sprint Goals:** Completion of Sprint 5 goals which include, Update Record Interface – Customer & Operator Validation/ Operations & Quantity Validation – Develop & Test & Update Record Interface – Part & Order Number Validation/Date Received & Date Due Validation/Update Record/Clean & Menu Buttons – Develop & Test.
 
 | Task Description | Assigned Owner | Priority | Status |
 | :--- | :--- | :--- | :--- |
@@ -207,17 +207,17 @@ from XX/XX/XXXX-XX/XX/XXXX to MM/DD/YYYY-MM/DD/YYYY]
 | Sub Task |  Assigned Owner | Test Procedure | Status |
 | Update Record Interface Wireframe – Customer & Operator Validation – Develop & Test | Elian Garcia |  | In Progress |
 | Update Record Interface Wireframe – Operations & Quantity Validation – Develop & Test | Justin Kisner |  | In Progress | 
-| Sprint 5: Update Record Interface – Part & Order Number Validation/Date Received & Date Due Validation/Update Record/Clear & Menu Buttons – Develop & Test | Daniel Puharic, Josh Stanczyk | High | In Review |
+| Sprint 5: Update Record Interface – Part & Order Number Validation/Date Received & Date Due Validation/Update Record/Clear & Menu Buttons – Develop & Test | Daniel Puharic, Josh Stanczyk | High | Completed |
 | Sub Task |  Assigned Owner | Test Procedure | Status |
 | Update Record Interface Wireframe – Part & Order Number Validation – Develop & Test Date Received/Date Due Validation – Develop & Test | Josh Stanczyk | Boolean returns true in test environment. String returns empty or with error message in test environment | Passed |
-| Update Record Interface Wireframe – Update Insertion Success State Clear & Menu Buttons | Daniel Puharic |  | In Review |
+| Update Record Interface Wireframe – Update Insertion Success State Clear & Menu Buttons | Daniel Puharic | UpdateRecord() function in DAO.cs successfully called stored procedure UPDATE_RECORD from database and updates user selected record with passed in values from input fields. UPDATE_RECORD stored procedure successfully received pass in values from input fields and updates selected record by PART_HISTORY_ID. Clear and Menu buttons function as intended | Passed |
 
 ## 2. Progress & Blockers
 * **Completed Work:**
 * Sprint 5: Update Record Interface – Part & Order Number Validation/Date Received & Date Due Validation – Develop & Test
+* Sprint 5: Update Record Interface – Update Record/Clear & Menu Buttons – Develop & Test
 * **Incomplete Tasks:**
 * Sprint 5: Update Record Interface – Customer & Operator Validation/ Operations & Quantity Validation – Develop & Test
-* Sprint 5: Update Record Interface – Update Record/Clear & Menu Buttons – Develop & Test
 * **Resolution Plan:**
 * Complete Sprint 5 tasks and their associated subtasks, review PRs for individual tasks, merge Sprint 5 task feature branches into Application-Develop branch
 
@@ -226,7 +226,12 @@ from XX/XX/XXXX-XX/XX/XXXX to MM/DD/YYYY-MM/DD/YYYY]
 | :--- | :--- | :--- | :--- |
 | [Feature/Part-&-Order-Number-Validation-+-Date-Received-&-Due-Validation] | Unit | Passed | PR #47 |
 | [Feature/Part-&-Order-Number-Validation-+-Date-Received-&-Due-Validation] | UI | Passed | PR #47 |
+| [Feature/Update-Record_Wireframe---Successful-Entry-State] | Unit | Passed | PR #48 |
+| [Feature/Update-Record_Wireframe---Successful-Entry-State] | Integration | Passed | PR #48 |
+| [Feature/Update-Record_Wireframe---Successful-Entry-State] | UI | Passed | PR #48 |
+| [Feature/Update-Record_Wireframe---Successful-Entry-State] | UI | Passed | PR #48 |
+| [Feature/Update-Record_Wireframe---Successful-Entry-State] | System | Passed | PR #48 |
 
 ## 4. Bug Tracking
-* **Bug Description:**
-* **Severity:**
+* **Bug Description:** [Current Application-Develop branch after merge from PR #48 is experiencing a break in the application due to missing validation for the input fields of Customer, Operator, Operations, and Quantity when "bad data" is used during testing. Once validation has been included for the four input fields, bug will be resolved]
+* **Severity:** [High] | **Fix Status:** [In Progress]
