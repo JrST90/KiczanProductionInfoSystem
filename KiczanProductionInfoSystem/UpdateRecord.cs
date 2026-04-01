@@ -157,9 +157,25 @@ namespace KiczanProductionInfoSystem
 
             //TO DO: Customer validation.
 
+            string customerError = newDV.validateCustomerSelection(custID);
+
+            if (!string.IsNullOrEmpty(customerError))
+            {
+                labelCustomerError.Text = customerError;
+                errorProviderCustomer.SetError(customerComboBox, customerError);
+                isValid = false;
+            }
 
             //TO DO: Operator validation.
 
+            string operatorError = newDV.validateOperatorSelection(opID);
+
+            if (!string.IsNullOrEmpty(operatorError))
+            {
+                labelOperatorError.Text = operatorError;
+                errorProviderOperator.SetError(operatorComboBox, operatorError);
+                isValid = false;
+            }
 
             //Part number validation
             if (!newDV.validatePartNumber(partNumber))
