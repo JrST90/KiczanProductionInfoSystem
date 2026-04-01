@@ -170,11 +170,32 @@ namespace KiczanProductionInfoSystem
                 isValid = false;
             }
 
-            //TO DO: Quantity validation
+            //Quantity validation
+            string quantityError = newDV.validateQuantity(quantity);
+            if (!string.IsNullOrEmpty(quantityError))
+            {
+                labelQuantityError.Text = quantityError;
+                errorProvider1.SetError(textBoxQuantity, quantityError);
+                isValid = false;
+            }
 
+            //Operations validation
+            List<string> checkedItems = new List<string>();
 
-            //TO DO: Operations validation
+            foreach (var item in checkedListBox1.CheckedItems)
+            {
+                checkedItems.Add(item.ToString());
+            }
 
+            checkedOperations = string.Join(", ", checkedItems);
+
+            string operationsError = newDV.validateOperations(checkedOperations);
+            if (!string.IsNullOrEmpty(operationsError))
+            {
+                labelOperationsError.Text = operationsError;
+                errorProvider2.SetError(checkedListBox1, operationsError);
+                isValid = false;
+            }
 
             //Purchase order number validation
             string poError = newDV.validatePurchaseOrderNumber(poNumber);
