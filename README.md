@@ -148,7 +148,7 @@ upon receiving new work orders, and update existing records in the event of erro
       - **Usage Instructions:**
           - Click on the Create Record button.
           - The Create Record form is brought up.
-          - Available to the user are currently all input fields: Customer, Operator, Part Number, Quantity, Operations, Order Number, Date Received, Due Date.
+          - Available to the user are all input fields: Customer, Operator, Part Number, Quantity, Operations, Order Number, Date Received, Due Date.
       - **Usage Example:**
           - **Input:** Selecting a Customer of "Alstom," selecting an Operator of "Dave," inputting a Part Number of "3156," a Quantity of "10," selecting the Operations check box items of Laser and Press Brake, inputting a Order Number of "7190," inputting a Date Received of "03/22/2026," inputting a Due Date of "03/22/2026" and pressing the "Submit" button.
           - **Result:** The system displays a status update to the user upon successful field input "Record Status: Record Successfully Created!" The record is added to the PART_HISTORY table and the ID value is autoincremented.
@@ -188,6 +188,52 @@ upon receiving new work orders, and update existing records in the event of erro
           - **Result:** The system displays a status update to the user upon unsuccessful field input "Record Status: Record Creation Error!", and next to the input field on the form an error provider and message is displayed to the user stating "Record not Complete! Date must be in MM/DD/YYYY format."
           - **Input:** Entering 3/22/2026 as the date into the Date Received or Due Date fields.
           - **Result:** The system displays a status update to the user upon unsuccessful field input "Record Status: Record Creation Error!", and next to the input field on the form an error provider and message is displayed to the user stating "Record not Complete! Date must be in MM/DD/YYYY format."
+ - **Feature:** Update Record
+      - **Description:** A right click context menu that appears when the user right clicks on a record in the UI, selecting "Update Record" opens a new UI form for the updating of existing records already entered into the system. Record attribute fields are input by the user and are supported by input validation.
+      - **Usage Instructions:**
+          - Right click on a record after a query.
+          - Click "Update Record".
+          - the "Update Record" Interface is presented to the user.
+          - Available to the user are all input fields: Customer, Operator, Part Number, Quantity, Operations, Order Number, Date Received, Due Date.
+      - **Usage Example:**
+          - **Input:** Selecting a Customer of "Alstom," selecting an Operator of "Dave," inputting a Part Number of "3156," a Quantity of "10," selecting the Operations check box items of Laser and Press Brake, inputting a Order Number of "7190," inputting a Date Received of "03/22/2026," inputting a Due Date of "03/22/2026" and pressing the "Submit" button.
+          - **Result:** The system displays a status update to the user upon successful field input "Record Status: Record Successfully Updated!" The record is added to the PART_HISTORY table and the ID value is autoincremented.
+          - **Input:** Leaving the Part Number field empty during form input and pressing the "Submit" button.
+          - **Result:** The system displays a status update to the user upon unsuccessful field input "Record Status: Record Update Error!", and next to the input field on the form an error provider and message is displayed to the user stating "Part Number must not be empty and may only contain letters, numbers, or hyphens."
+          - **Input:** Inputting a Part Number of "3156$" and pressing the "Submit" button.
+          - - **Result:** The system displays a status update to the user upon unsuccessful field input "Record Status: Record Update Error!", and next to the input field on the form an error provider and message is displayed to the user stating "Part Number must not be empty and may only contain letters, numbers, or hyphens."
+          - **Input:** Leaving the Quantity field empty during form input and pressing the "Submit" button.
+          - **Result:** The system displays a status update to the user upon unsuccessful field input "Record Status: Record Update Error!", and next to the input field on the form an error provider and message is displayed to the user stating "Record not Complete! Quantity must not be empty, please enter a value."
+          - **Input:** Inputting a Quantity of "-1" and pressing the "Submit" button.
+          - **Result:** The system displays a status update to the user upon unsuccessful field input "Record Status: Record Update Error!", and next to the input field on the form an error provider and message is displayed to the user stating "Record not Complete! Quantity must be an integer greater than or equal to 1."
+          - **Input:** Inputting a Quantity of "abc" and pressing the "Submit" button.
+          - **Result:** The system displays a status update to the user upon unsuccessful field input "Record Status: Record Update Error!", and next to the input field on the form an error provider and message is displayed to the user stating "Record not Complete! Quantity must be a numerical value."
+          - **Input:** Leaving the Operations check box selection area blank and not selecting atleast one operation, then pressing the "Submit" button.
+          - **Result:** The system displays a status update to the user upon unsuccessful field input "Record Status: Record Update Error!", and next to the input field on the form an error provider and message is displayed to the user stating "Please select at least one operation"
+          - **Input:** Leaving the Order Number field empty during form input and pressing the "Submit" button.
+          - **Result:** The system displays a status update to the user upon unsuccessful field input "Record Status: Record Update Error!", and next to the input field on the form an error provider and message is displayed to the user stating "Purchase Order Number is required."
+          - **Input:** Inputting an Order Number of "717" and pressing the "Submit" button.
+          - **Result:** The system displays a status update to the user upon unsuccessful field input "Record Status: Record Update Error!", and next to the input field on the form an error provider and message is displayed to the user stating "Order Number must be between 4 and 20 characters."
+          - **Input:** Inputting an Order Number of "717890999415886009343" and pressing the "Submit" button.
+          - **Result:** The system displays a status update to the user upon unsuccessful field input "Record Status: Record Update Error!", and next to the input field on the form an error provider and message is displayed to the user stating "Order Number must be between 4 and 20 characters."
+          - **Input:** Inputting an Order Number of "7175&" and pressing the "Submit" button.
+          - **Result:** The system displays a status update to the user upon unsuccessful field input "Record Status: Record Update Error!", and next to the input field on the form an error provider and message is displayed to the user stating "Order Number can only contain letters, numbers, and hyphens."
+          - **Input:** Pressing the "Clear" button on the Create Record form.
+          - **Result:** All input fields on the Create Record form are cleared of inputs.
+          - **Input:** Pressing the "Back to Menu" button the Create Record form.
+          - **Result:** The Create Record form is closed, and the user is returned to the main user interface.
+          - **Input:** Leaving the Customer drop down selector blank.
+          - **Result:** The system displays a status update to the user upon unsuccessful field input "Record Status: Record Update Error!", and next to the input field on the form an error provider and message is displayed to the user stating "Record not Complete! Please select a Customer."
+          - **Input:** Leaving the Operator drop down selector blank.
+          - **Result:** The system displays a status update to the user upon unsuccessful field input "Record Status: Record Update Error!", and next to the input field on the form an error provider and message is displayed to the user stating "Record not Complete! Please select an Operator."
+          - **Input:** Leaving the Date Received or Due Date field blank.
+          - **Result:** The system displays a status update to the user upon unsuccessful field input "Record Status: Record Update Error!", and next to the input field on the form an error provider and message is displayed to the user stating "Record not Complete! Date must not be empty, please enter a value."
+          - **Input:** Entering 03222026 as the date into the Date Received or Due Date fields.
+          - **Result:** The system displays a status update to the user upon unsuccessful field input "Record Status: Record Update Error!", and next to the input field on the form an error provider and message is displayed to the user stating "Record not Complete! Date must be in MM/DD/YYYY format."
+          - **Input:** Entering 03-22-2026 as the date into the Date Received or Due Date fields.
+          - **Result:** The system displays a status update to the user upon unsuccessful field input "Record Status: Record Update Error!", and next to the input field on the form an error provider and message is displayed to the user stating "Record not Complete! Date must be in MM/DD/YYYY format."
+          - **Input:** Entering 3/22/2026 as the date into the Date Received or Due Date fields.
+          - **Result:** The system displays a status update to the user upon unsuccessful field input "Record Status: Record Update Error!", and next to the input field on the form an error provider and message is displayed to the user stating "Record not Complete! Date must be in MM/DD/YYYY format."
        
 ## Test Credentials
   - Prior to production, testing will be performed with all developers on Team 2 having full CRUD access to ensure the expected functionality exsists for Create, Read, Update, and Delete processes.
