@@ -192,3 +192,50 @@ from XX/XX/XXXX-XX/XX/XXXX to MM/DD/YYYY-MM/DD/YYYY]
 * **Severity:** [Medium] | **Fix Status:** [Fixed]
 * **Bug Description:** [Migrate Record Insertion process from CreateRecord.cs to its own function within DAO.cs for modularity.]
 * **Severity:** [Medium] | **Fix Status:** [Fixed]
+
+
+# Sprint 5 Technical Log
+
+## 1. Planning & Assignments
+* **Sprint Dates:** 2026-03-23 to 2026-04-05
+* **Team Name:** Team 2 | **Members Present:** Daniel Puharic, Elian Garica, Justin Kisner, Josh Stanczyk
+* **Sprint Goals:** Completion of Sprint 5 goals which include, Update Record Interface – Customer & Operator Validation/ Operations & Quantity Validation – Develop & Test & Update Record Interface – Part & Order Number Validation/Date Received & Date Due Validation/Update Record/Clean & Menu Buttons – Develop & Test.
+
+| Task Description | Assigned Owner | Priority | Status |
+| :--- | :--- | :--- | :--- |
+| Sprint 5: Update Record Interface – Customer & Operator Validation/Operations & Quantity Validation – Develop & Test | Elian Garcia, Justin Kisner | High | Completed |
+| Sub Task |  Assigned Owner | Test Procedure | Status |
+| Update Record Interface Wireframe – Customer & Operator Validation – Develop & Test | Elian Garcia | Validation methods correctly return error messages when no selection is made. ErrorProviders and labels display appropriate messages. No runtime errors occur when selections are cleared. | Completed |
+| Update Record Interface Wireframe – Operations & Quantity Validation – Develop & Test | Justin Kisner | Quantity validation returns string value in the event of validation violation. Operations validation returns string value in the event of a validation violation, builds string of checked items for record insertion when succsessful. | Completed | 
+| Sprint 5: Update Record Interface – Part & Order Number Validation/Date Received & Date Due Validation/Update Record/Clear & Menu Buttons – Develop & Test | Daniel Puharic, Josh Stanczyk | High | Completed |
+| Sub Task |  Assigned Owner | Test Procedure | Status |
+| Update Record Interface Wireframe – Part & Order Number Validation – Develop & Test Date Received/Date Due Validation – Develop & Test | Josh Stanczyk | Boolean returns true in test environment. String returns empty or with error message in test environment | Passed |
+| Update Record Interface Wireframe – Update Insertion Success State Clear & Menu Buttons | Daniel Puharic | UpdateRecord() function in DAO.cs successfully called stored procedure UPDATE_RECORD from database and updates user selected record with passed in values from input fields. UPDATE_RECORD stored procedure successfully received pass in values from input fields and updates selected record by PART_HISTORY_ID. Clear and Menu buttons function as intended | Passed |
+
+## 2. Progress & Blockers
+* **Completed Work:**
+* Sprint 5: Update Record Interface – Part & Order Number Validation/Date Received & Date Due Validation – Develop & Test
+* Sprint 5: Update Record Interface – Update Record/Clear & Menu Buttons – Develop & Test
+* Sprint 5: Update Record Interface – Customer & Operator Validation/Operations & Quantity Validation – Develop & Test
+* **Incomplete Tasks:**
+* All Sprint 5 Tasks Completed
+* **Resolution Plan:**
+* All Sprint 5 Tasks Completed
+
+## 3. System Test Report
+| Test Case | Type | Result | Evidence/PR # |
+| :--- | :--- | :--- | :--- |
+| [Feature/Part-&-Order-Number-Validation-+-Date-Received-&-Due-Validation] | Unit | Passed | PR #47 |
+| [Feature/Part-&-Order-Number-Validation-+-Date-Received-&-Due-Validation] | UI | Passed | PR #47 |
+| [Feature/Update-Record_Wireframe---Successful-Entry-State] | Unit | Passed | PR #48 |
+| [Feature/Update-Record_Wireframe---Successful-Entry-State] | Integration | Passed | PR #48 |
+| [Feature/Update-Record_Wireframe---Successful-Entry-State] | UI | Passed | PR #48 |
+| [Feature/Update-Record_Wireframe---Successful-Entry-State] | UI | Passed | PR #48 |
+| [Feature/Update-Record_Wireframe---Successful-Entry-State] | System | Passed | PR #48 |
+| [Feature/Update-Record/Operations-Quantity-Error-Validation] | Unit | Passed | PR #49 |
+| [Feature/Update-Record/Operations-Quantity-Error-Validation] | UI | Passed | PR #49 |
+| [Feature/Update-Record-Customer-&-Operator-Validation] | Unit | Passed | PR #50 |
+| [Feature/Update-Record-Customer-&-Operator-Validation] | UI | Passed | PR #50 |
+## 4. Bug Tracking
+* **Bug Description:** [Current Application-Develop branch after merge from PR #48 is experiencing a break in the application due to missing validation for the input fields of Customer, Operator, Operations, and Quantity when "bad data" is used during testing. Once validation has been included for the four input fields, bug will be resolved]
+* **Severity:** [High] | **Fix Status:** [Fixed]

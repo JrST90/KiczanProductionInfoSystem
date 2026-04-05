@@ -1,13 +1,8 @@
-﻿using KiczanProductionInformationSystem;
-using Mysqlx.Expr;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace KiczanProductionInfoSystem
@@ -452,7 +447,7 @@ namespace KiczanProductionInfoSystem
                     break;
 
                 //Search By Part Number in Archive, gets value from textBox1.
-                case 8:
+                case 4:
                     //Store user input from textBox1 into partNumber variable.
                     partNumber = textBox1.Text;
 
@@ -757,7 +752,7 @@ namespace KiczanProductionInfoSystem
                 break;
 
                 //Search by Part Number in Archive.
-                case 8:
+                case 4:
                     //Clear textbox1.
                     textBox1.Clear();
 
@@ -1039,7 +1034,7 @@ namespace KiczanProductionInfoSystem
 
                         break;
 
-                    case 8:
+                    case 4:
                         //If the partNumber variable is still the same value as textBox1.Text and the next button is pressed.
                         if (partNumber == textBox1.Text)
                         {
@@ -1329,7 +1324,7 @@ namespace KiczanProductionInfoSystem
 
                     break;
 
-                    case 8:
+                    case 4:
                         if (partNumber == textBox1.Text)
                         {
                             //Decrement page counter index.
@@ -1414,33 +1409,161 @@ namespace KiczanProductionInfoSystem
         //Event handler for click event for Update Record on right click menu.
         private void updateRecordToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //Create new UpdateRecord form object.
-            UpdateRecord updateRecord = new UpdateRecord();
-
             //Retrieve the selected row.
             DataGridViewRow selectedRow = dataGridView1.SelectedRows[0];
 
             //Initialize variable to hold part history id as a string.
-            string retreivedPartHistoryID;
+            string retrievedPartHistoryID;
 
             //Initialize variable to hold party history id converted from string to int.
-            int convertedPartyHistoryID;
+            int convertedPartHistoryID;
+
+            //Initialize variable to hold customer name as a string.
+            string retrievedCustomerName;
+
+            //Initialize variable to holde operator name as a string.
+            string retrievedOperatorName;
+
+            //Initialize variable to hold part number as a string.
+            string retrievedPartNumber;
+
+            //Initialize variable to hold quantity as a string.
+            string retrievedQuantity;
+
+            //Initialize variable to hold date received as a string.
+            string retrievedDateReceived;
+
+            //Initialize variable to hold date due as a string.
+            string retrievedDateDue;
+
+            //Initialize variable to hold operations as a string.
+            string retrievedOperations;
+
+            //Initialize variable to hold purchase order number as a string.
+            string retrievedPurchaseOrderNumber;
 
             //Retrieve the value of the first column of the selected row (PART_HISTORY_ID).
-            object cellValueByIndex = selectedRow.Cells[0].Value;
+            object cellValueByIndexZero = selectedRow.Cells[0].Value;
+
+            //Retrieve the value of the second column of the selected row (CUSTOMER_NAME).
+            object cellValueByIndexOne = selectedRow.Cells[1].Value;
+
+            //Retrieve the value of the second column of the selected row (OPERATOR_NAME).
+            object cellValueByIndexTwo = selectedRow.Cells[2].Value;
+
+            //Retrieve the value of the third column of the selected row (PART_NUMBER).
+            object cellValueByIndexThree = selectedRow.Cells[3].Value;
+
+            //Retrieve the value of the fourth column of the selected row (QTY).
+            object cellValueByIndexFour = selectedRow.Cells[4].Value;
+
+            //Retrieve the value of the fifth column of the selected row (DATE_RECEIVED).
+            object cellValueByIndexFive = selectedRow.Cells[5].Value;
+
+            //Retrieve the value of the sixth column of the selected row (DATE_DUE).
+            object cellValueByIndexSix = selectedRow.Cells[6].Value;
+
+            //Retrieve the value of the seventh column of the selected row (OPERATIONS).
+            object cellValueByIndexSeven = selectedRow.Cells[7].Value;
+
+            //Retrieve the value of the eighth column of the selected row (PURCHASE_ORDER_NUMBER).
+            object cellValueByIndexEight = selectedRow.Cells[8].Value;
 
             //Validate, convert PART_HISTORY_ID to string if not null.
-            if (cellValueByIndex != null)
+            if (cellValueByIndexZero != null)
             {
-                retreivedPartHistoryID = cellValueByIndex.ToString();
+                retrievedPartHistoryID = cellValueByIndexZero.ToString();
             }
             else
             {
-                retreivedPartHistoryID = string.Empty;
+                retrievedPartHistoryID = string.Empty;
+            }
+
+            //Validate, convert CUSTOMER_NAME to string if not null.
+            if (cellValueByIndexOne != null)
+            {
+                retrievedCustomerName = cellValueByIndexOne.ToString();
+            }
+            else
+            {
+                retrievedCustomerName = string.Empty;
+            }
+
+            //Validate, convert OPERATOR_NAME to string if not null.
+            if (cellValueByIndexTwo != null)
+            {
+                retrievedOperatorName = cellValueByIndexTwo.ToString();
+            }
+            else
+            {
+                retrievedOperatorName = string.Empty;
+            }
+
+            //Validate, convert PART_NUMBER to string if not null.
+            if (cellValueByIndexThree != null)
+            {
+                retrievedPartNumber = cellValueByIndexThree.ToString();
+            }
+            else
+            {
+                retrievedPartNumber = string.Empty;
+            }
+
+            //Validate, convert QTY to string if not null.
+            if (cellValueByIndexFour != null)
+            {
+                retrievedQuantity = cellValueByIndexFour.ToString();
+            }
+            else
+            {
+                retrievedQuantity = string.Empty;
+            }
+
+            //Validate, convert DATE_RECEIVED to string if not null.
+            if (cellValueByIndexFive != null)
+            {
+                retrievedDateReceived = Convert.ToDateTime(cellValueByIndexFive).ToString("MM/dd/yyyy");
+            }
+            else
+            {
+                retrievedDateReceived = string.Empty;
+            }
+
+            //Validate, convert DATE_DUE to string if not null.
+            if (cellValueByIndexSix != null)
+            {
+                retrievedDateDue = Convert.ToDateTime(cellValueByIndexSix).ToString("MM/dd/yyyy");
+            }
+            else
+            {
+                retrievedDateDue = string.Empty;
+            }
+
+            //Validate, convert OPERATIONS to string if not null.
+            if (cellValueByIndexSeven != null)
+            {
+                retrievedOperations = cellValueByIndexSeven.ToString();
+            }
+            else
+            {
+                retrievedOperations = string.Empty;
+            }
+
+            //Validate, convert PURCHASE_ORDER_NUMBER to string if not null.
+            if (cellValueByIndexEight != null)
+            {
+                retrievedPurchaseOrderNumber = cellValueByIndexEight.ToString();
+            }
+            else
+            {
+                retrievedPurchaseOrderNumber = string.Empty;
             }
 
             //Convert the string value to an int for processing.
-            convertedPartyHistoryID = int.Parse(retreivedPartHistoryID);
+            convertedPartHistoryID = int.Parse(retrievedPartHistoryID);
+
+            //Create new UpdateRecord form object, pass retrieved values to UpdateRecord form.
+            UpdateRecord updateRecord = new UpdateRecord(convertedPartHistoryID, retrievedCustomerName, retrievedOperatorName, retrievedPartNumber, retrievedPurchaseOrderNumber, retrievedQuantity, retrievedDateReceived, retrievedDateDue, retrievedOperations);
 
             //Show the Update Record UI.
             updateRecord.Show();
@@ -1452,6 +1575,96 @@ namespace KiczanProductionInfoSystem
             CreateRecord createRecord = new CreateRecord();
 
             createRecord.Show();
+        }
+
+        //Event handler for the click event for the Export button.
+        private void button3_Click(object sender, EventArgs e)
+        {
+            if (dataBaseSource.DataSource != null)
+            {
+                //Call the copyRows() method.
+                copyRows();
+
+                //Instantiate the Microsoft Excel objects to use for application start and the creation of a new workbook and worksheet.
+                Microsoft.Office.Interop.Excel.Application excel = null;
+                Microsoft.Office.Interop.Excel.Workbook workbook = null;
+                Microsoft.Office.Interop.Excel.Worksheet worksheet = null;
+                Microsoft.Office.Interop.Excel.Range cellRange = null;
+
+                try
+                {
+                    object misValue = System.Reflection.Missing.Value;
+
+                    //Start excel.
+                    excel = new Microsoft.Office.Interop.Excel.Application();
+                    excel.Visible = true;
+
+                    //Add the new workbook.
+                    workbook = excel.Workbooks.Add(misValue);
+
+                    //Add a new worksheet.
+                    worksheet = (Microsoft.Office.Interop.Excel.Worksheet)workbook.Worksheets.get_Item(1);
+
+                    //Select the starting cell to copy clipboard contents to.
+                    cellRange = (Microsoft.Office.Interop.Excel.Range)worksheet.Cells[1, 1];
+                    cellRange.Select();
+
+                    //Set the column alignment for the worksheet.
+                    worksheet.Columns.HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignLeft;
+
+                    //Set the column width for the worksheet.
+                    worksheet.Columns.ColumnWidth = 15;
+
+                    //Paste the clipboard contents into the worksheet.
+                    worksheet.PasteSpecial(cellRange, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, true);
+                }
+                //Release all objects and end threads associated with Excel
+                finally
+                {
+                    if (cellRange != null)
+                    {
+                        Marshal.ReleaseComObject(cellRange);
+                    }
+                    if (worksheet != null)
+                    {
+                        Marshal.ReleaseComObject(worksheet);
+                    }
+                    if (workbook != null)
+                    {
+                        Marshal.ReleaseComObject(workbook);
+                    }
+                    if (excel != null)
+                    {
+                        Marshal.ReleaseComObject(excel);
+                    }
+                    cellRange = null;
+                    worksheet = null;
+                    workbook = null;
+                    excel = null;
+                    GC.Collect();
+                    GC.WaitForPendingFinalizers();
+                }
+            }
+        }
+
+        //Function to copy all rows from the current page of the dataGridView.
+        private void copyRows()
+        {
+            //Get the column headers for dataGridView1.
+            dataGridView1.ClipboardCopyMode = DataGridViewClipboardCopyMode.EnableAlwaysIncludeHeaderText;
+
+            //Enable MultiSelect for all visible cells
+            dataGridView1.MultiSelect = true;
+
+            //Select all the visible cells on the current page.
+            dataGridView1.SelectAll();
+
+            //Copy the selected cells into dataObject.
+            DataObject dataObject = dataGridView1.GetClipboardContent();
+            if (dataObject != null)
+            {
+                Clipboard.SetDataObject(dataObject);
+            }
         }
 
         //Event handler for click event for Delete Record on right click menu.
@@ -1467,7 +1680,7 @@ namespace KiczanProductionInfoSystem
             string retreivedPartHistoryID;
 
             //Initialize variable to hold party history id converted from string to int.
-            int convertedPartyHistoryID;
+            int convertedPartHistoryID;
 
             //Retrieve the value of the first column of the selected row (PART_HISTORY_ID).
             object cellValueByIndex = selectedRow.Cells[0].Value;
@@ -1483,10 +1696,10 @@ namespace KiczanProductionInfoSystem
             }
 
             //Convert the string value to an int for processing.
-            convertedPartyHistoryID = int.Parse(retreivedPartHistoryID);
+            convertedPartHistoryID = int.Parse(retreivedPartHistoryID);
 
             //Pass the PART_HISTORY_ID value to the delete query for record update to mark for delete.
-            newDAO.softDeleteQuery(convertedPartyHistoryID);
+            newDAO.softDeleteQuery(convertedPartHistoryID);
             button1_Click(sender, e);
           
         }
@@ -1504,7 +1717,7 @@ namespace KiczanProductionInfoSystem
             string retreivedPartHistoryID;
 
             //Initialize variable to hold party history id converted from string to int.
-            int convertedPartyHistoryID;
+            int convertedPartHistoryID;
 
             //Retrieve the value of the first column of the selected row (PART_HISTORY_ID).
             object cellValueByIndex = selectedRow.Cells[0].Value;
@@ -1520,10 +1733,10 @@ namespace KiczanProductionInfoSystem
             }
 
             //Convert the string value to an int for processing.
-            convertedPartyHistoryID = int.Parse(retreivedPartHistoryID);
+            convertedPartHistoryID = int.Parse(retreivedPartHistoryID);
 
             //Pass the PART_HISTORY_ID value to the restore query for record update to restore record.
-            newDAO.restoreRecordQuery(convertedPartyHistoryID);
+            newDAO.restoreRecordQuery(convertedPartHistoryID);
             button1_Click(sender, e);
         }
     }

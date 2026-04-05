@@ -154,6 +154,19 @@ namespace KiczanProductionInfoSystem
             return message;
         }
 
+        // Validate Operations selection input.
+        internal string validateOperations(string input)
+        {
+            string message = "";
+
+            if (string.IsNullOrWhiteSpace(input))
+            {
+                message = "Record not Complete!\nPlease select at least one Operation.";
+            }
+
+            return message;
+        }
+
         // Validate date received input.
         internal string validateDateReceived(string input)
         {
