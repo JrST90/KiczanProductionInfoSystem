@@ -77,10 +77,6 @@
             "Search by Part Number",
             "Search by Operator Name",
             "Search by Fabrication Department",
-            "Bending Work Query",
-            "NC Machine Work Query",
-            "Last 7 Days",
-            "Last 14 Days",
             "Search by Part Number in Archive"});
             this.comboBox1.Location = new System.Drawing.Point(25, 38);
             this.comboBox1.Name = "comboBox1";

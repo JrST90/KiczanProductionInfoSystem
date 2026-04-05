@@ -447,7 +447,7 @@ namespace KiczanProductionInfoSystem
                     break;
 
                 //Search By Part Number in Archive, gets value from textBox1.
-                case 8:
+                case 4:
                     //Store user input from textBox1 into partNumber variable.
                     partNumber = textBox1.Text;
 
@@ -752,7 +752,7 @@ namespace KiczanProductionInfoSystem
                 break;
 
                 //Search by Part Number in Archive.
-                case 8:
+                case 4:
                     //Clear textbox1.
                     textBox1.Clear();
 
@@ -1034,7 +1034,7 @@ namespace KiczanProductionInfoSystem
 
                         break;
 
-                    case 8:
+                    case 4:
                         //If the partNumber variable is still the same value as textBox1.Text and the next button is pressed.
                         if (partNumber == textBox1.Text)
                         {
@@ -1324,7 +1324,7 @@ namespace KiczanProductionInfoSystem
 
                     break;
 
-                    case 8:
+                    case 4:
                         if (partNumber == textBox1.Text)
                         {
                             //Decrement page counter index.
