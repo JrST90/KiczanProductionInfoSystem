@@ -1,14 +1,8 @@
-﻿using KiczanProductionInfoSystem;
-using Mysqlx.Expr;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Security;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace KiczanProductionInfoSystem
@@ -1581,6 +1575,96 @@ namespace KiczanProductionInfoSystem
             CreateRecord createRecord = new CreateRecord();
 
             createRecord.Show();
+        }
+
+        //Event handler for the click event for the Export button.
+        private void button3_Click(object sender, EventArgs e)
+        {
+            if (dataBaseSource.DataSource != null)
+            {
+                //Call the copyRows() method.
+                copyRows();
+
+                //Instantiate the Microsoft Excel objects to use for application start and the creation of a new workbook and worksheet.
+                Microsoft.Office.Interop.Excel.Application excel = null;
+                Microsoft.Office.Interop.Excel.Workbook workbook = null;
+                Microsoft.Office.Interop.Excel.Worksheet worksheet = null;
+                Microsoft.Office.Interop.Excel.Range cellRange = null;
+
+                try
+                {
+                    object misValue = System.Reflection.Missing.Value;
+
+                    //Start excel.
+                    excel = new Microsoft.Office.Interop.Excel.Application();
+                    excel.Visible = true;
+
+                    //Add the new workbook.
+                    workbook = excel.Workbooks.Add(misValue);
+
+                    //Add a new worksheet.
+                    worksheet = (Microsoft.Office.Interop.Excel.Worksheet)workbook.Worksheets.get_Item(1);
+
+                    //Select the starting cell to copy clipboard contents to.
+                    cellRange = (Microsoft.Office.Interop.Excel.Range)worksheet.Cells[1, 1];
+                    cellRange.Select();
+
+                    //Set the column alignment for the worksheet.
+                    worksheet.Columns.HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignLeft;
+
+                    //Set the column width for the worksheet.
+                    worksheet.Columns.ColumnWidth = 15;
+
+                    //Paste the clipboard contents into the worksheet.
+                    worksheet.PasteSpecial(cellRange, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, true);
+                }
+                //Release all objects and end threads associated with Excel
+                finally
+                {
+                    if (cellRange != null)
+                    {
+                        Marshal.ReleaseComObject(cellRange);
+                    }
+                    if (worksheet != null)
+                    {
+                        Marshal.ReleaseComObject(worksheet);
+                    }
+                    if (workbook != null)
+                    {
+                        Marshal.ReleaseComObject(workbook);
+                    }
+                    if (excel != null)
+                    {
+                        Marshal.ReleaseComObject(excel);
+                    }
+                    cellRange = null;
+                    worksheet = null;
+                    workbook = null;
+                    excel = null;
+                    GC.Collect();
+                    GC.WaitForPendingFinalizers();
+                }
+            }
+        }
+
+        //Function to copy all rows from the current page of the dataGridView.
+        private void copyRows()
+        {
+            //Get the column headers for dataGridView1.
+            dataGridView1.ClipboardCopyMode = DataGridViewClipboardCopyMode.EnableAlwaysIncludeHeaderText;
+
+            //Enable MultiSelect for all visible cells
+            dataGridView1.MultiSelect = true;
+
+            //Select all the visible cells on the current page.
+            dataGridView1.SelectAll();
+
+            //Copy the selected cells into dataObject.
+            DataObject dataObject = dataGridView1.GetClipboardContent();
+            if (dataObject != null)
+            {
+                Clipboard.SetDataObject(dataObject);
+            }
         }
 
         //Event handler for click event for Delete Record on right click menu.
