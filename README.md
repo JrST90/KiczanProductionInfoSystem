@@ -24,6 +24,7 @@ upon receiving new work orders, and update existing records in the event of erro
   - MAMP to host SQL Server
   - IDE (Microsoft Visual Studio or Visual Studio Code)
   - MySQL.Data package version 9.6.0 by Oracle Corporation
+  - Microsoft.Office.Interop.Excel by Microsoft
 * **Set-Up Instructions (Production Code from Development)**:
   - Install MAMP to local device.
       - During installation, ensure virtual servers are specified as private and not public when prompted.
