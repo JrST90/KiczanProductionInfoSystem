@@ -574,8 +574,83 @@ namespace KiczanProductionInfoSystem
             connection.Close();
             return rowsAffected > 0;
         }
-    }
+        //Function get get current OS username.
+        internal static String getUserName()
+        {
+            //Get current OS username using Environment class.
+            String userName = Environment.UserName;
+            return userName;
+        }
+        //Function to check if a userName exists within the DB.
+        internal bool userNameCheck(string userName)
+        {
+            //int variable to store number of records with matching userName.
+            int userCount = 0;
 
+            //bool variable to serve as flag for existent of userName in DB.
+            bool flag = false;
+
+            //Open connection to DB.
+            MySqlConnection connection = new MySqlConnection(connectionString);
+            connection.Open();
+
+            //Get the stored procedure from the DB.
+            MySqlCommand command = new MySqlCommand("USER_NAME_QUERY_COUNT", connection);
+            command.CommandType = CommandType.StoredProcedure;
+
+            //Paramaterized to prevent SQL Injection, bind values.
+            command.Parameters.AddWithValue("userName", userName);
+
+            //Execute query, save result in result object.
+            object returnedCount = command.ExecuteScalar();
+
+            //Convert to count.
+            userCount = Convert.ToInt32(returnedCount);
+
+            //Conditional to set flag value based on userCount.
+            if (userCount != 1)
+            {
+                flag = false;
+            }
+            else if (userCount == 1)
+            {
+                flag = true;
+            }
+            return flag;
+        }
+        //Function to get user information for a given userName.
+        internal Users getUserInfo(string userName)
+        {
+            //Create new Users object to store returned user information.
+            Users user = new Users();
+
+            //Open connection to DB.
+            MySqlConnection connection = new MySqlConnection(connectionString);
+            connection.Open();
+
+            //Get the stored procedure from the DB.
+            MySqlCommand command = new MySqlCommand("USER_NAME_QUERY", connection);
+            command.CommandType = CommandType.StoredProcedure;
+
+            //Paramaterized to prevent SQL Injection, bind values.
+            command.Parameters.AddWithValue("userName", userName);
+
+            //Execute query, read returned values into user object.
+            using (MySqlDataReader reader = command.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    user.USER_ID = reader.GetInt32(0);
+                    user.USER_NAME = reader.GetString(1);
+                    user.ROLES_ID = reader.GetInt32(2);
+                    user.ROLE_NAME = reader.GetString(3);
+                }
+            }
+            connection.Close();
+
+            return user;
+        }
+    }
 }
 
 
