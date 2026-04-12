@@ -574,13 +574,6 @@ namespace KiczanProductionInfoSystem
             connection.Close();
             return rowsAffected > 0;
         }
-        //Function get get current OS username.
-        internal static String getUserName()
-        {
-            //Get current OS username using Environment class.
-            String userName = Environment.UserName;
-            return userName;
-        }
         //Function to check if a userName exists within the DB.
         internal bool userNameCheck(string userName)
         {
