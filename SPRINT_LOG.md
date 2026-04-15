@@ -205,8 +205,8 @@ from XX/XX/XXXX-XX/XX/XXXX to MM/DD/YYYY-MM/DD/YYYY]
 | :--- | :--- | :--- | :--- |
 | Sprint 5: Update Record Interface – Customer & Operator Validation/Operations & Quantity Validation – Develop & Test | Elian Garcia, Justin Kisner | High | Completed |
 | Sub Task |  Assigned Owner | Test Procedure | Status |
-| Update Record Interface Wireframe – Customer & Operator Validation – Develop & Test | Elian Garcia | Validation methods correctly return error messages when no selection is made. ErrorProviders and labels display appropriate messages. No runtime errors occur when selections are cleared. | Completed |
-| Update Record Interface Wireframe – Operations & Quantity Validation – Develop & Test | Justin Kisner | Quantity validation returns string value in the event of validation violation. Operations validation returns string value in the event of a validation violation, builds string of checked items for record insertion when succsessful. | Completed | 
+| Update Record Interface Wireframe – Customer & Operator Validation – Develop & Test | Elian Garcia | Validation methods correctly return error messages when no selection is made. ErrorProviders and labels display appropriate messages. No runtime errors occur when selections are cleared. | Passed |
+| Update Record Interface Wireframe – Operations & Quantity Validation – Develop & Test | Justin Kisner | Quantity validation returns string value in the event of validation violation. Operations validation returns string value in the event of a validation violation, builds string of checked items for record insertion when succsessful. | Passed | 
 | Sprint 5: Update Record Interface – Part & Order Number Validation/Date Received & Date Due Validation/Update Record/Clear & Menu Buttons – Develop & Test | Daniel Puharic, Josh Stanczyk | High | Completed |
 | Sub Task |  Assigned Owner | Test Procedure | Status |
 | Update Record Interface Wireframe – Part & Order Number Validation – Develop & Test Date Received/Date Due Validation – Develop & Test | Josh Stanczyk | Boolean returns true in test environment. String returns empty or with error message in test environment | Passed |
