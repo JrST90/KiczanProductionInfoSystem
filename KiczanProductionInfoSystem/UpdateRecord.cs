@@ -91,6 +91,22 @@ namespace KiczanProductionInfoSystem
                     checkedListBox1.SetItemChecked(checkedListBoxIndex, true);
                 }
             }
+            if (retrievedOperations.Contains("Lathe"))
+            {
+                int checkedListBoxIndex = checkedListBox1.FindStringExact("Lathe");
+                if (checkedListBoxIndex != -1)
+                {
+                    checkedListBox1.SetItemChecked(checkedListBoxIndex, true);
+                }
+            }
+            if (retrievedOperations.Contains("Mill"))
+            {
+                int checkedListBoxIndex = checkedListBox1.FindStringExact("Mill");
+                if (checkedListBoxIndex != -1)
+                {
+                    checkedListBox1.SetItemChecked(checkedListBoxIndex, true);
+                }
+            }
         }
         //eventhandler for checkboxlist
         private void checkedListBox1_SelectedIndexChanged(object sender, EventArgs e)
