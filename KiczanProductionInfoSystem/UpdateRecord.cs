@@ -180,7 +180,7 @@ namespace KiczanProductionInfoSystem
             //Part number validation
             if (!newDV.validatePartNumber(partNumber))
             {
-                string message = "Part Number must not be empty and may only \n contain letters, numbers, or hyphen.";
+                string message = "Record not complete!\nPart Number must not be empty and may only\ncontain letters, numbers, or hyphen.";
                 labelPartNumberError.Text = message;
                 errorProviderPartNumber.SetError(textBoxPartNumber, message);
                 isValid = false;

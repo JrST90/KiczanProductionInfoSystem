@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Globalization;
 using System.Windows.Forms;
 
@@ -127,7 +128,7 @@ namespace KiczanProductionInfoSystem
             //part number validation
             if (!newDV.validatePartNumber(partNumber))
             {
-                string message = "Part Number must not be empty and may only \n contain letters, numbers, or hyphen.";
+                string message = "Record not Complete!\nPart Number must not be empty and may only\ncontain letters, numbers, or hyphen.";
                 labelPartNumberError.Text = message;
                 errorProviderPartNumber.SetError(textBoxPartNumber, message);
                 isValid = false;
@@ -145,7 +146,7 @@ namespace KiczanProductionInfoSystem
             //operations validation
             if (checkedListBox1.CheckedItems.Count == 0)
             {
-                string message = "Please select at least one operation.";
+                string message = "Record not Complete!\nPlease select at least one operation.";
                 labelOperationsError.Text = message;
                 errorProvider2.SetError(checkedListBox1, message);
                 isValid = false;
@@ -257,6 +258,6 @@ namespace KiczanProductionInfoSystem
         {
 
         }
-        
+
     }
 }
