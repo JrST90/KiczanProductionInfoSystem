@@ -239,3 +239,46 @@ from XX/XX/XXXX-XX/XX/XXXX to MM/DD/YYYY-MM/DD/YYYY]
 ## 4. Bug Tracking
 * **Bug Description:** [Current Application-Develop branch after merge from PR #48 is experiencing a break in the application due to missing validation for the input fields of Customer, Operator, Operations, and Quantity when "bad data" is used during testing. Once validation has been included for the four input fields, bug will be resolved]
 * **Severity:** [High] | **Fix Status:** [Fixed]
+
+# Sprint 6 Technical Log
+
+## 1. Planning & Assignments
+* **Sprint Dates:** 2026-04-06 to 2026-04-19
+* **Team Name:** Team 2 | **Members Present:** Daniel Puharic, Elian Garica, Justin Kisner, Josh Stanczyk
+* **Sprint Goals:** Progress or completion of Sprint 6 goals which include, User Manual Query & Delete/Restore & User Manual Create & Update Records, and User Authentication.
+
+| Task Description | Assigned Owner | Priority | Status |
+| :--- | :--- | :--- | :--- |
+| Sprint 6: User Manual Query & Delete/Restore | Elian Garcia, Daniel Puharic | High | In Progress |
+| Sub Task |  Assigned Owner | Test Procedure | Status |
+| User Manual Screen Shots & Description: User Queries | Elian Garcia |  | In Progress |
+| User Manual Screen Shots & Description: Delete/Restore | Daniel Puharic |  | In Progress | 
+| Sprint 6: User Manual Create & Update Records | Justin Kisner, Josh Stanczyk | High | In Progress |
+| Sub Task |  Assigned Owner | Test Procedure | Status |
+| User Manual Screen Shots & Description: Create Record | Justin Kisner |  | In Progress |
+| User Manual Screen Shots & Description: Update Record | Josh Stanczyk |  | In Progress |
+| Feature Fix: User Authentication with Role Based Access | Josh Stanczyk | Application retreives OS current user name from Environment class. Verifies existence within DB, uses the username to retreive Role ID from DB to grant role based access | Completed |
+
+## 2. Progress & Blockers
+* **Completed Work:**
+* Feature Fix: User Authentication with Role Based Access. 
+* **Incomplete Tasks:**
+* Sprint 6: User Manual Query & Delete/Restore
+* Sprint 6: User Manual Create & Update Records
+* **Resolution Plan:**
+* Progress through Sprint 6 Tasks related to User Manual Documentation in preparation for User Manual Documentation submission date.
+* **Blockers:**
+* None at this time, progress will be made continually toward completion of User Manual Documentation in preparation for designated final submission date.
+
+## 3. System Test Report
+| Test Case | Type | Result | Evidence/PR # |
+| :--- | :--- | :--- | :--- |
+| [Feature Fix: User Authentication with Role Based Access] | Unit | Passed | PR #55 |
+| [Feature Fix: User Authentication with Role Based Access] | System | Passed | PR #55 |
+| [Feature Fix: User Authentication with Role Based Access] | UI | Passed | PR #55 |
+
+## 4. Bug Tracking
+* **Bug Description:** [Application crash upon forced close when username was not found in DB, placed validation for username verification in program.cs to resolve]
+* **Severity:** [High] | **Fix Status:** [Fixed]
+* **Bug Description:** [Add Operations checkboxes for Mill and Lathe to UpdateRecord.cs and CreateRecord.cs]
+* **Severity:** [High] | **Fix Status:** [In Progress]
