@@ -123,6 +123,7 @@
     <Compile Include="UpdateRecord.Designer.cs">
       <DependentUpon>UpdateRecord.cs</DependentUpon>
     </Compile>
+    <Compile Include="Users.cs" />
     <EmbeddedResource Include="CreateRecord.resx">
       <DependentUpon>CreateRecord.cs</DependentUpon>
     </EmbeddedResource>
