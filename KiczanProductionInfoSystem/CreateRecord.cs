@@ -86,9 +86,6 @@ namespace KiczanProductionInfoSystem
             //validation flag
             bool isValid = true;
 
-            Console.WriteLine(opID);
-            Console.WriteLine(custID);
-
             // Clear all error labels first
             labelPartNumberError.Text = "";
             labelQuantityError.Text = "";
@@ -161,9 +158,7 @@ namespace KiczanProductionInfoSystem
                     checkedItems.Add(item.ToString());
                     //save formated checklist options to pass as a paramater into insert statement
                     checkedOperations = string.Join(", ", checkedItems);
-                    Console.WriteLine(checkedOperations);
                 }
-
             }
 
             //purchase order number validation

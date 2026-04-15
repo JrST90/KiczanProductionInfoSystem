@@ -27,8 +27,6 @@ namespace KiczanProductionInfoSystem
             //Set the customers List object to be populated with the list returned by GetCustomers().
             customers = newDAO.GetCustomers();
            
-           
-
             //Bind operatorComboBox datasource to the operators list.
             operatorComboBox.DataSource = operators;
 
@@ -119,10 +117,6 @@ namespace KiczanProductionInfoSystem
             //Create new DataValidation Object for input validation.
             DataValidation newDV = new DataValidation();
 
-
-            
-
-
             //Get part number value
             string partNumber = textBoxPartNumber.Text;
 
@@ -143,15 +137,9 @@ namespace KiczanProductionInfoSystem
 
             //Get the CUSTOMER_ID from customerComboBox
             int custID = Convert.ToInt32(customerComboBox.SelectedValue);
-            //Set the partID for the update query.
-            
-
+    
             //validation flag
             bool isValid = true;
-
-            Console.WriteLine(opID);
-            Console.WriteLine(custID);
-            
 
             // Clear all error labels first
             labelPartNumberError.Text = "";
@@ -171,8 +159,7 @@ namespace KiczanProductionInfoSystem
             errorProvider2.Clear();
             errorProvider3.Clear();
 
-            //TO DO: Customer validation.
-
+            //Customer validation.
             string customerError = newDV.validateCustomerSelection(custID);
 
             if (!string.IsNullOrEmpty(customerError))
@@ -182,8 +169,7 @@ namespace KiczanProductionInfoSystem
                 isValid = false;
             }
 
-            //TO DO: Operator validation.
-
+            //Operator validation.
             string operatorError = newDV.validateOperatorSelection(opID);
 
             if (!string.IsNullOrEmpty(operatorError))
@@ -271,16 +257,14 @@ namespace KiczanProductionInfoSystem
                 labelRecordStatus.Text = "Record Status: Record Successfully Updated!";
 
             }
-
             else
             {
 
                 labelRecordStatus.Text = "Record Status: Record Update Error!";
 
             }
-
         }
-
+        //Event handler for Clear button
         private void button2_Click(object sender, EventArgs e)
         {
             operatorComboBox.SelectedIndex = -1;
@@ -312,7 +296,7 @@ namespace KiczanProductionInfoSystem
                 checkedListBox1.SetItemChecked(i, false);
             }
         }
-        //Event handle for Back to Menu button.
+        //Event handler for Back to Menu button.
         private void button3_Click(object sender, EventArgs e)
         {
             this.Close();
