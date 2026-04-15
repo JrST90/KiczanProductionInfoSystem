@@ -35,7 +35,7 @@ upon receiving new work orders, and update existing records in the event of erro
       - Using Git features, clone repository using URL https://github.com/JrST90/KiczanProductionInfoSystem
       - Use right click Checkout on remote repository branch Application-Main and pull to local repository.
       - Run the solution, application will run in its current production state.
-* **Set-Up Instructions (Full Production Release)
+* **Set-Up Instructions (Full Production Release)**:
   - Install MySQL Server to local server on site.
       - IT Personel will ensure that MySQL Server is restricted to onsite access only with no remote connections.
   - Install MySQL Workbench CE to Fabrication Department Kiczan Terminal for DB Sys Admin responsibilities.
