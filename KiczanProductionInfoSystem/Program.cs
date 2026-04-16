@@ -16,8 +16,8 @@ namespace KiczanProductionInfoSystem
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-
         
+
             //Create new DAO Object for user authentication.
             DAO newDAO = new DAO();
 
