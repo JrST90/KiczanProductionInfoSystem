@@ -251,12 +251,12 @@ from XX/XX/XXXX-XX/XX/XXXX to MM/DD/YYYY-MM/DD/YYYY]
 | :--- | :--- | :--- | :--- |
 | Sprint 6: User Manual Query & Delete/Restore | Elian Garcia, Daniel Puharic | High | In Progress |
 | Sub Task |  Assigned Owner | Test Procedure | Status |
-| User Manual Screen Shots & Description: User Queries | Elian Garcia |  | In Progress |
-| User Manual Screen Shots & Description: Delete/Restore | Daniel Puharic |  | In Progress | 
+| User Manual Screen Shots & Description: User Queries | Elian Garcia | Review and revise user manual content | In Progress |
+| User Manual Screen Shots & Description: Delete/Restore | Daniel Puharic | Review and revise user manual content | In Progress | 
 | Sprint 6: User Manual Create & Update Records | Justin Kisner, Josh Stanczyk | High | In Progress |
 | Sub Task |  Assigned Owner | Test Procedure | Status |
-| User Manual Screen Shots & Description: Create Record | Justin Kisner |  | In Progress |
-| User Manual Screen Shots & Description: Update Record | Josh Stanczyk |  | In Progress |
+| User Manual Screen Shots & Description: Create Record | Justin Kisner | Review and revise user manual content | In Progress |
+| User Manual Screen Shots & Description: Update Record | Josh Stanczyk | Review and revise user manual content | In Progress |
 | Feature Fix: User Authentication with Role Based Access | Josh Stanczyk | Application retreives OS current user name from Environment class. Verifies existence within DB, uses the username to retreive Role ID from DB to grant role based access | Completed |
 
 ## 2. Progress & Blockers
@@ -281,4 +281,4 @@ from XX/XX/XXXX-XX/XX/XXXX to MM/DD/YYYY-MM/DD/YYYY]
 * **Bug Description:** [Application crash upon forced close when username was not found in DB, placed validation for username verification in program.cs to resolve]
 * **Severity:** [High] | **Fix Status:** [Fixed]
 * **Bug Description:** [Add Operations checkboxes for Mill and Lathe to UpdateRecord.cs and CreateRecord.cs]
-* **Severity:** [High] | **Fix Status:** [In Progress]
+* **Severity:** [High] | **Fix Status:** [Fixed]
