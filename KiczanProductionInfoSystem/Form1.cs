@@ -27,10 +27,50 @@ namespace KiczanProductionInfoSystem
         string partNumber = "";
         string dateRange = "";
 
+        //Create new DAO Object for user authentication.
+        DAO newDAO = new DAO();
+
+        //Get current user's username.
+        private string userName = Environment.UserName;
+
         public Form1()
         {
             InitializeComponent();
             this.Text = "Kiczan Production Information System";
+
+            //If it does, use the returned object properties to set role privileges.
+            if (newDAO.userNameCheck(userName))
+            {
+                Users currentUser = newDAO.getUserInfo(userName);
+                if (currentUser.ROLES_ID == 2 || currentUser.ROLES_ID == 4)
+                {
+                    this.Text = "Kiczan Production Information System | Current User: " + currentUser.USER_NAME + " | " + "User Role: " + currentUser.ROLE_NAME;
+                    button2.Enabled = false;
+                    button2.Visible = false;
+                    /*
+                    updateRecordToolStripMenuItem.Enabled = false;
+                    updateRecordToolStripMenuItem.Visible = false;
+                    deleteRecordArchiveToolStripMenuItem.Enabled = false;
+                    deleteRecordArchiveToolStripMenuItem.Visible = false;
+                    restoreRecordMainTableToolStripMenuItem.Enabled = false;
+                    restoreRecordMainTableToolStripMenuItem.Visible = false;
+                    */
+                }
+                else if (currentUser.ROLES_ID == 1 || currentUser.ROLES_ID == 3)
+                {
+                    this.Text = "Kiczan Production Information System | Current User: " + currentUser.USER_NAME + " | " + "User Role: " + currentUser.ROLE_NAME;
+                    button2.Enabled = true;
+                    button2.Visible = true;
+                    /*
+                    updateRecordToolStripMenuItem.Enabled = true;
+                    updateRecordToolStripMenuItem.Visible = true;
+                    deleteRecordArchiveToolStripMenuItem.Enabled = true;
+                    deleteRecordArchiveToolStripMenuItem.Visible = true;
+                    restoreRecordMainTableToolStripMenuItem.Enabled = true;
+                    restoreRecordMainTableToolStripMenuItem.Visible = true;
+                    */
+                }
+            }
         }
 
         //Events to occur on button click for selection from comboBox1.
@@ -45,6 +85,8 @@ namespace KiczanProductionInfoSystem
             //Create new DataValidation Object for input validation.
             DataValidation newDV = new DataValidation();
 
+            Users currentUser = newDAO.getUserInfo(userName);
+
             //Button click event is dependent on selected index from comboBox1.
             switch (searchTypeIndex)
             {
@@ -53,17 +95,35 @@ namespace KiczanProductionInfoSystem
                     //Store user input from textBox1 into dateRange variable.
                     dateRange = textBox1.Text;
 
-                    //Enable update and delete record options in menu strip.
-                    updateRecordToolStripMenuItem.Enabled = true;
-                    updateRecordToolStripMenuItem.Visible = true;
+                    //User Role check for CRUD access
+                    if (currentUser.ROLES_ID == 1 || currentUser.ROLES_ID == 3)
+                    { 
+                        //Enable update and delete record options in menu strip.
+                        updateRecordToolStripMenuItem.Enabled = true;
+                        updateRecordToolStripMenuItem.Visible = true;
 
-                    //Enable delete record option in menu strip.
-                    deleteRecordArchiveToolStripMenuItem.Enabled = true;
-                    deleteRecordArchiveToolStripMenuItem.Visible = true;
+                        //Enable delete record option in menu strip.
+                        deleteRecordArchiveToolStripMenuItem.Enabled = true;
+                        deleteRecordArchiveToolStripMenuItem.Visible = true;
 
-                    //Disable restore record option in menu strip.
-                    restoreRecordMainTableToolStripMenuItem.Enabled = false;
-                    restoreRecordMainTableToolStripMenuItem.Visible = false;
+                        //Disable restore record option in menu strip.
+                        restoreRecordMainTableToolStripMenuItem.Enabled = false;
+                        restoreRecordMainTableToolStripMenuItem.Visible = false;
+                    }
+                    else if (currentUser.ROLES_ID == 2 || currentUser.ROLES_ID == 4)
+                    {
+                        //Disable update record options in menu strip.
+                        updateRecordToolStripMenuItem.Enabled = false;
+                        updateRecordToolStripMenuItem.Visible = false;
+
+                        //Disable delete record option in menu strip.
+                        deleteRecordArchiveToolStripMenuItem.Enabled = false;
+                        deleteRecordArchiveToolStripMenuItem.Visible = false;
+
+                        //Disable restore record option in menu strip.
+                        restoreRecordMainTableToolStripMenuItem.Enabled = false;
+                        restoreRecordMainTableToolStripMenuItem.Visible = false;
+                    }
 
                     //if dateRange is of the right format and the beginning date is before the end date, execute the search query.
                     if (newDV.validateDateRange(dateRange) == true && newDV.validateDateRangeBegBeforeEnd(dateRange) == true)
@@ -206,17 +266,35 @@ namespace KiczanProductionInfoSystem
                     //Store user input from textBox1 into partNumber variable.
                     partNumber = textBox1.Text;
 
-                    //Enable update and delete record options in menu strip.
-                    updateRecordToolStripMenuItem.Enabled = true;
-                    updateRecordToolStripMenuItem.Visible = true;
+                    //User Role check for CRUD access
+                    if (currentUser.ROLES_ID == 1 || currentUser.ROLES_ID == 3)
+                    {
+                        //Enable update and delete record options in menu strip.
+                        updateRecordToolStripMenuItem.Enabled = true;
+                        updateRecordToolStripMenuItem.Visible = true;
 
-                    //Enable delete record option in menu strip.
-                    deleteRecordArchiveToolStripMenuItem.Enabled = true;
-                    deleteRecordArchiveToolStripMenuItem.Visible = true;
+                        //Enable delete record option in menu strip.
+                        deleteRecordArchiveToolStripMenuItem.Enabled = true;
+                        deleteRecordArchiveToolStripMenuItem.Visible = true;
 
-                    //Disable restore record option in menu strip.
-                    restoreRecordMainTableToolStripMenuItem.Enabled = false;
-                    restoreRecordMainTableToolStripMenuItem.Visible = false;
+                        //Disable restore record option in menu strip.
+                        restoreRecordMainTableToolStripMenuItem.Enabled = false;
+                        restoreRecordMainTableToolStripMenuItem.Visible = false;
+                    }
+                    else if (currentUser.ROLES_ID == 2 || currentUser.ROLES_ID == 4)
+                    {
+                        //Disable update record options in menu strip.
+                        updateRecordToolStripMenuItem.Enabled = false;
+                        updateRecordToolStripMenuItem.Visible = false;
+
+                        //Disable delete record option in menu strip.
+                        deleteRecordArchiveToolStripMenuItem.Enabled = false;
+                        deleteRecordArchiveToolStripMenuItem.Visible = false;
+
+                        //Disable restore record option in menu strip.
+                        restoreRecordMainTableToolStripMenuItem.Enabled = false;
+                        restoreRecordMainTableToolStripMenuItem.Visible = false;
+                    }
 
                     //If the partNumber is of the right format and the number of matching records is greater than 0, execute the search query.
                     if (newDV.validatePartNumber(partNumber) == true && newDAO.partNumberQueryCount(partNumber) > 0)
@@ -351,17 +429,35 @@ namespace KiczanProductionInfoSystem
                 //Search By Operator Name, gets value from comboBox2.
                 case 2:
 
-                    //Enable update and delete record options in menu strip.
-                    updateRecordToolStripMenuItem.Enabled = true;
-                    updateRecordToolStripMenuItem.Visible = true;
+                    //User Role check for CRUD access
+                    if (currentUser.ROLES_ID == 1 || currentUser.ROLES_ID == 3)
+                    {
+                        //Enable update and delete record options in menu strip.
+                        updateRecordToolStripMenuItem.Enabled = true;
+                        updateRecordToolStripMenuItem.Visible = true;
 
-                    //Enable delete record option in menu strip.
-                    deleteRecordArchiveToolStripMenuItem.Enabled = true;
-                    deleteRecordArchiveToolStripMenuItem.Visible = true;
+                        //Enable delete record option in menu strip.
+                        deleteRecordArchiveToolStripMenuItem.Enabled = true;
+                        deleteRecordArchiveToolStripMenuItem.Visible = true;
 
-                    //Disable restore record option in menu strip.
-                    restoreRecordMainTableToolStripMenuItem.Enabled = false;
-                    restoreRecordMainTableToolStripMenuItem.Visible = false;
+                        //Disable restore record option in menu strip.
+                        restoreRecordMainTableToolStripMenuItem.Enabled = false;
+                        restoreRecordMainTableToolStripMenuItem.Visible = false;
+                    }
+                    else if (currentUser.ROLES_ID == 2 || currentUser.ROLES_ID == 4)
+                    {
+                        //Disable update record options in menu strip.
+                        updateRecordToolStripMenuItem.Enabled = false;
+                        updateRecordToolStripMenuItem.Visible = false;
+
+                        //Disable delete record option in menu strip.
+                        deleteRecordArchiveToolStripMenuItem.Enabled = false;
+                        deleteRecordArchiveToolStripMenuItem.Visible = false;
+
+                        //Disable restore record option in menu strip.
+                        restoreRecordMainTableToolStripMenuItem.Enabled = false;
+                        restoreRecordMainTableToolStripMenuItem.Visible = false;
+                    }
 
                     //Set currentPageIndex for query.
                     currentPageIndex = 1;
@@ -401,17 +497,36 @@ namespace KiczanProductionInfoSystem
                 break;
                 //Search by Fabrication Department.
                 case 3:
-                    //Enable update and delete record options in menu strip.
-                    updateRecordToolStripMenuItem.Enabled = true;
-                    updateRecordToolStripMenuItem.Visible = true;
 
-                    //Enable delete record option in menu strip.
-                    deleteRecordArchiveToolStripMenuItem.Enabled = true;
-                    deleteRecordArchiveToolStripMenuItem.Visible = true;
+                    //User Role check for CRUD access
+                    if (currentUser.ROLES_ID == 1 || currentUser.ROLES_ID == 3)
+                    {
+                        //Enable update and delete record options in menu strip.
+                        updateRecordToolStripMenuItem.Enabled = true;
+                        updateRecordToolStripMenuItem.Visible = true;
 
-                    //Disable restore record option in menu strip.
-                    restoreRecordMainTableToolStripMenuItem.Enabled = false;
-                    restoreRecordMainTableToolStripMenuItem.Visible = false;
+                        //Enable delete record option in menu strip.
+                        deleteRecordArchiveToolStripMenuItem.Enabled = true;
+                        deleteRecordArchiveToolStripMenuItem.Visible = true;
+
+                        //Disable restore record option in menu strip.
+                        restoreRecordMainTableToolStripMenuItem.Enabled = false;
+                        restoreRecordMainTableToolStripMenuItem.Visible = false;
+                    }
+                    else if (currentUser.ROLES_ID == 2 || currentUser.ROLES_ID == 4)
+                    {
+                        //Disable update record options in menu strip.
+                        updateRecordToolStripMenuItem.Enabled = false;
+                        updateRecordToolStripMenuItem.Visible = false;
+
+                        //Disable delete record option in menu strip.
+                        deleteRecordArchiveToolStripMenuItem.Enabled = false;
+                        deleteRecordArchiveToolStripMenuItem.Visible = false;
+
+                        //Disable restore record option in menu strip.
+                        restoreRecordMainTableToolStripMenuItem.Enabled = false;
+                        restoreRecordMainTableToolStripMenuItem.Visible = false;
+                    }
                     //Set currentPageIndex for query.
                     currentPageIndex = 1;
 
@@ -451,17 +566,35 @@ namespace KiczanProductionInfoSystem
                     //Store user input from textBox1 into partNumber variable.
                     partNumber = textBox1.Text;
 
-                    //Enable restore record option in menu strip.
-                    restoreRecordMainTableToolStripMenuItem.Enabled = true;
-                    restoreRecordMainTableToolStripMenuItem.Visible = true;
+                    //User Role check for CRUD access
+                    if (currentUser.ROLES_ID == 1 || currentUser.ROLES_ID == 3)
+                    {
+                        //Enable restore record option in menu strip.
+                        restoreRecordMainTableToolStripMenuItem.Enabled = true;
+                        restoreRecordMainTableToolStripMenuItem.Visible = true;
 
-                    //Disable update and delete record options in menu strip.
-                    updateRecordToolStripMenuItem.Enabled = false;
-                    updateRecordToolStripMenuItem.Visible = false;
+                        //Disable update and delete record options in menu strip.
+                        updateRecordToolStripMenuItem.Enabled = false;
+                        updateRecordToolStripMenuItem.Visible = false;
 
-                    //Disable delete record option in menu strip.
-                    deleteRecordArchiveToolStripMenuItem.Enabled = false;
-                    deleteRecordArchiveToolStripMenuItem.Visible = false;
+                        //Disable delete record option in menu strip.
+                        deleteRecordArchiveToolStripMenuItem.Enabled = false;
+                        deleteRecordArchiveToolStripMenuItem.Visible = false;
+                    }
+                    else if (currentUser.ROLES_ID == 2 || currentUser.ROLES_ID == 4)
+                    {
+                        //Disable restore record option in menu strip.
+                        restoreRecordMainTableToolStripMenuItem.Enabled = false;
+                        restoreRecordMainTableToolStripMenuItem.Visible = false;
+
+                        //Disable update and delete record options in menu strip.
+                        updateRecordToolStripMenuItem.Enabled = false;
+                        updateRecordToolStripMenuItem.Visible = false;
+
+                        //Disable delete record option in menu strip.
+                        deleteRecordArchiveToolStripMenuItem.Enabled = false;
+                        deleteRecordArchiveToolStripMenuItem.Visible = false;
+                    }
 
                     //If the partNumber is of the right format, execute the search query.
                     if (newDV.validatePartNumber(partNumber) == true && newDAO.partNumberQueryCountArchive(partNumber) > 0)

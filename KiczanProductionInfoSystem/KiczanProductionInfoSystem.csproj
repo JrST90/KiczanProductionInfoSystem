@@ -123,6 +123,7 @@
     <Compile Include="UpdateRecord.Designer.cs">
       <DependentUpon>UpdateRecord.cs</DependentUpon>
     </Compile>
+    <Compile Include="Users.cs" />
     <EmbeddedResource Include="CreateRecord.resx">
       <DependentUpon>CreateRecord.cs</DependentUpon>
     </EmbeddedResource>
@@ -135,6 +136,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="UpdateRecord.resx">
+      <DependentUpon>UpdateRecord.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

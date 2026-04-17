@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Globalization;
 using System.Windows.Forms;
 
@@ -85,9 +86,6 @@ namespace KiczanProductionInfoSystem
             //validation flag
             bool isValid = true;
 
-            Console.WriteLine(opID);
-            Console.WriteLine(custID);
-
             // Clear all error labels first
             labelPartNumberError.Text = "";
             labelQuantityError.Text = "";
@@ -127,7 +125,7 @@ namespace KiczanProductionInfoSystem
             //part number validation
             if (!newDV.validatePartNumber(partNumber))
             {
-                string message = "Part Number must not be empty and may only \n contain letters, numbers, or hyphen.";
+                string message = "Record not Complete!\nPart Number must not be empty and may only\ncontain letters, numbers, or hyphen.";
                 labelPartNumberError.Text = message;
                 errorProviderPartNumber.SetError(textBoxPartNumber, message);
                 isValid = false;
@@ -145,7 +143,7 @@ namespace KiczanProductionInfoSystem
             //operations validation
             if (checkedListBox1.CheckedItems.Count == 0)
             {
-                string message = "Please select at least one operation.";
+                string message = "Record not Complete!\nPlease select at least one operation.";
                 labelOperationsError.Text = message;
                 errorProvider2.SetError(checkedListBox1, message);
                 isValid = false;
@@ -160,9 +158,7 @@ namespace KiczanProductionInfoSystem
                     checkedItems.Add(item.ToString());
                     //save formated checklist options to pass as a paramater into insert statement
                     checkedOperations = string.Join(", ", checkedItems);
-                    Console.WriteLine(checkedOperations);
                 }
-
             }
 
             //purchase order number validation
@@ -257,6 +253,6 @@ namespace KiczanProductionInfoSystem
         {
 
         }
-        
+
     }
 }

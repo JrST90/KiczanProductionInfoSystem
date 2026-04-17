@@ -110,15 +110,15 @@ namespace KiczanProductionInfoSystem
 
             if (string.IsNullOrEmpty(input))
             {
-                message = "Record not Complete!\nQuantity must not be empty,\nplease enter a value.";
+                message = "Record not complete!\nQuantity must not be empty,\nplease enter a value.";
             }
             else if (int.TryParse(input, out quantity) == false)
             {
-                message = "Record not Complete!\nQuantity must be\na numerical value.";
+                message = "Record not complete!\nQuantity must be\na numerical value.";
             }
             else if (quantity <= 0)
             {
-                message = "Record not Complete!\nQuantity must be an integer \ngreater than or equal to 1.";
+                message = "Record not complete!\nQuantity must be an integer \ngreater than or equal to 1.";
             }
             return message;
         }
@@ -130,13 +130,13 @@ namespace KiczanProductionInfoSystem
             poNumber = poNumber.Trim();
 
             if (string.IsNullOrWhiteSpace(poNumber))
-                message = "Purchase Order Number \nis required.";
+                message = "Record not complete!\nPurchase Order Number \nis required.";
 
             else if (poNumber.Length < 4 || poNumber.Length > 20)
-                message = "Order Number must be between \n4 and 20 characters.";
+                message = "Record not complete!\nPurchase Order Number must be between \n4 and 20 characters.";
 
             else if (!Regex.IsMatch(poNumber, @"^[a-zA-Z0-9\-]+$"))
-                message = "Order Number can only contain \nletters, numbers, and hyphens.";
+                message = "Record not complete!\nPurchase Order Number can only contain \nletters, numbers, and hyphens.";
 
             return message;
         }
@@ -148,7 +148,7 @@ namespace KiczanProductionInfoSystem
 
             if(input == 0)
             {
-                message = "Record not Complete!\nPlease select an Operator.";
+                message = "Record not complete!\nPlease select an Operator.";
             }
 
             return message;
@@ -161,7 +161,7 @@ namespace KiczanProductionInfoSystem
 
             if (string.IsNullOrWhiteSpace(input))
             {
-                message = "Record not Complete!\nPlease select at least one Operation.";
+                message = "Record not complete!\nPlease select at least one Operation.";
             }
 
             return message;
@@ -175,7 +175,7 @@ namespace KiczanProductionInfoSystem
 
             if (string.IsNullOrWhiteSpace(input))
             {
-                message = "Record not Complete!\nDate must not be empty,\nplease enter a value.";
+                message = "Record not complete!\nDate must not be empty,\nplease enter a value.";
             }
             else if (!DateTime.TryParseExact(
                 input,
@@ -184,7 +184,7 @@ namespace KiczanProductionInfoSystem
                 DateTimeStyles.None,
                 out parsedDate))
             {
-                message = "Record not Complete!\nDate must be in MM/DD/YYYY format.";
+                message = "Record not complete!\nDate must be in MM/DD/YYYY format.";
             }
 
             return message;
@@ -198,7 +198,7 @@ namespace KiczanProductionInfoSystem
 
             if (string.IsNullOrWhiteSpace(dueDateText))
             {
-                message = "Record not Complete!\nDate must not be empty,\nplease enter a value.";
+                message = "Record not complete!\nDate must not be empty,\nplease enter a value.";
             }
             else if (!DateTime.TryParseExact(
                 dueDateText,
@@ -207,7 +207,7 @@ namespace KiczanProductionInfoSystem
                 DateTimeStyles.None,
                 out dueDate))
             {
-                message = "Record not Complete!\nDate must be in MM/DD/YYYY format.";
+                message = "Record not complete!\nDate must be in MM/DD/YYYY format.";
             }
             return message;
         }
@@ -219,7 +219,7 @@ namespace KiczanProductionInfoSystem
 
             if (input == 0)
             {
-                message = "Record not Complete!\nPlease select a Customer.";
+                message = "Record not complete!\nPlease select a Customer.";
             }
 
             return message;

@@ -29,12 +29,22 @@ upon receiving new work orders, and update existing records in the event of erro
   - Install MAMP to local device.
       - During installation, ensure virtual servers are specified as private and not public when prompted.
   - Install MySQL Workbench CE to local device.
-      - Copy SQL code from DPS DB Script and execute to deploy schema and DB.
+      - Copy SQL code from KPS DB Script and execute to deploy schema and DB.
       - Copy SQL code from Delimiter KPS Stored Procedures to deploy stored procedures for query and record retrieval.
   - Install Microsoft Visual Studio
       - Using Git features, clone repository using URL https://github.com/JrST90/KiczanProductionInfoSystem
       - Use right click Checkout on remote repository branch Application-Main and pull to local repository.
-      - Run the solution, application will run in its current production state. 
+      - Run the solution, application will run in its current production state.
+* **Set-Up Instructions (Full Production Release)**:
+  - Install MySQL Server to local server on site.
+      - IT Personel will ensure that MySQL Server is restricted to onsite access only with no remote connections.
+  - Install MySQL Workbench CE to Fabrication Department Kiczan Terminal for DB Sys Admin responsibilities.
+      - Copy SQL code from KPS DB Script and execute to deploy schema and DB.
+      - Copy SQL code from Delimiter KPS Stored Procedures to deploy stored procedures.
+  - Copy executable file containing the packaged version of Kiczan Production Info System to desktop.
+      - Executable packaged file will be copied to the terminals for the Shipping, Quality, Machine Shop, and Fabrication Department Managers.
+  - Run the application.
+      - Double clicking the exectuable file will run the Kiczan Production Info System and connect to the DB upon application initialization.
 ## Features & Usage
   - **Feature:** Initialized DB using build scripts
       - **Description:** Deploy SQL scripts to build DB tables/relationships and populate stored procedures, establish connection between application interface and DB.
@@ -226,12 +236,25 @@ upon receiving new work orders, and update existing records in the event of erro
           - **Result:** The system displays a status update to the user upon unsuccessful field input "Record Status: Record Update Error!", and next to the input field on the form an error provider and message is displayed to the user stating "Record not Complete! Date must be in MM/DD/YYYY format."
           - **Input:** Entering 3/22/2026 as the date into the Date Received or Due Date fields.
           - **Result:** The system displays a status update to the user upon unsuccessful field input "Record Status: Record Update Error!", and next to the input field on the form an error provider and message is displayed to the user stating "Record not Complete! Date must be in MM/DD/YYYY format."
+ - **Feature:** User Authentication
+      - **Description:** A User Authentication event that occurs at application startup, checks the current OS username using the Environment class, verifies with the DB if the username exists, then verifies the usernames Role ID, Role ID is then used in conditional logic to grant CRUD privileges based on business role where Shipping & Quality Department managers are granted Ready Only access to query, and Machine Shop & Fabrication Department managers are granted full CRUD access.
+      - **Usage Instructions:**
+          - Log into Kiczan Terminal using Kiczan login credentials stored within active directory work group.
+          - Start Kiczan Production Info System application.
+          - Application will initialize and grant role based access if current OS username exists within DB, or abort if it does not.
+      - **Usage Example:**
+          - **Input:** The Kiczan User logs into their Kiczan terminal with a username that does not exist within the DB and starts the Kiczan Production Info System application. 
+          - **Result:** Application initialization will abort with a message box stating to the user "Unauthorized User. Application will now close."
+          - **Input:** The Kiczan User logs into their Kiczan terminal with a username that does exist within the DB and starts the Kiczan Production Info System application. 
+          - **Result:** Application initialization will begin and the user will be given access to the query interface. If the logged in user has a business role of Shipping or Quality Department Manager, access will be restricted to read only, where the Create Record Button will not be visible or accessible on the query interface, and when querying records based on query and input selection, the right click menu will not be accessible, where the events of Update, Delete, and Restore will not be visible or accessible to the user.
+          - **Input:** The Kiczan User logs into their Kiczan terminal with a username that does exist within the DB and starts the Kiczan Production Info System application.
+          - **Result:** Application initialization will begin and the user will be given access to the query interface. If the logged in user has a business role of Machine Shop or Fabrication Department Manager, full CRUD access will be granted, where the Create Record Button will be visible and accessible on the query interface, and when querying records based on query and input selection, the right click menu will be accessible, where the events of Update, Delete, and Restore will be visible and accessible to the user.
        
 ## Test Credentials
-  - Prior to production, testing will be performed with all developers on Team 2 having full CRUD access to ensure the expected functionality exsists for Create, Read, Update, and Delete processes.
-  - Once the application has been deployed to production, and the applications associated database has been deployed and populated with existing data authentication will be performed as follows:
+  - Prior to production, testing will be performed with all developers on Team 2 having full CRUD access to ensure the expected functionality exists for Create, Read, Update, and Delete processes.
+  - Once the application has been deployed to production, and the applications associated database has been deployed and populated with existing data, authentication will be performed as follows:
     - Current Kiczan management personel usernames will be added to the USERS table within the database.
-    - An authentication function will exist within Form1.cs that:
+    - An authentication function will exist within Program.cs and Form1.cs that:
       - Retrieves the current Windows session username.
       - Queries the USERS table to check if the current Windows session username exists within the table.
       - If the Windows session username exists within the USERS table, the function will then retrieve the associated USER_ID from the USERS table to query the USER_ROLES table.
