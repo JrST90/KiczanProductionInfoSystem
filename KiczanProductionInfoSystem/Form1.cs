@@ -38,7 +38,7 @@ namespace KiczanProductionInfoSystem
             InitializeComponent();
             this.Text = "Kiczan Production Information System";
 
-            //If it does, use the returned object properties to set role privileges.
+            //If the user name exists, use the returned object properties to set role privileges.
             if (newDAO.userNameCheck(userName))
             {
                 Users currentUser = newDAO.getUserInfo(userName);
@@ -47,28 +47,12 @@ namespace KiczanProductionInfoSystem
                     this.Text = "Kiczan Production Information System | Current User: " + currentUser.USER_NAME + " | " + "User Role: " + currentUser.ROLE_NAME;
                     button2.Enabled = false;
                     button2.Visible = false;
-                    /*
-                    updateRecordToolStripMenuItem.Enabled = false;
-                    updateRecordToolStripMenuItem.Visible = false;
-                    deleteRecordArchiveToolStripMenuItem.Enabled = false;
-                    deleteRecordArchiveToolStripMenuItem.Visible = false;
-                    restoreRecordMainTableToolStripMenuItem.Enabled = false;
-                    restoreRecordMainTableToolStripMenuItem.Visible = false;
-                    */
                 }
                 else if (currentUser.ROLES_ID == 1 || currentUser.ROLES_ID == 3)
                 {
                     this.Text = "Kiczan Production Information System | Current User: " + currentUser.USER_NAME + " | " + "User Role: " + currentUser.ROLE_NAME;
                     button2.Enabled = true;
                     button2.Visible = true;
-                    /*
-                    updateRecordToolStripMenuItem.Enabled = true;
-                    updateRecordToolStripMenuItem.Visible = true;
-                    deleteRecordArchiveToolStripMenuItem.Enabled = true;
-                    deleteRecordArchiveToolStripMenuItem.Visible = true;
-                    restoreRecordMainTableToolStripMenuItem.Enabled = true;
-                    restoreRecordMainTableToolStripMenuItem.Visible = true;
-                    */
                 }
             }
         }
@@ -559,10 +543,77 @@ namespace KiczanProductionInfoSystem
 
                     //Set label4's color to green.
                     label4.ForeColor = Color.Green;
-                    break;
+                break;
+
+
+                //Search by Machining Department.
+                case 4:
+
+                    //User Role check for CRUD access
+                    if (currentUser.ROLES_ID == 1 || currentUser.ROLES_ID == 3)
+                    {
+                        //Enable update and delete record options in menu strip.
+                        updateRecordToolStripMenuItem.Enabled = true;
+                        updateRecordToolStripMenuItem.Visible = true;
+
+                        //Enable delete record option in menu strip.
+                        deleteRecordArchiveToolStripMenuItem.Enabled = true;
+                        deleteRecordArchiveToolStripMenuItem.Visible = true;
+
+                        //Disable restore record option in menu strip.
+                        restoreRecordMainTableToolStripMenuItem.Enabled = false;
+                        restoreRecordMainTableToolStripMenuItem.Visible = false;
+                    }
+                    else if (currentUser.ROLES_ID == 2 || currentUser.ROLES_ID == 4)
+                    {
+                        //Disable update record options in menu strip.
+                        updateRecordToolStripMenuItem.Enabled = false;
+                        updateRecordToolStripMenuItem.Visible = false;
+
+                        //Disable delete record option in menu strip.
+                        deleteRecordArchiveToolStripMenuItem.Enabled = false;
+                        deleteRecordArchiveToolStripMenuItem.Visible = false;
+
+                        //Disable restore record option in menu strip.
+                        restoreRecordMainTableToolStripMenuItem.Enabled = false;
+                        restoreRecordMainTableToolStripMenuItem.Visible = false;
+                    }
+                    //Set currentPageIndex for query.
+                    currentPageIndex = 1;
+
+                    //Bind dataBaseSource to fabricationDepartmentQuery results passing the arguments of pageSize, and currentPageIndex.
+                    dataBaseSource.DataSource = newDAO.machiningDepartmentQuery(pageSize, currentPageIndex);
+
+                    //Bind dateGridView to dataBaseSource.
+                    dataGridView1.DataSource = dataBaseSource;
+
+                    //Get the total rows returned by fabricationDepartmentQueryCount.
+                    totalRows = newDAO.machiningDepartmentQueryCount();
+
+                    //Divide the totalRows variable by the pageSize variable and set value to totalPages variable.
+                    totalPages = (int)Math.Ceiling((double)totalRows / pageSize);
+
+                    //Set label2's text value to the value of totalRows.
+                    label2.Text = "Number of Records: " + totalRows;
+
+                    //Set label5's text value to the value of totalPages.
+                    label5.Text = "Total Pages: " + totalPages;
+
+                    //Set label6's text value to the value of currentPageIndex.
+                    label6.Text = "Current Page: " + currentPageIndex;
+
+                    //Clear errorProvider1.
+                    errorProvider1.Clear();
+
+                    //Set label4's value to alert the user of a succsessful query.
+                    label4.Text = "QUERY SUCCESS";
+
+                    //Set label4's color to green.
+                    label4.ForeColor = Color.Green;
+                break;
 
                 //Search By Part Number in Archive, gets value from textBox1.
-                case 4:
+                case 5:
                     //Store user input from textBox1 into partNumber variable.
                     partNumber = textBox1.Text;
 
@@ -849,7 +900,7 @@ namespace KiczanProductionInfoSystem
                     label4.Text = "";
                     label5.Text = "";
                     label6.Text = "";
-                    break;
+                break;
                 //Search by Fabrication Department.
                 case 3:
                     //Clear textbox1.
@@ -883,9 +934,42 @@ namespace KiczanProductionInfoSystem
                     label5.Text = "";
                     label6.Text = "";
                 break;
+                //Search by Machining Department.
+                case 4:
+                    //Clear textbox1.
+                    textBox1.Clear();
+
+                    //Clear the list storing operators.
+                    operators.Clear();
+
+                    //Clear the datasource for comboBox2.
+                    comboBox2.DataSource = null;
+
+                    //Clear the dataBaseSource.
+                    dataBaseSource.DataSource = null;
+
+                    //Clear the dataGridView1 source.
+                    dataGridView1.DataSource = null;
+
+                    //Clear the datagridView1 rows.
+                    dataGridView1.Rows.Clear();
+
+                    //Clear errorProvider1.
+                    errorProvider1.Clear();
+
+                    //Reset currentPageIndex.
+                    currentPageIndex = 1;
+
+                    //Clear all label text values.
+                    label2.Text = "";
+                    label3.Text = "";
+                    label4.Text = "";
+                    label5.Text = "";
+                    label6.Text = "";
+                break;
 
                 //Search by Part Number in Archive.
-                case 4:
+                case 5:
                     //Clear textbox1.
                     textBox1.Clear();
 
@@ -1165,9 +1249,24 @@ namespace KiczanProductionInfoSystem
                         //Bind results to dataGridView1.
                         dataGridView1.DataSource = dataBaseSource;
 
-                        break;
+                    break;
 
                     case 4:
+                        //Incremement page counter index.
+                        currentPageIndex++;
+
+                        //Update page.
+                        label6.Text = "Current Page: " + currentPageIndex;
+
+                        //Query to update page.
+                        dataBaseSource.DataSource = newDAO.machiningDepartmentQuery(pageSize, currentPageIndex);
+
+                        //Bind results to dataGridView1.
+                        dataGridView1.DataSource = dataBaseSource;
+
+                    break;
+
+                    case 5:
                         //If the partNumber variable is still the same value as textBox1.Text and the next button is pressed.
                         if (partNumber == textBox1.Text)
                         {
@@ -1458,6 +1557,21 @@ namespace KiczanProductionInfoSystem
                     break;
 
                     case 4:
+                        // Decrement page counter index.
+                        currentPageIndex--;
+
+                        // Update page.
+                        label6.Text = "Current Page: " + currentPageIndex;
+
+                        // Query to update page.
+                        dataBaseSource.DataSource = newDAO.machiningDepartmentQuery(pageSize, currentPageIndex);
+
+                        // Bind results to dataGridView1.
+                        dataGridView1.DataSource = dataBaseSource;
+
+                    break;
+
+                    case 5:
                         if (partNumber == textBox1.Text)
                         {
                             //Decrement page counter index.
