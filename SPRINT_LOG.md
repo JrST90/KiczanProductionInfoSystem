@@ -261,7 +261,9 @@ from XX/XX/XXXX-XX/XX/XXXX to MM/DD/YYYY-MM/DD/YYYY]
 
 ## 2. Progress & Blockers
 * **Completed Work:**
-* Feature Fix: User Authentication with Role Based Access. 
+* Feature Fix: User Authentication with Role Based Access.
+* Sprint 6: User Manual Query & Delete/Restore
+* Sprint 6: User Manual Create & Update Records 
 * **Incomplete Tasks:**
 * Sprint 6: User Manual Query & Delete/Restore
 * Sprint 6: User Manual Create & Update Records
