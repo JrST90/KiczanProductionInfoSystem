@@ -265,8 +265,7 @@ from XX/XX/XXXX-XX/XX/XXXX to MM/DD/YYYY-MM/DD/YYYY]
 * Sprint 6: User Manual Query & Delete/Restore
 * Sprint 6: User Manual Create & Update Records 
 * **Incomplete Tasks:**
-* Sprint 6: User Manual Query & Delete/Restore
-* Sprint 6: User Manual Create & Update Records
+* All Sprint 6 Tasks Completed
 * **Resolution Plan:**
 * Progress through Sprint 6 Tasks related to User Manual Documentation in preparation for User Manual Documentation submission date.
 * **Blockers:**
