@@ -236,6 +236,16 @@ upon receiving new work orders, and update existing records in the event of erro
           - **Result:** The system displays a status update to the user upon unsuccessful field input "Record Status: Record Update Error!", and next to the input field on the form an error provider and message is displayed to the user stating "Record not Complete! Date must be in MM/DD/YYYY format."
           - **Input:** Entering 3/22/2026 as the date into the Date Received or Due Date fields.
           - **Result:** The system displays a status update to the user upon unsuccessful field input "Record Status: Record Update Error!", and next to the input field on the form an error provider and message is displayed to the user stating "Record not Complete! Date must be in MM/DD/YYYY format."
+ - **Feature:** Export to Excel
+      - **Description:** A UI button on the main interface that allows the user to export the results of the current query to a Microsoft Excel Workbook page.
+      - **Usage Instructions:**
+          - Run a query to fill the table with query results.
+          - Press the Export button.
+      - **Usage Example:**
+          - The Kiczan user selects the query "Search by Operator Name" in the first drop-down box.
+          - The Kiczan user selects the username "Dan" in the second drop-down box.
+          - The Kiczan user presses the Search button and fills the table with the results.
+          - The Kiczan user pressed the Export button, which opens Excel, and copies the current page of results to an Excel Spreadsheet Workbook page.
  - **Feature:** User Authentication
       - **Description:** A User Authentication event that occurs at application startup, checks the current OS username using the Environment class, verifies with the DB if the username exists, then verifies the usernames Role ID, Role ID is then used in conditional logic to grant CRUD privileges based on business role where Shipping & Quality Department managers are granted Ready Only access to query, and Machine Shop & Fabrication Department managers are granted full CRUD access.
       - **Usage Instructions:**
