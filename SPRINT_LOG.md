@@ -253,7 +253,7 @@ from XX/XX/XXXX-XX/XX/XXXX to MM/DD/YYYY-MM/DD/YYYY]
 | Sub Task |  Assigned Owner | Test Procedure | Status |
 | User Manual Screen Shots & Description: User Queries | Elian Garcia | Review and revise user manual content | Completed |
 | User Manual Screen Shots & Description: Delete/Restore | Daniel Puharic | Review and revise user manual content | Completed | 
-| Sprint 6: User Manual Create & Update Records | Justin Kisner, Josh Stanczyk | High | In Progress |
+| Sprint 6: User Manual Create & Update Records | Justin Kisner, Josh Stanczyk | High | Completed |
 | Sub Task |  Assigned Owner | Test Procedure | Status |
 | User Manual Screen Shots & Description: Create Record | Justin Kisner | Review and revise user manual content | Completed |
 | User Manual Screen Shots & Description: Update Record | Josh Stanczyk | Review and revise user manual content | Completed |
@@ -281,4 +281,6 @@ from XX/XX/XXXX-XX/XX/XXXX to MM/DD/YYYY-MM/DD/YYYY]
 * **Bug Description:** [Application crash upon forced close when username was not found in DB, placed validation for username verification in program.cs to resolve]
 * **Severity:** [High] | **Fix Status:** [Fixed]
 * **Bug Description:** [Add Operations checkboxes for Mill and Lathe to UpdateRecord.cs and CreateRecord.cs]
+* **Severity:** [High] | **Fix Status:** [Fixed]
+* **Bug Description:** [Missing DAO.cs function and UI elements in Form1.cs and Form1.Designer.cs for Machining Department Query in DB]
 * **Severity:** [High] | **Fix Status:** [Fixed]
