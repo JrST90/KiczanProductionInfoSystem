@@ -249,14 +249,14 @@ from XX/XX/XXXX-XX/XX/XXXX to MM/DD/YYYY-MM/DD/YYYY]
 
 | Task Description | Assigned Owner | Priority | Status |
 | :--- | :--- | :--- | :--- |
-| Sprint 6: User Manual Query & Delete/Restore | Elian Garcia, Daniel Puharic | High | In Progress |
+| Sprint 6: User Manual Query & Delete/Restore | Elian Garcia, Daniel Puharic | High | Completed |
 | Sub Task |  Assigned Owner | Test Procedure | Status |
-| User Manual Screen Shots & Description: User Queries | Elian Garcia | Review and revise user manual content | In Progress |
-| User Manual Screen Shots & Description: Delete/Restore | Daniel Puharic | Review and revise user manual content | In Progress | 
+| User Manual Screen Shots & Description: User Queries | Elian Garcia | Review and revise user manual content | Completed |
+| User Manual Screen Shots & Description: Delete/Restore | Daniel Puharic | Review and revise user manual content | Completed | 
 | Sprint 6: User Manual Create & Update Records | Justin Kisner, Josh Stanczyk | High | In Progress |
 | Sub Task |  Assigned Owner | Test Procedure | Status |
-| User Manual Screen Shots & Description: Create Record | Justin Kisner | Review and revise user manual content | In Progress |
-| User Manual Screen Shots & Description: Update Record | Josh Stanczyk | Review and revise user manual content | In Progress |
+| User Manual Screen Shots & Description: Create Record | Justin Kisner | Review and revise user manual content | Completed |
+| User Manual Screen Shots & Description: Update Record | Josh Stanczyk | Review and revise user manual content | Completed |
 | Feature Fix: User Authentication with Role Based Access | Josh Stanczyk | Application retreives OS current user name from Environment class. Verifies existence within DB, uses the username to retreive Role ID from DB to grant role based access | Completed |
 
 ## 2. Progress & Blockers
