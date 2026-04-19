@@ -245,7 +245,7 @@ upon receiving new work orders, and update existing records in the event of erro
           - The Kiczan user selects the query "Search by Operator Name" in the first drop-down box.
           - The Kiczan user selects the username "Dan" in the second drop-down box.
           - The Kiczan user presses the Search button and fills the table with the results.
-          - The Kiczan user pressed the Export button, which opens Excel, and copies the current page of results to an Excel Spreadsheet Workbook page.
+          - The Kiczan user presses the Export button, which opens Excel, and copies the current page of results to an Excel Spreadsheet Workbook page.
  - **Feature:** User Authentication
       - **Description:** A User Authentication event that occurs at application startup, checks the current OS username using the Environment class, verifies with the DB if the username exists, then verifies the usernames Role ID, Role ID is then used in conditional logic to grant CRUD privileges based on business role where Shipping & Quality Department managers are granted Ready Only access to query, and Machine Shop & Fabrication Department managers are granted full CRUD access.
       - **Usage Instructions:**
