@@ -1,4 +1,4 @@
-﻿using MySql.Data.MySqlClient;
+﻿using System.Data.SqlClient;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -7,9 +7,8 @@ namespace KiczanProductionInfoSystem
 {
     internal class DAO
     {
-        //Set the connection string to establish a conncetion to the database
-        private string connectionString = "datasource=localhost;port=3306;username=root;" +
-            "password=root;database=kiczan_production_system;";
+        //Build connection string to connect to Microsoft SQL Server.
+        private string sqlConnectionString = "Server=(localdb)\\MSSQLLocalDB;Database=KICZAN_PRODUCTION_SYSTEM;Trusted_Connection=True;TrustServerCertificate=True;";
 
         //Reads data from DB source, returns dataTable from DATE_DUE_RANGE_QUERY stored procedure. 
         //Reads beginning date and end date from user input from text box on UI.
@@ -22,12 +21,12 @@ namespace KiczanProductionInfoSystem
             //Split date range at occurence of '-' character. EX: 01/01/2024-02/01/2024
             string[] dateArray = dateRange.Split('-');
 
-            //Connect to db.
-            MySqlConnection connection = new MySqlConnection(connectionString);
+            //Connect to DB.
+            SqlConnection connection = new SqlConnection(sqlConnectionString);
             connection.Open();
 
-            //Get stored procedure "DATE_DUE_RANGE_QUERY" from SQL server.
-            MySqlCommand command = new MySqlCommand("DATE_DUE_RANGE_QUERY", connection);
+            //Get the stored procedure from the DB.
+            SqlCommand command = new SqlCommand("DATE_DUE_RANGE_QUERY", connection);
             command.CommandType = CommandType.StoredProcedure;
 
             //Set offset to be bound using currentPageIndex and pageSize arguments.
@@ -46,11 +45,12 @@ namespace KiczanProductionInfoSystem
             command.Parameters.AddWithValue("offsetNum", offsetNum);
 
             //Use adapter object to fill dataTable with query results.
-            using (MySqlDataAdapter adapter = new MySqlDataAdapter(command))
+            using (SqlDataAdapter adapter = new SqlDataAdapter(command))
             {
                 adapter.Fill(dataTable);
             }
 
+            //connection.Close();
             connection.Close();
 
             return dataTable;
@@ -65,12 +65,12 @@ namespace KiczanProductionInfoSystem
             //Split dateRange at the occurence of a hyphen.
             string[] dateArray = dateRange.Split('-');
 
-            //Connect to db.
-            MySqlConnection connection = new MySqlConnection(connectionString);
+            //Connect to DB.
+            SqlConnection connection = new SqlConnection(sqlConnectionString);
             connection.Open();
 
             //Get the stored procedure from the DB.
-            MySqlCommand command = new MySqlCommand("DATE_DUE_RANGE_QUERY_COUNT", connection);
+            SqlCommand command = new SqlCommand("DATE_DUE_RANGE_QUERY_COUNT", connection);
             command.CommandType = CommandType.StoredProcedure;
 
             //Parts date values stored in dateArray.
@@ -99,12 +99,12 @@ namespace KiczanProductionInfoSystem
             //Create new dataTable to store query results.
             DataTable dataTable = new DataTable();
 
-            //Connect to db.
-            MySqlConnection connection = new MySqlConnection(connectionString);
+            //Connect to DB.
+            SqlConnection connection = new SqlConnection(sqlConnectionString);
             connection.Open();
 
             //Get stored procedure "PART_NUMBER_QUERY" from SQL server.
-            MySqlCommand command = new MySqlCommand("PART_NUMBER_QUERY", connection);
+            SqlCommand command = new SqlCommand("PART_NUMBER_QUERY", connection);
             command.CommandType = CommandType.StoredProcedure;
 
             //Set offset to be bound using currentPageIndex and pageSize arguments.
@@ -119,7 +119,7 @@ namespace KiczanProductionInfoSystem
             command.Parameters.AddWithValue("offsetNum", offsetNum);
 
             //Use adapter object to fill dataTable with query results.
-            using (MySqlDataAdapter adapter = new MySqlDataAdapter(command))
+            using (SqlDataAdapter adapter = new SqlDataAdapter(command))
             {
                 adapter.Fill(dataTable);
             }
@@ -135,12 +135,12 @@ namespace KiczanProductionInfoSystem
             //Set initial value of totalRows.
             int totalRows = 0;
 
-            //Connect to db.
-            MySqlConnection connection = new MySqlConnection(connectionString);
+            //Connect to DB.
+            SqlConnection connection = new SqlConnection(sqlConnectionString);
             connection.Open();
 
             //Get the stored procedure from the DB.
-            MySqlCommand command = new MySqlCommand("PART_NUMBER_QUERY_COUNT", connection);
+            SqlCommand command = new SqlCommand("PART_NUMBER_QUERY_COUNT", connection);
             command.CommandType = CommandType.StoredProcedure;
 
             //Add wildcard to broaden search term.
@@ -167,12 +167,12 @@ namespace KiczanProductionInfoSystem
             //Create new dataTable to store query results.
             DataTable dataTable = new DataTable();
 
-            //Connect to db.
-            MySqlConnection connection = new MySqlConnection(connectionString);
+            //Connect to DB.
+            SqlConnection connection = new SqlConnection(sqlConnectionString);
             connection.Open();
 
             //Get stored procedure "PART_NUMBER_QUERY_ARCHIVE" from SQL server.
-            MySqlCommand command = new MySqlCommand("PART_NUMBER_QUERY_ARCHIVE", connection);
+            SqlCommand command = new SqlCommand("PART_NUMBER_QUERY_ARCHIVE", connection);
             command.CommandType = CommandType.StoredProcedure;
 
             //Set offset to be bound using currentPageIndex and pageSize arguments.
@@ -187,7 +187,7 @@ namespace KiczanProductionInfoSystem
             command.Parameters.AddWithValue("offsetNum", offsetNum);
 
             //Use adapter object to fill dataTable with query results.
-            using (MySqlDataAdapter adapter = new MySqlDataAdapter(command))
+            using (SqlDataAdapter adapter = new SqlDataAdapter(command))
             {
                 adapter.Fill(dataTable);
             }
@@ -203,12 +203,12 @@ namespace KiczanProductionInfoSystem
             //Set initial value of totalRows.
             int totalRows = 0;
 
-            //Connect to db.
-            MySqlConnection connection = new MySqlConnection(connectionString);
+            //Connect to DB.
+            SqlConnection connection = new SqlConnection(sqlConnectionString);
             connection.Open();
 
             //Get the stored procedure from the DB.
-            MySqlCommand command = new MySqlCommand("PART_NUMBER_QUERY_ARCHIVE_COUNT", connection);
+            SqlCommand command = new SqlCommand("PART_NUMBER_QUERY_ARCHIVE_COUNT", connection);
             command.CommandType = CommandType.StoredProcedure;
 
             //Add wildcard to broaden search term.
@@ -236,12 +236,12 @@ namespace KiczanProductionInfoSystem
             //Create new dataTable to store query results.
             DataTable dataTable = new DataTable();
 
-            //Connect to db.
-            MySqlConnection connection = new MySqlConnection(connectionString);
+            //Connect to DB.
+            SqlConnection connection = new SqlConnection(sqlConnectionString);
             connection.Open();
 
             //Get stored procedure "OPERATOR_NAME_QUERY" from SQL server.
-            MySqlCommand command = new MySqlCommand("OPERATOR_NAME_QUERY", connection);
+            SqlCommand command = new SqlCommand("OPERATOR_NAME_QUERY", connection);
             command.CommandType = CommandType.StoredProcedure;
 
             //Set offset to be bound using currentPageIndex and pageSize arguments.
@@ -256,8 +256,7 @@ namespace KiczanProductionInfoSystem
             command.Parameters.AddWithValue("offsetNum", offsetNum);
 
             //Use adapter object to fill dataTable with query results.
-            using (MySqlDataAdapter adapter = new MySqlDataAdapter(command))
-
+            using (SqlDataAdapter adapter = new SqlDataAdapter(command))
             {
                 adapter.Fill(dataTable);
             }
@@ -275,12 +274,12 @@ namespace KiczanProductionInfoSystem
             //Set initial value of totalRows.
             int totalRows = 0;
 
-            //Connect to db.
-            MySqlConnection connection = new MySqlConnection(connectionString);
+            //Connect to DB.
+            SqlConnection connection = new SqlConnection(sqlConnectionString);
             connection.Open();
 
             //Get the stored procedure from the DB.
-            MySqlCommand command = new MySqlCommand("OPERATOR_NAME_QUERY_COUNT", connection);
+            SqlCommand command = new SqlCommand("OPERATOR_NAME_QUERY_COUNT", connection);
             command.CommandType = CommandType.StoredProcedure;
 
             //Add wildcard to broaden search term.
@@ -303,12 +302,12 @@ namespace KiczanProductionInfoSystem
         //Execute query to mark recorded as deleted.
         internal void softDeleteQuery(int part_history_id)
         {
-            //Connect to db.
-            MySqlConnection connection = new MySqlConnection(connectionString);
+            //Connect to DB.
+            SqlConnection connection = new SqlConnection(sqlConnectionString);
             connection.Open();
 
             //Get stored procedure "MARK_PART_DELETED" from SQL server.
-            MySqlCommand command = new MySqlCommand("MARK_PART_DELETED", connection);
+            SqlCommand command = new SqlCommand("MARK_PART_DELETED", connection);
             command.CommandType = CommandType.StoredProcedure;
 
             //Paramaterized to prevent SQL Injection.
@@ -323,12 +322,12 @@ namespace KiczanProductionInfoSystem
         //Execute query to restore previously deleted record.
         internal void restoreRecordQuery(int part_history_id)
         {
-            //Connect to db.
-            MySqlConnection connection = new MySqlConnection(connectionString);
+            //Connect to DB.
+            SqlConnection connection = new SqlConnection(sqlConnectionString);
             connection.Open();
 
             //Get stored procedure "MARK_PART_DELETED" from SQL server.
-            MySqlCommand command = new MySqlCommand("RESTORE_PART", connection);
+            SqlCommand command = new SqlCommand("RESTORE_PART", connection);
             command.CommandType = CommandType.StoredProcedure;
 
             //Paramaterized to prevent SQL Injection.
@@ -345,12 +344,12 @@ namespace KiczanProductionInfoSystem
             //Create new dataTable to store query results.
             DataTable dataTable = new DataTable();
 
-            //Connect to db.
-            MySqlConnection connection = new MySqlConnection(connectionString);
+            //Connect to DB.
+            SqlConnection connection = new SqlConnection(sqlConnectionString);
             connection.Open();
 
             //Get stored procedure "NC_MACHINE_WORK_QUERY" from SQL server.
-            MySqlCommand command = new MySqlCommand("FABRICATION_DEPARTMENT_QUERY", connection);
+            SqlCommand command = new SqlCommand("FABRICATION_DEPARTMENT_QUERY", connection);
             command.CommandType = CommandType.StoredProcedure;
 
             //Set offset to be bound using currentPageIndex and pageSize arguments.
@@ -361,7 +360,7 @@ namespace KiczanProductionInfoSystem
             command.Parameters.AddWithValue("offsetNum", offsetNum);
 
             //Use adapter object to fill dataTable with query results.
-            using (MySqlDataAdapter adapter = new MySqlDataAdapter(command))
+            using (SqlDataAdapter adapter = new SqlDataAdapter(command))
             {
                 adapter.Fill(dataTable);
             }
@@ -377,12 +376,12 @@ namespace KiczanProductionInfoSystem
             //Set initial value of totalRows.
             int totalRows = 0;
 
-            //Connect to db.
-            MySqlConnection connection = new MySqlConnection(connectionString);
+            //Connect to DB.
+            SqlConnection connection = new SqlConnection(sqlConnectionString);
             connection.Open();
 
             //Get the stored procedure from the DB.
-            MySqlCommand command = new MySqlCommand("FABRICATION_DEPARTMENT_QUERY_COUNT", connection);
+            SqlCommand command = new SqlCommand("FABRICATION_DEPARTMENT_QUERY_COUNT", connection);
             command.CommandType = CommandType.StoredProcedure;
 
             //Execute query, save result in result object.
@@ -402,12 +401,12 @@ namespace KiczanProductionInfoSystem
             //Create new dataTable to store query results.
             DataTable dataTable = new DataTable();
 
-            //Connect to db.
-            MySqlConnection connection = new MySqlConnection(connectionString);
+            //Connect to DB.
+            SqlConnection connection = new SqlConnection(sqlConnectionString);
             connection.Open();
 
             //Get stored procedure "NC_MACHINE_WORK_QUERY" from SQL server.
-            MySqlCommand command = new MySqlCommand("NC_MACHINE_WORK_QUERY", connection);
+            SqlCommand command = new SqlCommand("NC_MACHINE_WORK_QUERY", connection);
             command.CommandType = CommandType.StoredProcedure;
 
             //Set offset to be bound using currentPageIndex and pageSize arguments.
@@ -418,7 +417,7 @@ namespace KiczanProductionInfoSystem
             command.Parameters.AddWithValue("offsetNum", offsetNum);
 
             //Use adapter object to fill dataTable with query results.
-            using (MySqlDataAdapter adapter = new MySqlDataAdapter(command))
+            using (SqlDataAdapter adapter = new SqlDataAdapter(command))
             {
                 adapter.Fill(dataTable);
             }
@@ -434,12 +433,12 @@ namespace KiczanProductionInfoSystem
             //Set initial value of totalRows.
             int totalRows = 0;
 
-            //Connect to db.
-            MySqlConnection connection = new MySqlConnection(connectionString);
+            //Connect to DB.
+            SqlConnection connection = new SqlConnection(sqlConnectionString);
             connection.Open();
 
             //Get the stored procedure from the DB.
-            MySqlCommand command = new MySqlCommand("NC_MACHINE_WORK_QUERY_COUNT", connection);
+            SqlCommand command = new SqlCommand("NC_MACHINE_WORK_QUERY_COUNT", connection);
             command.CommandType = CommandType.StoredProcedure;
 
             //Execute query, save result in result object.
@@ -459,16 +458,16 @@ namespace KiczanProductionInfoSystem
             //Create new List object.
             List<Operators> returnList = new List<Operators>();
 
-            //Connect to db.
-            MySqlConnection connection = new MySqlConnection(connectionString);
+            //Connect to DB.
+            SqlConnection connection = new SqlConnection(sqlConnectionString);
             connection.Open();
 
             //Get the stored procedure from the DB.
-            MySqlCommand command = new MySqlCommand("GET_OPERATORS", connection);
+            SqlCommand command = new SqlCommand("GET_OPERATORS", connection);
             command.CommandType = CommandType.StoredProcedure;
 
             //Read returned values from query into returnList.
-            using (MySqlDataReader reader = command.ExecuteReader())
+            using (SqlDataReader reader = command.ExecuteReader())
             {
                 while (reader.Read())
                 {
@@ -491,16 +490,16 @@ namespace KiczanProductionInfoSystem
             //Create new List object.
             List<Customers> returnList = new List<Customers>();
 
-            //Connect to db.
-            MySqlConnection connection = new MySqlConnection(connectionString);
+            //Connect to DB.
+            SqlConnection connection = new SqlConnection(sqlConnectionString);
             connection.Open();
 
             //Get the stored procedure from the DB.
-            MySqlCommand command = new MySqlCommand("GET_CUSTOMERS", connection);
+            SqlCommand command = new SqlCommand("GET_CUSTOMERS", connection);
             command.CommandType = CommandType.StoredProcedure;
 
             //Read returned values from query into returnList.
-            using (MySqlDataReader reader = command.ExecuteReader())
+            using (SqlDataReader reader = command.ExecuteReader())
             {
                 while (reader.Read())
                 {
@@ -519,116 +518,103 @@ namespace KiczanProductionInfoSystem
 
         internal bool CreateRecord(int custID, int opID, string partNumber, DateTime dateDue, string poNumber, string quantity, string checkedOperations, DateTime dateReceived, int toDelete)
         {
-            MySqlConnection connection = new MySqlConnection(connectionString);
+            //Connect to DB.
+            SqlConnection sqlconnect = new SqlConnection(sqlConnectionString);
 
-            MySqlParameter[] pms = new MySqlParameter[10];
+            //Build array of type SqlParameter for storage.
+            SqlParameter[] pms = new SqlParameter[9];
 
-            //current dummy values and a varible for the operations selceted. 
-            pms[0] = new MySqlParameter("PART_HISTORY_ID", MySqlDbType.Int32);
-            pms[0].Value = DBNull.Value;
+            //Set array index values to inputs from CreateRecord form.
+            pms[0] = new SqlParameter("CUSTOMER_ID", SqlDbType.Int);
+            pms[0].Value = custID;
 
-            //    command.Parameters.Add("@CUSTOMER_ID", MySqlDbType.Int32).Value = 17;
-            pms[1] = new MySqlParameter("CUSTOMER_ID", MySqlDbType.Int32);
-            pms[1].Value = custID;
+            pms[1] = new SqlParameter("OPERATOR_ID", SqlDbType.Int);
+            pms[1].Value = opID;
 
-            //   command.Parameters.Add("OPERATOR_ID", MySqlDbType.Int32).Value = 4;
-            pms[2] = new MySqlParameter("OPERATOR_ID", MySqlDbType.Int32);
-            pms[2].Value = opID;
+            pms[2] = new SqlParameter("PART_NUMBER", SqlDbType.VarChar);
+            pms[2].Value = partNumber;
 
-            //  command.Parameters.Add("@PART_NUMBER", MySqlDbType.VarChar).Value = "7777";
-            pms[3] = new MySqlParameter("PART_NUMBER", MySqlDbType.VarChar);
-            pms[3].Value = partNumber;
+            pms[3] = new SqlParameter("DATE_DUE", SqlDbType.DateTime);
+            pms[3].Value = dateDue;
 
-            //   command.Parameters.Add("@DATE_DUE", MySqlDbType.DateTime).Value = new DateTime(2525, 12, 25);
-            pms[4] = new MySqlParameter("DATE_DUE", MySqlDbType.DateTime);
-            pms[4].Value = dateDue;
+            pms[4] = new SqlParameter("PURCHASE_ORDER_NUMBER", SqlDbType.VarChar);
+            pms[4].Value = poNumber;
 
-            //   command.Parameters.Add("@PURCHASE_ORDER_NUMBER", MySqlDbType.VarChar).Value = "7777";
-            pms[5] = new MySqlParameter("PURCHASE_ORDER_NUMBER", MySqlDbType.VarChar);
-            pms[5].Value = poNumber;
+            pms[5] = new SqlParameter("QTY", SqlDbType.Int);
+            pms[5].Value = quantity;
 
-            //  command.Parameters.Add("@QTY", MySqlDbType.Int32).Value = 7777;
-            pms[6] = new MySqlParameter("QTY", MySqlDbType.Int32);
-            pms[6].Value = quantity;
+            pms[6] = new SqlParameter("OPERATIONS", SqlDbType.VarChar);
+            pms[6].Value = checkedOperations;
 
-            //  command.Parameters.Add("@OPERATIONS", MySqlDbType.VarChar).Value = checkedOperations;
-            pms[7] = new MySqlParameter("OPERATIONS", MySqlDbType.VarChar);
-            pms[7].Value = checkedOperations;
+            pms[7] = new SqlParameter("DATE_RECEIVED", SqlDbType.DateTime);
+            pms[7].Value = dateReceived;
 
-            //  command.Parameters.Add("@DATE_RECEIVED", MySqlDbType.DateTime).Value = new DateTime(2049, 6, 13);
-            pms[8] = new MySqlParameter("DATE_RECEIVED", MySqlDbType.DateTime);
-            pms[8].Value = dateReceived;
+            pms[8] = new SqlParameter("TO_DELETE", SqlDbType.Bit);
+            pms[8].Value = toDelete;
 
-            // command.Parameters.Add("@TO_DELETE", MySqlDbType.Binary).Value = 0;
-            pms[9] = new MySqlParameter("TO_DELETE", MySqlDbType.Binary);
-            pms[9].Value = toDelete;
-
-            MySqlCommand command = new MySqlCommand();
-            command.Connection = connection;
+            //Build SQL command retreived from stored procedure "CREATE_RECORD".
+            SqlCommand command = new SqlCommand();
+            command.Connection = sqlconnect;
             command.CommandType = CommandType.StoredProcedure;
             command.CommandText = "CREATE_RECORD";
-            //command.Parameters.Clear();
             command.Parameters.AddRange(pms);
-            connection.Open();
+
+            //Open connection to DB and execute command with parameter array.
+            sqlconnect.Open();
             int rowsAffected = command.ExecuteNonQuery();
-            connection.Close();
+            sqlconnect.Close();
             return rowsAffected > 0;
         }
         internal bool UpdateRecord(int partID, int custID, int opID, string partNumber, DateTime dateDue, string poNumber, string quantity, string checkedOperations, DateTime dateReceived, int toDelete)
         {
-            MySqlConnection connection = new MySqlConnection(connectionString);
+            //Connect to DB.
+            SqlConnection sqlconnect = new SqlConnection(sqlConnectionString);
 
-            MySqlParameter[] pms = new MySqlParameter[10];
+            //Build array of type SqlParameter for storage.
+            SqlParameter[] pms = new SqlParameter[10];
 
-            //current dummy values and a varible for the operations selceted. 
-            pms[0] = new MySqlParameter("p_PART_HISTORY_ID", MySqlDbType.Int32);
+            //Set array index values to inputs from UpdateRecord form.
+            pms[0] = new SqlParameter("p_PART_HISTORY_ID", SqlDbType.Int);
             pms[0].Value = partID;
 
-            //    command.Parameters.Add("@CUSTOMER_ID", MySqlDbType.Int32).Value = 17;
-            pms[1] = new MySqlParameter("p_CUSTOMER_ID", MySqlDbType.Int32);
+            pms[1] = new SqlParameter("p_CUSTOMER_ID", SqlDbType.Int);
             pms[1].Value = custID;
 
-            //   command.Parameters.Add("OPERATOR_ID", MySqlDbType.Int32).Value = 4;
-            pms[2] = new MySqlParameter("p_OPERATOR_ID", MySqlDbType.Int32);
+            pms[2] = new SqlParameter("p_OPERATOR_ID", SqlDbType.Int);
             pms[2].Value = opID;
 
-            //  command.Parameters.Add("@PART_NUMBER", MySqlDbType.VarChar).Value = "7777";
-            pms[3] = new MySqlParameter("p_PART_NUMBER", MySqlDbType.VarChar);
+            pms[3] = new SqlParameter("p_PART_NUMBER", SqlDbType.VarChar);
             pms[3].Value = partNumber;
 
-            //   command.Parameters.Add("@DATE_DUE", MySqlDbType.DateTime).Value = new DateTime(2525, 12, 25);
-            pms[4] = new MySqlParameter("p_DATE_DUE", MySqlDbType.DateTime);
+            pms[4] = new SqlParameter("p_DATE_DUE", SqlDbType.DateTime);
             pms[4].Value = dateDue;
 
-            //   command.Parameters.Add("@PURCHASE_ORDER_NUMBER", MySqlDbType.VarChar).Value = "7777";
-            pms[5] = new MySqlParameter("p_PURCHASE_ORDER_NUMBER", MySqlDbType.VarChar);
+            pms[5] = new SqlParameter("p_PURCHASE_ORDER_NUMBER", SqlDbType.VarChar);
             pms[5].Value = poNumber;
 
-            //  command.Parameters.Add("@QTY", MySqlDbType.Int32).Value = 7777;
-            pms[6] = new MySqlParameter("p_QTY", MySqlDbType.Int32);
+            pms[6] = new SqlParameter("p_QTY", SqlDbType.Int);
             pms[6].Value = quantity;
 
-            //  command.Parameters.Add("@OPERATIONS", MySqlDbType.VarChar).Value = checkedOperations;
-            pms[7] = new MySqlParameter("p_OPERATIONS", MySqlDbType.VarChar);
+            pms[7] = new SqlParameter("p_OPERATIONS", SqlDbType.VarChar);
             pms[7].Value = checkedOperations;
 
-            //  command.Parameters.Add("@DATE_RECEIVED", MySqlDbType.DateTime).Value = new DateTime(2049, 6, 13);
-            pms[8] = new MySqlParameter("p_DATE_RECEIVED", MySqlDbType.DateTime);
+            pms[8] = new SqlParameter("p_DATE_RECEIVED", SqlDbType.DateTime);
             pms[8].Value = dateReceived;
 
-            // command.Parameters.Add("@TO_DELETE", MySqlDbType.Binary).Value = 0;
-            pms[9] = new MySqlParameter("p_TO_DELETE", MySqlDbType.Binary);
+            pms[9] = new SqlParameter("p_TO_DELETE", SqlDbType.Bit);
             pms[9].Value = toDelete;
 
-            MySqlCommand command = new MySqlCommand();
-            command.Connection = connection;
+            //Build SQL command retreived from stored procedure "UPDATE_RECORD".
+            SqlCommand command = new SqlCommand();
+            command.Connection = sqlconnect;
             command.CommandType = CommandType.StoredProcedure;
             command.CommandText = "UPDATE_RECORD";
-            //command.Parameters.Clear();
             command.Parameters.AddRange(pms);
-            connection.Open();
+
+            //Open connection to DB and execute command with parameter array.
+            sqlconnect.Open();
             int rowsAffected = command.ExecuteNonQuery();
-            connection.Close();
+            sqlconnect.Close();
             return rowsAffected > 0;
         }
         //Function to check if a userName exists within the DB.
@@ -641,11 +627,11 @@ namespace KiczanProductionInfoSystem
             bool flag = false;
 
             //Open connection to DB.
-            MySqlConnection connection = new MySqlConnection(connectionString);
+            SqlConnection connection = new SqlConnection(sqlConnectionString);
             connection.Open();
 
             //Get the stored procedure from the DB.
-            MySqlCommand command = new MySqlCommand("USER_NAME_QUERY_COUNT", connection);
+            SqlCommand command = new SqlCommand("USER_NAME_QUERY_COUNT", connection);
             command.CommandType = CommandType.StoredProcedure;
 
             //Paramaterized to prevent SQL Injection, bind values.
@@ -675,18 +661,18 @@ namespace KiczanProductionInfoSystem
             Users user = new Users();
 
             //Open connection to DB.
-            MySqlConnection connection = new MySqlConnection(connectionString);
+            SqlConnection connection = new SqlConnection(sqlConnectionString);
             connection.Open();
 
             //Get the stored procedure from the DB.
-            MySqlCommand command = new MySqlCommand("USER_NAME_QUERY", connection);
+            SqlCommand command = new SqlCommand("USER_NAME_QUERY", connection);
             command.CommandType = CommandType.StoredProcedure;
 
             //Paramaterized to prevent SQL Injection, bind values.
             command.Parameters.AddWithValue("userName", userName);
 
             //Execute query, read returned values into user object.
-            using (MySqlDataReader reader = command.ExecuteReader())
+            using (SqlDataReader reader = command.ExecuteReader())
             {
                 while (reader.Read())
                 {
@@ -696,6 +682,7 @@ namespace KiczanProductionInfoSystem
                     user.ROLE_NAME = reader.GetString(3);
                 }
             }
+            //connection.Close();
             connection.Close();
 
             return user;
