@@ -37,6 +37,11 @@ namespace KiczanProductionInfoSystem
         {
             InitializeComponent();
             this.Text = "Kiczan Production Information System";
+            this.WindowState = FormWindowState.Normal;
+            this.ClientSize = new System.Drawing.Size(1105, 550);
+            this.FormBorderStyle = FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
+            this.StartPosition = FormStartPosition.CenterScreen;
 
             //If the user name exists, use the returned object properties to set role privileges.
             if (newDAO.userNameCheck(userName))
@@ -1822,6 +1827,13 @@ namespace KiczanProductionInfoSystem
             CreateRecord createRecord = new CreateRecord();
 
             createRecord.Show();
+        }
+
+        //Event handler for the click event for the Dashboard button.
+        private void button6_Click(object sender, EventArgs e)
+        {
+            Dashboard dashboard = new Dashboard();
+            dashboard.Show();
         }
 
         //Event handler for the click event for the Export button.

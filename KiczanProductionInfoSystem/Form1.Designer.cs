@@ -49,6 +49,7 @@
             this.updateRecordToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteRecordArchiveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.restoreRecordMainTableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.button6 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
@@ -173,7 +174,6 @@
             this.button3.Text = "Export";
             this.button3.UseVisualStyleBackColor = false;
             this.button3.Click += new System.EventHandler(this.button3_Click);
-            //TO DO: Add event handler for button3
             // 
             // label5
             // 
@@ -242,12 +242,25 @@
             this.restoreRecordMainTableToolStripMenuItem.Text = "Restore Record (Main Table)";
             this.restoreRecordMainTableToolStripMenuItem.Click += new System.EventHandler(this.restoreRecordMainTableToolStripMenuItem_Click);
             // 
+            // button6
+            // 
+            this.button6.BackColor = System.Drawing.Color.Orange;
+            this.button6.ForeColor = System.Drawing.Color.White;
+            this.button6.Location = new System.Drawing.Point(1605, 79);
+            this.button6.Name = "button6";
+            this.button6.Size = new System.Drawing.Size(192, 51);
+            this.button6.TabIndex = 27;
+            this.button6.Text = "Dashboard";
+            this.button6.UseVisualStyleBackColor = false;
+            this.button6.Click += new System.EventHandler(this.button6_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.SystemColors.ActiveCaption;
-            this.ClientSize = new System.Drawing.Size(2205, 1006);
+            this.BackColor = System.Drawing.Color.FromArgb(198, 207, 219);
+            this.ClientSize = new System.Drawing.Size(1105, 550);
+            this.Controls.Add(this.button6);
             this.Controls.Add(this.button5);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.label6);
@@ -271,6 +284,7 @@
             this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
+
         }
 
         #endregion
@@ -294,6 +308,7 @@
         private System.Windows.Forms.ToolStripMenuItem updateRecordToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem deleteRecordArchiveToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem restoreRecordMainTableToolStripMenuItem;
+        private System.Windows.Forms.Button button6;
     }
 }
 
