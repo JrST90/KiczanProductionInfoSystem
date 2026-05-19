@@ -1900,6 +1900,9 @@ namespace KiczanProductionInfoSystem
             //Get the column headers for dataGridView1.
             dataGridView1.ClipboardCopyMode = DataGridViewClipboardCopyMode.EnableAlwaysIncludeHeaderText;
 
+            //Turn off row indicators for grid copy.
+            dataGridView1.RowHeadersVisible = false;
+
             //Enable MultiSelect for all visible cells
             dataGridView1.MultiSelect = true;
 
@@ -1912,6 +1915,9 @@ namespace KiczanProductionInfoSystem
             {
                 Clipboard.SetDataObject(dataObject);
             }
+
+            //Turn row indicators back on after copy.
+            dataGridView1.RowHeadersVisible = true;
         }
 
         //Event handler for click event for Delete Record on right click menu.
