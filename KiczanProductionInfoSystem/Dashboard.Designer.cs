@@ -34,27 +34,27 @@
             System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
             System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.barChart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.pieChart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
-            ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.barChart1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pieChart1)).BeginInit();
             this.SuspendLayout();
             // 
-            // chart1
+            // barChart1
             // 
             chartArea1.Name = "ChartArea1";
-            this.chart1.ChartAreas.Add(chartArea1);
+            this.barChart1.ChartAreas.Add(chartArea1);
             legend1.Name = "Legend1";
-            this.chart1.Legends.Add(legend1);
-            this.chart1.Location = new System.Drawing.Point(47, 39);
-            this.chart1.Name = "chart1";
+            this.barChart1.Legends.Add(legend1);
+            this.barChart1.Location = new System.Drawing.Point(47, 39);
+            this.barChart1.Name = "barChart1";
             series1.ChartArea = "ChartArea1";
             series1.Legend = "Legend1";
             series1.Name = "Series1";
-            this.chart1.Series.Add(series1);
-            this.chart1.Size = new System.Drawing.Size(1718, 1044);
-            this.chart1.TabIndex = 0;
-            this.chart1.Text = "chart1";
+            this.barChart1.Series.Add(series1);
+            this.barChart1.Size = new System.Drawing.Size(1718, 1044);
+            this.barChart1.TabIndex = 0;
+            this.barChart1.Text = "barChart1";
             // 
             // pieChart1
             // 
@@ -79,11 +79,11 @@
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(198)))), ((int)(((byte)(207)))), ((int)(((byte)(219)))));
             this.ClientSize = new System.Drawing.Size(2500, 1117);
             this.Controls.Add(this.pieChart1);
-            this.Controls.Add(this.chart1);
+            this.Controls.Add(this.barChart1);
             this.Name = "Dashboard";
             this.Text = "Dashboard";
             this.Load += new System.EventHandler(this.Dashboard_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.chart1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.barChart1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pieChart1)).EndInit();
             this.ResumeLayout(false);
 
@@ -91,7 +91,7 @@
 
         #endregion
 
-        private System.Windows.Forms.DataVisualization.Charting.Chart chart1;
+        private System.Windows.Forms.DataVisualization.Charting.Chart barChart1;
         private System.Windows.Forms.DataVisualization.Charting.Chart pieChart1;
     }
 }
