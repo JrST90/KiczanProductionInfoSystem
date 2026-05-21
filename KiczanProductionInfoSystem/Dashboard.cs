@@ -10,9 +10,9 @@ namespace KiczanProductionInfoSystem
         public Dashboard()
         {
             InitializeComponent();
-            this.Text = "Kiczan Dashboard";
+            this.Text = "Kiczan: Dashboard";
             this.WindowState = FormWindowState.Normal;
-            this.ClientSize = new Size(1270, 585);
+            this.ClientSize = new Size(1270, 750);
             this.FormBorderStyle = FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.StartPosition = FormStartPosition.CenterScreen;
@@ -23,9 +23,10 @@ namespace KiczanProductionInfoSystem
         {
             PopulateCustomerChartData();
             PopulateOperatorChartData();
+            PopulateDepartmentChartData();
         }
 
-        //Method to populate customer chart data.
+        //Method to populate customer bar chart data.
         private void PopulateCustomerChartData()
         {
             DAO newDAO = new DAO();
@@ -53,7 +54,7 @@ namespace KiczanProductionInfoSystem
 
             barChart1.Left = -30;
 
-            barChart1.Titles.Add("Customers by Quantity in Last 6 Months");
+            barChart1.Titles.Add("Customer Parts Quantity in Last 6 Months");
             barChart1.Titles[0].Font = new Font(new FontFamily("Arial"), 14, FontStyle.Bold);
 
             barChart1.ChartAreas[0].AxisX.LabelStyle.Font = new Font(new FontFamily("Arial"), 10, FontStyle.Bold);
@@ -98,7 +99,7 @@ namespace KiczanProductionInfoSystem
                 point.BorderWidth = 2;
             }
         }
-        //Method to populate operator chart data.
+        //Method to populate operator pie chart data.
         private void PopulateOperatorChartData()
         {
             DAO newDAO = new DAO();
@@ -110,7 +111,7 @@ namespace KiczanProductionInfoSystem
             ChartArea pieChartArea = new ChartArea("pieChartArea");
             pieChart1.ChartAreas.Add(pieChartArea);
 
-            pieChart1.Titles.Add("Operators by Quantity in Last 6 Months");
+            pieChart1.Titles.Add("Operator Parts Quantity in Last 6 Months");
             pieChart1.Titles[0].Font = new Font(new FontFamily("Arial"), 14, FontStyle.Bold);
 
             Series series = new Series("Quantity")
@@ -129,6 +130,11 @@ namespace KiczanProductionInfoSystem
             pieChartArea.Area3DStyle.Inclination = 45;
 
             pieChart1.Series.Add(series);
+            /*
+            pieChart1.Series["Quantity"]["PieLabelStyle"] = "Outside";
+            pieChart1.Series["Quantity"].SmartLabelStyle.Enabled = true;
+            pieChart1.Series["Quantity"]["PieLineColor"] = "Black";
+            */
 
             Legend legend = new Legend("Main Legend")
             {
@@ -163,6 +169,73 @@ namespace KiczanProductionInfoSystem
                  slice.Color = dashboardColors[i % dashboardColors.Length];
                  slice.BorderColor = Color.White;
                  slice.BorderWidth = 2;
+            }
+        }
+        //Method to populate department pie chart data.
+        private void PopulateDepartmentChartData()
+        {
+            DAO newDAO = new DAO();
+
+            pieChart2.Series.Clear();
+            pieChart2.ChartAreas.Clear();
+            pieChart2.Titles.Clear();
+
+            ChartArea pieChartArea = new ChartArea("pieChartArea");
+            pieChart2.ChartAreas.Add(pieChartArea);
+
+            pieChart2.Titles.Add("Department Work Load in Next 6 Months");
+            pieChart2.Titles[0].Font = new Font(new FontFamily("Arial"), 14, FontStyle.Bold);
+
+            Series series = new Series("Quantity")
+            {
+                ChartType = SeriesChartType.Pie,
+                XValueMember = "Department",
+                YValueMembers = "TotalParts",
+                IsValueShownAsLabel = true,
+                Font = new Font(new FontFamily("Arial"), 10, FontStyle.Bold)
+            };
+
+            series.Label = "#PERCENT{P1}";
+            series.LegendText = "#VALX";
+
+            pieChartArea.Area3DStyle.Enable3D = true;
+            pieChartArea.Area3DStyle.Inclination = 45;
+
+            pieChart2.Series.Add(series);
+
+            Legend legend = new Legend("Main Legend")
+            {
+                Docking = Docking.Right,
+                BackColor = Color.Transparent
+            };
+
+            pieChart2.Legends.Add(legend);
+            pieChart2.Legends[0].Font = new Font(new FontFamily("Arial"), 8, FontStyle.Bold);
+            pieChart2.Legends[0].BackColor = Color.Transparent;
+
+            pieChart2.DataSource = newDAO.LoadDepartmentChartData();
+            pieChart2.DataBind();
+
+            pieChart2.BackColor = Color.Transparent;
+            pieChart2.ChartAreas[0].BackColor = Color.Transparent;
+
+            Color[] dashboardColors = new Color[]
+            {
+                Color.FromArgb(52, 116, 181),
+                Color.FromArgb(46, 139, 87),
+                Color.FromArgb(139, 92, 246),
+                Color.FromArgb(234, 179, 8),
+                Color.FromArgb(249, 115, 22),
+                Color.FromArgb(220, 38, 38),
+                Color.FromArgb(13, 148, 136)
+            };
+
+            for (int i = 0; i < pieChart2.Series["Quantity"].Points.Count; i++)
+            {
+                var slice = pieChart2.Series["Quantity"].Points[i];
+                slice.Color = dashboardColors[i % dashboardColors.Length];
+                slice.BorderColor = Color.White;
+                slice.BorderWidth = 2;
             }
         }
     }

@@ -17,6 +17,13 @@ namespace KiczanProductionInfoSystem
         {
             InitializeComponent();
 
+            this.Text = "Kiczan: Create Record";
+            this.WindowState = FormWindowState.Normal;
+            this.ClientSize = new Size(900, 450);
+            this.FormBorderStyle = FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
+            this.StartPosition = FormStartPosition.CenterScreen;
+
             //Create new DAO object for query.
             DAO newDAO = new DAO();
 

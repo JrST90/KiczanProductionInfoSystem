@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Globalization;
 using System.Windows.Forms;
 
@@ -17,6 +18,13 @@ namespace KiczanProductionInfoSystem
         public UpdateRecord(int convertedPartHistoryID, string retrievedCustomerName, string retrievedOperatorName, string retrievedPartNumber, string retrievedPurchaseOrderNumber, string retrievedQuantity, string retrievedDateReceived, string retrievedDateDue, string retrievedOperations)
         {
             InitializeComponent();
+
+            this.Text = "Kiczan: Update Record";
+            this.WindowState = FormWindowState.Normal;
+            this.ClientSize = new Size(900, 450);
+            this.FormBorderStyle = FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
+            this.StartPosition = FormStartPosition.CenterScreen;
 
             //Create new DAO object for query.
             DAO newDAO = new DAO();

@@ -894,6 +894,33 @@ namespace KiczanProductionInfoSystem
             }
             return dataTable;
         }
+        internal DataTable LoadDepartmentChartData()
+        {
+            //Create new datatable to store query results.
+            DataTable dataTable = new DataTable();
+
+            try
+            {
+                //Open connection to DB.
+                using (SqlConnection connection = new SqlConnection(sqlConnectionString))
+                {
+                    //Get the stored procedure from the DB.
+                    using (SqlCommand command = new SqlCommand("NEXT_SIX_MONTHS_BY_DEPARTMENT", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+                        using (SqlDataAdapter adapter = new SqlDataAdapter(command))
+                        {
+                            adapter.Fill(dataTable);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to load department dashboard chart data: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            return dataTable;
+        }
     }
 }
 
