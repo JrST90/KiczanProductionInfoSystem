@@ -24,6 +24,8 @@ namespace KiczanProductionInfoSystem
             PopulateCustomerChartData();
             PopulateOperatorChartData();
             PopulateDepartmentChartData();
+            PopulateDepartmentGridView();
+            PopulateVolumeChartData();
         }
 
         //Method to populate customer bar chart data.
@@ -111,7 +113,7 @@ namespace KiczanProductionInfoSystem
             ChartArea pieChartArea = new ChartArea("pieChartArea");
             pieChart1.ChartAreas.Add(pieChartArea);
 
-            pieChart1.Titles.Add("Operator Parts Quantity in Last 6 Months");
+            pieChart1.Titles.Add("Bending Operator Parts Quantity in Last 6 Months");
             pieChart1.Titles[0].Font = new Font(new FontFamily("Arial"), 14, FontStyle.Bold);
 
             Series series = new Series("Quantity")
@@ -120,7 +122,8 @@ namespace KiczanProductionInfoSystem
                 XValueMember = "OPERATOR_NAME",
                 YValueMembers = "TotalQuantity",
                 IsValueShownAsLabel = true,
-                Font = new Font(new FontFamily("Arial"), 10, FontStyle.Bold)
+                Font = new Font(new FontFamily("Arial"), 10, FontStyle.Bold),
+                ToolTip = "Quantity: #VALY"
             };
 
             series.Label = "#PERCENT{P1}";
@@ -130,11 +133,6 @@ namespace KiczanProductionInfoSystem
             pieChartArea.Area3DStyle.Inclination = 45;
 
             pieChart1.Series.Add(series);
-            /*
-            pieChart1.Series["Quantity"]["PieLabelStyle"] = "Outside";
-            pieChart1.Series["Quantity"].SmartLabelStyle.Enabled = true;
-            pieChart1.Series["Quantity"]["PieLineColor"] = "Black";
-            */
 
             Legend legend = new Legend("Main Legend")
             {
@@ -190,9 +188,10 @@ namespace KiczanProductionInfoSystem
             {
                 ChartType = SeriesChartType.Pie,
                 XValueMember = "Department",
-                YValueMembers = "TotalParts",
+                YValueMembers = "TotalJobs",
                 IsValueShownAsLabel = true,
-                Font = new Font(new FontFamily("Arial"), 10, FontStyle.Bold)
+                Font = new Font(new FontFamily("Arial"), 10, FontStyle.Bold),
+                ToolTip = "Total Jobs: #VALY"
             };
 
             series.Label = "#PERCENT{P1}";
@@ -210,7 +209,7 @@ namespace KiczanProductionInfoSystem
             };
 
             pieChart2.Legends.Add(legend);
-            pieChart2.Legends[0].Font = new Font(new FontFamily("Arial"), 8, FontStyle.Bold);
+            pieChart2.Legends[0].Font = new Font(new FontFamily("Arial"), 10, FontStyle.Bold);
             pieChart2.Legends[0].BackColor = Color.Transparent;
 
             pieChart2.DataSource = newDAO.LoadDepartmentChartData();
@@ -237,6 +236,70 @@ namespace KiczanProductionInfoSystem
                 slice.BorderColor = Color.White;
                 slice.BorderWidth = 2;
             }
+        }
+        private void PopulateVolumeChartData()
+        {
+            DAO newDAO = new DAO();
+
+            columnChart1.Series.Clear();
+            columnChart1.ChartAreas[0].AxisX.Interval = 1;
+
+            columnChart1.Titles.Add("Last Fiscal Year Quarterly Volume (Orders & Parts)");
+            columnChart1.Titles[0].Font = new Font(new FontFamily("Arial"), 14, FontStyle.Bold);
+
+            float currentFontSize = columnChart1.ChartAreas[0].AxisX.LabelStyle.Font.Size;
+
+            columnChart1.ChartAreas[0].AxisX.LabelStyle.Font = new Font(new FontFamily("Arial"), currentFontSize, FontStyle.Bold);
+            columnChart1.ChartAreas[0].AxisY.LabelStyle.Font = new Font(new FontFamily("Arial"), currentFontSize, FontStyle.Bold);
+
+            columnChart1.ChartAreas[0].AxisX.LabelStyle.Angle = -90;
+
+            Series seriesVolume = new Series("Total Orders")
+            {
+                ChartType = SeriesChartType.Column,
+                XValueMember = "Fiscal Quarter",
+                YValueMembers = "Total Volume",
+                IsValueShownAsLabel = true,
+                ToolTip = "Orders: #VALY",
+                Font = new Font(new FontFamily("Arial"), 10, FontStyle.Bold),
+                Color = Color.FromArgb(139, 92, 246),
+                BorderColor = Color.White,
+                BorderWidth = 1
+            };
+
+            Series seriesItems = new Series("Physical Parts")
+            {
+                ChartType = SeriesChartType.Column,
+                XValueMember = "Fiscal Quarter",
+                YValueMembers = "Total Scheduled Items",
+                IsValueShownAsLabel = true,
+                ToolTip = "Total Units: #VALY",
+                Font = new Font(new FontFamily("Arial"), 10, FontStyle.Bold),
+                Color = Color.FromArgb(234, 179, 8),
+                BorderColor = Color.White,
+                BorderWidth = 1
+            };
+
+            columnChart1.BackColor = Color.Transparent;
+            columnChart1.ChartAreas[0].BackColor = Color.Transparent;
+            columnChart1.Legends[0].BackColor = Color.Transparent;
+            columnChart1.Legends[0].Font = new Font(new FontFamily("Arial"), 10, FontStyle.Bold);
+
+            columnChart1.ChartAreas[0].AxisX.MajorGrid.Enabled = false;
+            columnChart1.ChartAreas[0].AxisX.MinorGrid.Enabled = false;
+            columnChart1.ChartAreas[0].AxisY.MajorGrid.Enabled = false;
+            columnChart1.ChartAreas[0].AxisY.MinorGrid.Enabled = false;
+
+            columnChart1.Series.Add(seriesVolume);
+            columnChart1.Series.Add(seriesItems);
+
+            columnChart1.DataSource = newDAO.LoadLastFiscalYearVolume();
+            columnChart1.DataBind();
+        }
+        private void PopulateDepartmentGridView()
+        {
+            DAO newDAO = new DAO();
+            dataGridView1.DataSource = newDAO.LoadDepartmentGridViewData();
         }
     }
 }

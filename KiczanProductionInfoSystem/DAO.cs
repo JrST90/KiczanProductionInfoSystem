@@ -921,6 +921,60 @@ namespace KiczanProductionInfoSystem
             }
             return dataTable;
         }
+        internal DataTable LoadDepartmentGridViewData()
+        {
+            //Create new datatable to store query results.
+            DataTable dataTable = new DataTable();
+
+            try
+            {
+                //Open connection to DB.
+                using (SqlConnection connection = new SqlConnection(sqlConnectionString))
+                {
+                    //Get the stored procedure from the DB.
+                    using (SqlCommand command = new SqlCommand("NEXT_SIX_MONTHS_JOBS_BY_DEPARTMENT", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+                        using (SqlDataAdapter adapter = new SqlDataAdapter(command))
+                        {
+                            adapter.Fill(dataTable);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to load department grid view data: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            return dataTable;
+        }
+        internal DataTable LoadLastFiscalYearVolume()
+        {
+            //Create new datatable to store query results.
+            DataTable dataTable = new DataTable();
+
+            try
+            {
+                //Open connection to DB.
+                using (SqlConnection connection = new SqlConnection(sqlConnectionString))
+                {
+                    //Get the stored procedure from the DB.
+                    using (SqlCommand command = new SqlCommand("GET_VOLUME_BY_QUARTER_LAST_FISCAL_YEAR", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+                        using (SqlDataAdapter adapter = new SqlDataAdapter(command))
+                        {
+                            adapter.Fill(dataTable);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to last fiscal year volume dashboard data: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            return dataTable;
+        }
     }
 }
 
