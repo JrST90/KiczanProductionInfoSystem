@@ -287,10 +287,15 @@ namespace KiczanProductionInfoSystem
                 Color = Color.Orange
             };
 
+            int lastYear = Convert.ToInt32(dt.Rows[dt.Rows.Count - 1]["Year"]);
+            int lastQuarter = Convert.ToInt32(dt.Rows[dt.Rows.Count - 1]["QuarterNumber"]);
+
+            List<string> futureLabels = GenerateFutureQuarters(lastYear, lastQuarter, 4);
+
             for (int f = 0; f < 4; f++)
             {
                 forecastSeries.Points.AddXY(i + f, forecast[f]);
-                forecastSeries.Points[f].AxisLabel = $"Q{f + 1} (F)";
+                forecastSeries.Points[f].AxisLabel = futureLabels[f];
             }
 
             columnChart1.Series.Add(actual);
@@ -339,10 +344,15 @@ namespace KiczanProductionInfoSystem
                 Color = Color.Orange
             };
 
+            int lastYear = Convert.ToInt32(dt.Rows[dt.Rows.Count - 1]["Year"]);
+            int lastQuarter = Convert.ToInt32(dt.Rows[dt.Rows.Count - 1]["QuarterNumber"]);
+
+            List<string> futureLabels = GenerateFutureQuarters(lastYear, lastQuarter, 4);
+
             for (int f = 0; f < 4; f++)
             {
                 forecastSeries.Points.AddXY(i + f, forecast[f]);
-                forecastSeries.Points[f].AxisLabel = $"Q{f + 1} (F)";
+                forecastSeries.Points[f].AxisLabel = futureLabels[f];
             }
 
             chartOrders.Series.Add(actual);
@@ -441,6 +451,25 @@ namespace KiczanProductionInfoSystem
             };
 
             chart.Legends.Add(legend);
+        }
+        private List<string> GenerateFutureQuarters(int year, int quarter, int count)
+        {
+            List<string> labels = new List<string>();
+
+            for (int i = 0; i < count; i++)
+            {
+                quarter++;
+
+                if (quarter > 4)
+                {
+                    quarter = 1;
+                    year++;
+                }
+
+                labels.Add($"Q{quarter} {year}");
+            }
+
+            return labels;
         }
     }
 }
