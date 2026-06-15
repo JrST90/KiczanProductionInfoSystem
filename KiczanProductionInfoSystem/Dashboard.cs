@@ -1,7 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Data;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
+using Microsoft.ML;
+using Microsoft.ML.TimeSeries;
+
+
+
 
 namespace KiczanProductionInfoSystem
 {
@@ -22,10 +30,11 @@ namespace KiczanProductionInfoSystem
         private void Dashboard_Load(object sender, EventArgs e)
         {
             PopulateCustomerChartData();
-            PopulateOperatorChartData();
+            //PopulateOperatorChartData();
             PopulateDepartmentChartData();
             PopulateDepartmentGridView();
             PopulateVolumeChartData();
+            PopulateOrdersChartData();
         }
 
         //Method to populate customer bar chart data.
@@ -91,7 +100,7 @@ namespace KiczanProductionInfoSystem
                 Color.FromArgb(220, 38, 38),
                 Color.FromArgb(13, 148, 136)
             };
-            
+
             for (int i = 0; i < barChart1.Series["Quantity"].Points.Count; i++)
             {
                 var point = barChart1.Series["Quantity"].Points[i];
@@ -102,73 +111,73 @@ namespace KiczanProductionInfoSystem
             }
         }
         //Method to populate operator pie chart data.
-        private void PopulateOperatorChartData()
-        {
-            DAO newDAO = new DAO();
+        /* private void PopulateOperatorChartData()
+         {
+             DAO newDAO = new DAO();
 
-            pieChart1.Series.Clear();
-            pieChart1.ChartAreas.Clear();
-            pieChart1.Titles.Clear();
+             pieChart1.Series.Clear();
+             pieChart1.ChartAreas.Clear();
+             pieChart1.Titles.Clear();
 
-            ChartArea pieChartArea = new ChartArea("pieChartArea");
-            pieChart1.ChartAreas.Add(pieChartArea);
+             ChartArea pieChartArea = new ChartArea("pieChartArea");
+             pieChart1.ChartAreas.Add(pieChartArea);
 
-            pieChart1.Titles.Add("Bending Operator Parts Quantity in Last 6 Months");
-            pieChart1.Titles[0].Font = new Font(new FontFamily("Arial"), 14, FontStyle.Bold);
+             pieChart1.Titles.Add("Bending Operator Parts Quantity in Last 6 Months");
+             pieChart1.Titles[0].Font = new Font(new FontFamily("Arial"), 14, FontStyle.Bold);
 
-            Series series = new Series("Quantity")
-            {
-                ChartType = SeriesChartType.Pie,
-                XValueMember = "OPERATOR_NAME",
-                YValueMembers = "TotalQuantity",
-                IsValueShownAsLabel = true,
-                Font = new Font(new FontFamily("Arial"), 10, FontStyle.Bold),
-                ToolTip = "Quantity: #VALY"
-            };
+             Series series = new Series("Quantity")
+             {
+                 ChartType = SeriesChartType.Pie,
+                 XValueMember = "OPERATOR_NAME",
+                 YValueMembers = "TotalQuantity",
+                 IsValueShownAsLabel = true,
+                 Font = new Font(new FontFamily("Arial"), 10, FontStyle.Bold),
+                 ToolTip = "Quantity: #VALY"
+             };
 
-            series.Label = "#PERCENT{P1}";
-            series.LegendText = "#VALX";
+             series.Label = "#PERCENT{P1}";
+             series.LegendText = "#VALX";
 
-            pieChartArea.Area3DStyle.Enable3D = true;
-            pieChartArea.Area3DStyle.Inclination = 45;
+             pieChartArea.Area3DStyle.Enable3D = true;
+             pieChartArea.Area3DStyle.Inclination = 45;
 
-            pieChart1.Series.Add(series);
+             pieChart1.Series.Add(series);
 
-            Legend legend = new Legend("Main Legend")
-            {
-                Docking = Docking.Right,
-                BackColor = Color.Transparent
-            };
+             Legend legend = new Legend("Main Legend")
+             {
+                 Docking = Docking.Right,
+                 BackColor = Color.Transparent
+             };
 
-            pieChart1.Legends.Add(legend);
-            pieChart1.Legends[0].Font = new Font(new FontFamily("Arial"), 10, FontStyle.Bold);
-            pieChart1.Legends[0].BackColor = Color.Transparent;
-           
-            pieChart1.DataSource = newDAO.LoadOperatorChartData();
-            pieChart1.DataBind();
+             pieChart1.Legends.Add(legend);
+             pieChart1.Legends[0].Font = new Font(new FontFamily("Arial"), 10, FontStyle.Bold);
+             pieChart1.Legends[0].BackColor = Color.Transparent;
 
-            pieChart1.BackColor = Color.Transparent;
-            pieChart1.ChartAreas[0].BackColor = Color.Transparent;
+             pieChart1.DataSource = newDAO.LoadOperatorChartData();
+             pieChart1.DataBind();
 
-            Color[] dashboardColors = new Color[]
-            {
-                Color.FromArgb(52, 116, 181),
-                Color.FromArgb(46, 139, 87),
-                Color.FromArgb(139, 92, 246),
-                Color.FromArgb(234, 179, 8),
-                Color.FromArgb(249, 115, 22),
-                Color.FromArgb(220, 38, 38),
-                Color.FromArgb(13, 148, 136)
-            };
+             pieChart1.BackColor = Color.Transparent;
+             pieChart1.ChartAreas[0].BackColor = Color.Transparent;
 
-            for (int i = 0; i < pieChart1.Series["Quantity"].Points.Count; i++)
-            {
-                 var slice = pieChart1.Series["Quantity"].Points[i];
-                 slice.Color = dashboardColors[i % dashboardColors.Length];
-                 slice.BorderColor = Color.White;
-                 slice.BorderWidth = 2;
-            }
-        }
+             Color[] dashboardColors = new Color[]
+             {
+                 Color.FromArgb(52, 116, 181),
+                 Color.FromArgb(46, 139, 87),
+                 Color.FromArgb(139, 92, 246),
+                 Color.FromArgb(234, 179, 8),
+                 Color.FromArgb(249, 115, 22),
+                 Color.FromArgb(220, 38, 38),
+                 Color.FromArgb(13, 148, 136)
+             };
+
+             for (int i = 0; i < pieChart1.Series["Quantity"].Points.Count; i++)
+             {
+                  var slice = pieChart1.Series["Quantity"].Points[i];
+                  slice.Color = dashboardColors[i % dashboardColors.Length];
+                  slice.BorderColor = Color.White;
+                  slice.BorderWidth = 2;
+             }
+         }*/
         //Method to populate department pie chart data.
         private void PopulateDepartmentChartData()
         {
@@ -239,67 +248,199 @@ namespace KiczanProductionInfoSystem
         }
         private void PopulateVolumeChartData()
         {
-            DAO newDAO = new DAO();
+            DAO dao = new DAO();
+            DataTable dt = dao.LoadQuarterHistory();
 
             columnChart1.Series.Clear();
-            columnChart1.ChartAreas[0].AxisX.Interval = 1;
+            columnChart1.Titles.Clear();
 
-            columnChart1.Titles.Add("Last Fiscal Year Quarterly Volume (Orders & Parts)");
-            columnChart1.Titles[0].Font = new Font(new FontFamily("Arial"), 14, FontStyle.Bold);
+            columnChart1.Titles.Add("Quarterly Scheduled Items (Actual + Forecast)");
 
-            float currentFontSize = columnChart1.ChartAreas[0].AxisX.LabelStyle.Font.Size;
-
-            columnChart1.ChartAreas[0].AxisX.LabelStyle.Font = new Font(new FontFamily("Arial"), currentFontSize, FontStyle.Bold);
-            columnChart1.ChartAreas[0].AxisY.LabelStyle.Font = new Font(new FontFamily("Arial"), currentFontSize, FontStyle.Bold);
-
-            columnChart1.ChartAreas[0].AxisX.LabelStyle.Angle = -90;
-
-            Series seriesVolume = new Series("Total Orders")
+            Series actual = new Series("Actual Scheduled Items")
             {
                 ChartType = SeriesChartType.Column,
-                XValueMember = "Fiscal Quarter",
-                YValueMembers = "Total Volume",
-                IsValueShownAsLabel = true,
-                ToolTip = "Orders: #VALY",
-                Font = new Font(new FontFamily("Arial"), 10, FontStyle.Bold),
-                Color = Color.FromArgb(139, 92, 246),
-                BorderColor = Color.White,
-                BorderWidth = 1
+                Color = Color.MediumPurple
             };
 
-            Series seriesItems = new Series("Physical Parts")
+            var qtyList = new List<float>();
+
+            int i = 0;
+
+            foreach (DataRow row in dt.Rows)
+            {
+                string label = $"Q{row["QuarterNumber"]} {row["Year"]}";
+                float value = Convert.ToSingle(row["Total Scheduled Items"]);
+
+                qtyList.Add(value);
+
+                actual.Points.AddXY(i, value);
+                actual.Points[i].AxisLabel = label;
+
+                i++;
+            }
+
+            var forecast = ForecastSeries(qtyList);
+
+            Series forecastSeries = new Series("Forecast Scheduled Items")
             {
                 ChartType = SeriesChartType.Column,
-                XValueMember = "Fiscal Quarter",
-                YValueMembers = "Total Scheduled Items",
-                IsValueShownAsLabel = true,
-                ToolTip = "Total Units: #VALY",
-                Font = new Font(new FontFamily("Arial"), 10, FontStyle.Bold),
-                Color = Color.FromArgb(234, 179, 8),
-                BorderColor = Color.White,
-                BorderWidth = 1
+                Color = Color.Orange
             };
 
-            columnChart1.BackColor = Color.Transparent;
-            columnChart1.ChartAreas[0].BackColor = Color.Transparent;
-            columnChart1.Legends[0].BackColor = Color.Transparent;
-            columnChart1.Legends[0].Font = new Font(new FontFamily("Arial"), 10, FontStyle.Bold);
+            for (int f = 0; f < 4; f++)
+            {
+                forecastSeries.Points.AddXY(i + f, forecast[f]);
+                forecastSeries.Points[f].AxisLabel = $"Q{f + 1} (F)";
+            }
 
-            columnChart1.ChartAreas[0].AxisX.MajorGrid.Enabled = false;
-            columnChart1.ChartAreas[0].AxisX.MinorGrid.Enabled = false;
-            columnChart1.ChartAreas[0].AxisY.MajorGrid.Enabled = false;
-            columnChart1.ChartAreas[0].AxisY.MinorGrid.Enabled = false;
+            columnChart1.Series.Add(actual);
+            columnChart1.Series.Add(forecastSeries);
 
-            columnChart1.Series.Add(seriesVolume);
-            columnChart1.Series.Add(seriesItems);
-
-            columnChart1.DataSource = newDAO.LoadLastFiscalYearVolume();
-            columnChart1.DataBind();
+            ApplyChartStyle(columnChart1);
         }
+        private void PopulateOrdersChartData()
+        {
+            DAO dao = new DAO();
+            DataTable dt = dao.LoadQuarterHistory();
+
+            chartOrders.Series.Clear();
+            chartOrders.Titles.Clear();
+
+            chartOrders.Titles.Add("Quarterly Orders (Actual + Forecast)");
+
+            Series actual = new Series("Actual Orders")
+            {
+                ChartType = SeriesChartType.Column,
+                Color = Color.SteelBlue
+            };
+
+            var orders = new List<float>();
+
+            int i = 0;
+
+            foreach (DataRow row in dt.Rows)
+            {
+                string label = $"Q{row["QuarterNumber"]} {row["Year"]}";
+                float value = Convert.ToSingle(row["Total Orders"]);
+
+                orders.Add(value);
+
+                actual.Points.AddXY(i, value);
+                actual.Points[i].AxisLabel = label;
+
+                i++;
+            }
+
+            var forecast = ForecastSeries(orders);
+
+            Series forecastSeries = new Series("Forecast Orders")
+            {
+                ChartType = SeriesChartType.Column,
+                Color = Color.Orange
+            };
+
+            for (int f = 0; f < 4; f++)
+            {
+                forecastSeries.Points.AddXY(i + f, forecast[f]);
+                forecastSeries.Points[f].AxisLabel = $"Q{f + 1} (F)";
+            }
+
+            chartOrders.Series.Add(actual);
+            chartOrders.Series.Add(forecastSeries);
+
+            ApplyChartStyle(chartOrders);
+        }
+
+        private float[] ForecastSeries(List<float> data)
+        {
+            if (data == null || data.Count < 6)
+                throw new Exception("Need at least 6 data points for forecasting.");
+
+            var ml = new MLContext();
+
+            // ----------------------------
+            // INPUT FORMAT FOR ML.NET
+            // ----------------------------
+            var series = data.Select(x => new ModelInput
+            {
+                Value = x
+            });
+
+            var dataView = ml.Data.LoadFromEnumerable(series);
+
+            // ----------------------------
+            // SSA FORECAST PIPELINE
+            // ----------------------------
+            var pipeline = ml.Forecasting.ForecastBySsa(
+                outputColumnName: nameof(ModelOutput.Forecasted),
+                inputColumnName: nameof(ModelInput.Value),
+                windowSize: 4,
+                seriesLength: data.Count,
+                trainSize: data.Count,
+                horizon: 4,
+                confidenceLevel: 0.95f,
+                confidenceLowerBoundColumn: nameof(ModelOutput.Lower),
+                confidenceUpperBoundColumn: nameof(ModelOutput.Upper)
+            );
+
+            var model = pipeline.Fit(dataView);
+
+            // ----------------------------
+            // TRANSFORM (NO ENGINE USED)
+            // ----------------------------
+            var transformed = model.Transform(dataView);
+
+            var results = ml.Data
+                .CreateEnumerable<ModelOutput>(transformed, reuseRowObject: false)
+                .Last();
+
+            return results.Forecasted;
+        }
+
+
         private void PopulateDepartmentGridView()
         {
             DAO newDAO = new DAO();
             dataGridView1.DataSource = newDAO.LoadDepartmentGridViewData();
+        }
+    
+    private void ApplyChartStyle(Chart chart)
+        {
+            var area = chart.ChartAreas[0];
+
+            chart.BackColor = Color.White;
+            area.BackColor = Color.WhiteSmoke;
+
+            // Axis styling
+            area.AxisX.Interval = 1;
+            area.AxisX.LabelStyle.Angle = -45;
+            area.AxisX.LabelStyle.Font = new Font("Segoe UI", 9f, FontStyle.Bold);
+
+            area.AxisY.LabelStyle.Font = new Font("Segoe UI", 9f);
+
+            // Grid cleanup
+            area.AxisX.MajorGrid.Enabled = false;
+            area.AxisY.MajorGrid.LineDashStyle = ChartDashStyle.Dash;
+
+            // Improve bar spacing
+            foreach (var series in chart.Series)
+            {
+                series["PointWidth"] = "0.45";
+                series.Font = new Font("Segoe UI", 8f, FontStyle.Bold);
+            }
+
+            // Clean legend
+            chart.Legends.Clear();
+
+            Legend legend = new Legend()
+            {
+                Docking = Docking.Top,
+                Alignment = StringAlignment.Center,
+                Font = new Font("Segoe UI", 10f, FontStyle.Bold),
+                BackColor = Color.Transparent
+            };
+
+            chart.Legends.Add(legend);
         }
     }
 }

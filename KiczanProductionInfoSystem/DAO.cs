@@ -975,8 +975,27 @@ namespace KiczanProductionInfoSystem
             }
             return dataTable;
         }
+
+        internal DataTable LoadQuarterHistory()
+        {
+            using (SqlConnection conn = new SqlConnection(sqlConnectionString))
+            using (SqlCommand cmd = new SqlCommand("GET_VOLUME_BY_QUARTER_LAST_FISCAL_YEAR", conn))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                {
+                    DataTable dt = new DataTable();
+                    da.Fill(dt);
+                    return dt;
+                }
+            }
+        }
     }
 }
+            
+        
+    
 
 
 

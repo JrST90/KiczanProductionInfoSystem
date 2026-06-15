@@ -1,4 +1,10 @@
 <Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+  </Configurations>
   <Folder Name="/Solution Items/" />
-  <Project Path="KiczanProductionInfoSystem/KiczanProductionInfoSystem.csproj" Id="a1353e7e-64f4-4bcb-bc92-0c09b0665fd3" />
+  <Project Path="KiczanProductionInfoSystem/KiczanProductionInfoSystem.csproj" Id="a1353e7e-64f4-4bcb-bc92-0c09b0665fd3">
+    <Platform Solution="*|x64" Project="x64" />
+  </Project>
 </Solution>
