@@ -1,0 +1,44 @@
+USE [KICZAN_PRODUCTION_SYSTEM]
+GO
+/****** Object:  StoredProcedure [dbo].[GET_VOLUME_BY_QUARTER_LAST_FISCAL_YEAR]    Script Date: 6/16/2026 7:57:43 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER PROCEDURE [dbo].[GET_VOLUME_BY_QUARTER_LAST_FISCAL_YEAR]
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    ;WITH QuarterData AS
+    (
+        SELECT
+            YEAR(DATE_DUE) AS [Year],
+            DATEPART(QUARTER, DATE_DUE) AS [QuarterNumber],
+            CONCAT(YEAR(DATE_DUE), '-Q', DATEPART(QUARTER, DATE_DUE)) AS [FiscalQuarter],
+            COUNT(PART_HISTORY_ID) AS [Total Orders],
+            SUM(QTY) AS [Total Scheduled Items]
+        FROM PART_HISTORY
+        WHERE TO_DELETE = 0
+        GROUP BY
+            YEAR(DATE_DUE),
+            DATEPART(QUARTER, DATE_DUE)
+    ),
+    RankedData AS
+    (
+        SELECT *,
+               ROW_NUMBER() OVER (ORDER BY [Year], QuarterNumber) AS RowNum,
+               COUNT(*) OVER () AS TotalRows
+        FROM QuarterData
+    )
+    SELECT
+        [Year],
+        QuarterNumber,
+        FiscalQuarter,
+        [Total Orders],
+        [Total Scheduled Items]
+    FROM RankedData
+    WHERE RowNum > 1
+      AND RowNum < TotalRows
+    ORDER BY [Year], QuarterNumber;
+END;
