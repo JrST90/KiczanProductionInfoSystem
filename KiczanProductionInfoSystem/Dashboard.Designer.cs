@@ -58,13 +58,13 @@
             this.barChart1.ChartAreas.Add(chartArea1);
             legend1.Name = "Legend1";
             this.barChart1.Legends.Add(legend1);
-            this.barChart1.Location = new System.Drawing.Point(47, 39);
+            this.barChart1.Location = new System.Drawing.Point(-90, 10);
             this.barChart1.Name = "barChart1";
             series1.ChartArea = "ChartArea1";
             series1.Legend = "Legend1";
             series1.Name = "Series1";
             this.barChart1.Series.Add(series1);
-            this.barChart1.Size = new System.Drawing.Size(1718, 650);
+            this.barChart1.Size = new System.Drawing.Size(1650, 650);
             this.barChart1.TabIndex = 0;
             this.barChart1.Text = "barChart1";
             // 
@@ -74,7 +74,7 @@
             this.pieChart1.ChartAreas.Add(chartArea2);
             legend2.Name = "Legend1";
             this.pieChart1.Legends.Add(legend2);
-            this.pieChart1.Location = new System.Drawing.Point(1800, 39);
+            this.pieChart1.Location = new System.Drawing.Point(1500, 10);
             this.pieChart1.Name = "pieChart1";
             series2.ChartArea = "ChartArea1";
             series2.Legend = "Legend1";
@@ -90,7 +90,7 @@
             this.pieChart2.ChartAreas.Add(chartArea3);
             legend3.Name = "Legend1";
             this.pieChart2.Legends.Add(legend3);
-            this.pieChart2.Location = new System.Drawing.Point(47, 700);
+            this.pieChart2.Location = new System.Drawing.Point(0, 650);
             this.pieChart2.Name = "pieChart2";
             series3.ChartArea = "ChartArea1";
             series3.Legend = "Legend1";
@@ -104,12 +104,12 @@
             // 
             this.dataGridView1.AllowUserToAddRows = false;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(725, 700);
+            this.dataGridView1.Location = new System.Drawing.Point(625, 675);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowHeadersVisible = false;
             this.dataGridView1.RowHeadersWidth = 82;
             this.dataGridView1.RowTemplate.Height = 33;
-            this.dataGridView1.Size = new System.Drawing.Size(1040, 650);
+            this.dataGridView1.Size = new System.Drawing.Size(895, 500);
             this.dataGridView1.TabIndex = 3;
             // 
             // columnChart1
@@ -118,13 +118,13 @@
             this.columnChart1.ChartAreas.Add(chartArea4);
             legend4.Name = "Legend1";
             this.columnChart1.Legends.Add(legend4);
-            this.columnChart1.Location = new System.Drawing.Point(1800, 700);
+            this.columnChart1.Location = new System.Drawing.Point(1550, 575);
             this.columnChart1.Name = "columnChart1";
             series4.ChartArea = "ChartArea1";
             series4.Legend = "Legend1";
             series4.Name = "Series1";
             this.columnChart1.Series.Add(series4);
-            this.columnChart1.Size = new System.Drawing.Size(800, 650);
+            this.columnChart1.Size = new System.Drawing.Size(650, 650);
             this.columnChart1.TabIndex = 4;
             this.columnChart1.Text = "columnChart1";
             // 

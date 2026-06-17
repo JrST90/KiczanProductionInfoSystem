@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
@@ -54,8 +55,6 @@ namespace KiczanProductionInfoSystem
 
             barChart1.Legends.Clear();
 
-            barChart1.Left = -30;
-
             barChart1.Titles.Add("Customer Parts Quantity in Last 6 Months");
             barChart1.Titles[0].Font = new Font(new FontFamily("Arial"), 14, FontStyle.Bold);
 
@@ -65,22 +64,36 @@ namespace KiczanProductionInfoSystem
             Series series = new Series("Quantity")
             {
                 ChartType = SeriesChartType.Bar,
-                XValueMember = "CUSTOMER_NAME",
-                YValueMembers = "TotalQuantity",
                 IsValueShownAsLabel = true,
                 ["BarLabelStyle"] = "Center",
                 Font = new Font(new FontFamily("Arial"), 10, FontStyle.Bold),
                 XAxisType = AxisType.Primary,
-                YAxisType = AxisType.Secondary
+                YAxisType = AxisType.Primary,
+                XValueType = ChartValueType.String
             };
 
             barChart1.BackColor = Color.Transparent;
             barChart1.ChartAreas[0].BackColor = Color.Transparent;
 
             barChart1.Series.Add(series);
-            barChart1.DataSource = newDAO.LoadCustomerChartData();
-            barChart1.DataBind();
+                        
+            DataTable dt = newDAO.LoadCustomerChartData();
 
+            int i = 0;
+
+            foreach (DataRow row in dt.Rows)
+            {
+                string customerName = row["CUSTOMER_NAME"].ToString();
+
+                int totalQuantity = Convert.ToInt32(row["TotalQuantity"]);
+
+                int newIndex = barChart1.Series["Quantity"].Points.AddXY(i, totalQuantity);
+
+                barChart1.Series["Quantity"].Points[newIndex].AxisLabel = customerName;
+
+                i++;
+            }
+            
             Color[] dashboardColors = new Color[]
             {
                 Color.FromArgb(52, 116, 181),
@@ -92,15 +105,16 @@ namespace KiczanProductionInfoSystem
                 Color.FromArgb(13, 148, 136)
             };
             
-            for (int i = 0; i < barChart1.Series["Quantity"].Points.Count; i++)
+            for (int j = 0; j < barChart1.Series["Quantity"].Points.Count; j++)
             {
-                var point = barChart1.Series["Quantity"].Points[i];
-                Color chosenColor = dashboardColors[i % dashboardColors.Length];
+                var point = barChart1.Series["Quantity"].Points[j];
+                Color chosenColor = dashboardColors[j % dashboardColors.Length];
                 point.Color = chosenColor;
                 point.BorderColor = Color.White;
-                point.BorderWidth = 2;
+                point.BorderWidth = 1;
             }
         }
+        
         //Method to populate operator pie chart data.
         private void PopulateOperatorChartData()
         {
@@ -166,9 +180,10 @@ namespace KiczanProductionInfoSystem
                  var slice = pieChart1.Series["Quantity"].Points[i];
                  slice.Color = dashboardColors[i % dashboardColors.Length];
                  slice.BorderColor = Color.White;
-                 slice.BorderWidth = 2;
+                 slice.BorderWidth = 1;
             }
         }
+        
         //Method to populate department pie chart data.
         private void PopulateDepartmentChartData()
         {
@@ -234,17 +249,19 @@ namespace KiczanProductionInfoSystem
                 var slice = pieChart2.Series["Quantity"].Points[i];
                 slice.Color = dashboardColors[i % dashboardColors.Length];
                 slice.BorderColor = Color.White;
-                slice.BorderWidth = 2;
+                slice.BorderWidth = 1;
             }
         }
+        
         private void PopulateVolumeChartData()
         {
             DAO newDAO = new DAO();
 
             columnChart1.Series.Clear();
+            columnChart1.Titles.Clear();
             columnChart1.ChartAreas[0].AxisX.Interval = 1;
 
-            columnChart1.Titles.Add("Last Fiscal Year Quarterly Volume (Orders & Parts)");
+            columnChart1.Titles.Add("Last Fiscal Year Quarterly Volume \n(Orders & Parts)");
             columnChart1.Titles[0].Font = new Font(new FontFamily("Arial"), 14, FontStyle.Bold);
 
             float currentFontSize = columnChart1.ChartAreas[0].AxisX.LabelStyle.Font.Size;
@@ -257,27 +274,25 @@ namespace KiczanProductionInfoSystem
             Series seriesVolume = new Series("Total Orders")
             {
                 ChartType = SeriesChartType.Column,
-                XValueMember = "Fiscal Quarter",
-                YValueMembers = "Total Volume",
                 IsValueShownAsLabel = true,
                 ToolTip = "Orders: #VALY",
                 Font = new Font(new FontFamily("Arial"), 10, FontStyle.Bold),
                 Color = Color.FromArgb(139, 92, 246),
                 BorderColor = Color.White,
-                BorderWidth = 1
+                BorderWidth = 1,
+                XValueType = ChartValueType.String
             };
 
             Series seriesItems = new Series("Physical Parts")
             {
                 ChartType = SeriesChartType.Column,
-                XValueMember = "Fiscal Quarter",
-                YValueMembers = "Total Scheduled Items",
                 IsValueShownAsLabel = true,
                 ToolTip = "Total Units: #VALY",
                 Font = new Font(new FontFamily("Arial"), 10, FontStyle.Bold),
                 Color = Color.FromArgb(234, 179, 8),
                 BorderColor = Color.White,
-                BorderWidth = 1
+                BorderWidth = 1,
+                XValueType = ChartValueType.String
             };
 
             columnChart1.BackColor = Color.Transparent;
@@ -293,8 +308,33 @@ namespace KiczanProductionInfoSystem
             columnChart1.Series.Add(seriesVolume);
             columnChart1.Series.Add(seriesItems);
 
+            /*
             columnChart1.DataSource = newDAO.LoadLastFiscalYearVolume();
             columnChart1.DataBind();
+            */
+
+            DataTable dt = newDAO.LoadLastFiscalYearVolume();
+
+            if (dt != null && dt.Rows.Count > 0)
+            {
+                int i = 0;
+                foreach (DataRow row in dt.Rows)
+                {
+                    string fiscalQuarter  = row["Fiscal Quarter"].ToString();
+
+                    int totalVolume = Convert.ToInt32(row["Total Volume"]);
+
+                    int totalItems = Convert.ToInt32(row["Total Scheduled Items"]);
+
+                    int p1 = seriesVolume.Points.AddXY(i, totalVolume);
+                    int p2 = seriesItems.Points.AddXY(i, totalItems);
+
+                    seriesVolume.Points[p1].AxisLabel = fiscalQuarter;
+                    seriesItems.Points[p2].AxisLabel = fiscalQuarter;
+
+                    i++;
+                }
+            }
         }
         private void PopulateDepartmentGridView()
         {

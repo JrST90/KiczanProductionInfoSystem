@@ -37,7 +37,7 @@ namespace KiczanProductionInfoSystem
             InitializeComponent();
             this.Text = "Kiczan Production Information System";
             this.WindowState = FormWindowState.Normal;
-            this.ClientSize = new System.Drawing.Size(1105, 550);
+            this.ClientSize = new System.Drawing.Size(1205, 600);
             this.FormBorderStyle = FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.StartPosition = FormStartPosition.CenterScreen;

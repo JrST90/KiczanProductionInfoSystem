@@ -61,11 +61,11 @@
             this.dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
             this.dataGridView1.BackgroundColor = System.Drawing.SystemColors.Control;
             this.dataGridView1.ColumnHeadersHeight = 46;
-            this.dataGridView1.Location = new System.Drawing.Point(25, 182);
+            this.dataGridView1.Location = new System.Drawing.Point(90, 182);
             this.dataGridView1.Margin = new System.Windows.Forms.Padding(6);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowHeadersWidth = 25;
-            this.dataGridView1.Size = new System.Drawing.Size(2165, 740);
+            this.dataGridView1.Size = new System.Drawing.Size(1875, 740);
             this.dataGridView1.TabIndex = 0;
             this.dataGridView1.CellMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGridView1_CellMouseClick);
             // 
@@ -90,7 +90,7 @@
             // 
             this.button1.BackColor = System.Drawing.Color.Green;
             this.button1.ForeColor = System.Drawing.Color.White;
-            this.button1.Location = new System.Drawing.Point(1605, 22);
+            this.button1.Location = new System.Drawing.Point(1455, 22);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(192, 51);
             this.button1.TabIndex = 14;
@@ -155,7 +155,7 @@
             // 
             this.button2.BackColor = System.Drawing.Color.Blue;
             this.button2.ForeColor = System.Drawing.Color.White;
-            this.button2.Location = new System.Drawing.Point(1803, 22);
+            this.button2.Location = new System.Drawing.Point(1653, 22);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(192, 51);
             this.button2.TabIndex = 21;
@@ -167,7 +167,7 @@
             // 
             this.button3.BackColor = System.Drawing.Color.Purple;
             this.button3.ForeColor = System.Drawing.Color.White;
-            this.button3.Location = new System.Drawing.Point(2001, 21);
+            this.button3.Location = new System.Drawing.Point(1851, 21);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(192, 50);
             this.button3.TabIndex = 22;
@@ -178,7 +178,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(1798, 139);
+            this.label5.Location = new System.Drawing.Point(1598, 139);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(0, 25);
             this.label5.TabIndex = 23;
@@ -186,14 +186,14 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(1996, 139);
+            this.label6.Location = new System.Drawing.Point(1796, 139);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(0, 25);
             this.label6.TabIndex = 24;
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(2057, 948);
+            this.button4.Location = new System.Drawing.Point(1832, 930);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(133, 46);
             this.button4.TabIndex = 25;
@@ -203,7 +203,7 @@
             // 
             // button5
             // 
-            this.button5.Location = new System.Drawing.Point(1919, 948);
+            this.button5.Location = new System.Drawing.Point(1694, 930);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(132, 46);
             this.button5.TabIndex = 26;
@@ -246,7 +246,7 @@
             // 
             this.button6.BackColor = System.Drawing.Color.Orange;
             this.button6.ForeColor = System.Drawing.Color.White;
-            this.button6.Location = new System.Drawing.Point(1605, 79);
+            this.button6.Location = new System.Drawing.Point(1455, 79);
             this.button6.Name = "button6";
             this.button6.Size = new System.Drawing.Size(192, 51);
             this.button6.TabIndex = 27;

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 using System.Windows.Forms;
 
 namespace KiczanProductionInfoSystem
@@ -10,6 +10,7 @@ namespace KiczanProductionInfoSystem
     {
         //Build connection string to connect to Microsoft SQL Server.
         private readonly string sqlConnectionString = "Server=(localdb)\\MSSQLLocalDB;Database=KICZAN_PRODUCTION_SYSTEM;Trusted_Connection=True;TrustServerCertificate=True;";
+        //private readonly string sqlConnectionString = "Server=KICZANAPP01;Database=KICZAN_PRODUCTION_SYSTEM;Trusted_Connection=True;Encrypt=True;TrustServerCertificate=True;";
 
         //Reads data from DB source, returns dataTable from DATE_DUE_RANGE_QUERY stored procedure. 
         //Reads beginning date and end date from user input from text box on UI.
