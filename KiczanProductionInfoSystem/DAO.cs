@@ -868,6 +868,7 @@ namespace KiczanProductionInfoSystem
             }
             return dataTable;
         }
+        //Method to run GET_OPERATOR_QTY_LAST_6_MONTHS query from SQL server to populate chart with queried data.
         internal DataTable LoadOperatorChartData()
         {
             //Create new datatable to store query results.
@@ -895,6 +896,7 @@ namespace KiczanProductionInfoSystem
             }
             return dataTable;
         }
+        //Method to run NEXT_SIX_MONTHS_BY_DEPARTMENT query from SQL server to populate chart with queried data.
         internal DataTable LoadDepartmentChartData()
         {
             //Create new datatable to store query results.
@@ -922,6 +924,7 @@ namespace KiczanProductionInfoSystem
             }
             return dataTable;
         }
+        //Method to run NEXT_SIX_MONTHS_JOBS_BY_DEPARTMENT query from SQL server to populate datagridview with queried data.
         internal DataTable LoadDepartmentGridViewData()
         {
             //Create new datatable to store query results.
@@ -949,6 +952,7 @@ namespace KiczanProductionInfoSystem
             }
             return dataTable;
         }
+        //Method to run GET_VOLUME_BY_QUARTER_LAST_FISCAL_YEAR query from SQL server to populate chart with queried data.
         internal DataTable LoadLastFiscalYearVolume()
         {
             //Create new datatable to store query results.

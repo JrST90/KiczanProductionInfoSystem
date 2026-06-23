@@ -19,7 +19,7 @@ namespace KiczanProductionInfoSystem
             this.StartPosition = FormStartPosition.CenterScreen;
         }
 
-        //Event handler to load dashboard chart on form initialization.
+        //Event handler to load dashboard charts on form initialization.
         private void Dashboard_Load(object sender, EventArgs e)
         {
             PopulateCustomerChartData();
@@ -32,12 +32,15 @@ namespace KiczanProductionInfoSystem
         //Method to populate customer bar chart data.
         private void PopulateCustomerChartData()
         {
+            //Instantiate new DAO object for chart population.
             DAO newDAO = new DAO();
 
+            //Clear chart to make ready for incoming data.
             barChart1.Series.Clear();
             barChart1.ChartAreas.Clear();
             barChart1.Titles.Clear();
 
+            //Set chart properties for display.
             ChartArea barChartArea = new ChartArea("barChartArea");
             barChart1.ChartAreas.Add(barChartArea);
 
@@ -58,9 +61,13 @@ namespace KiczanProductionInfoSystem
             barChart1.Titles.Add("Customer Parts Quantity in Last 6 Months");
             barChart1.Titles[0].Font = new Font(new FontFamily("Arial"), 14, FontStyle.Bold);
 
+            barChart1.BackColor = Color.Transparent;
+            barChart1.ChartAreas[0].BackColor = Color.Transparent;
+
             barChart1.ChartAreas[0].AxisX.LabelStyle.Font = new Font(new FontFamily("Arial"), 10, FontStyle.Bold);
             barChart1.ChartAreas[0].AxisY2.LabelStyle.Font = new Font(new FontFamily("Arial"), 10, FontStyle.Bold);
 
+            //Create new series object, and set display properties.
             Series series = new Series("Quantity")
             {
                 ChartType = SeriesChartType.Bar,
@@ -72,15 +79,14 @@ namespace KiczanProductionInfoSystem
                 XValueType = ChartValueType.String
             };
 
-            barChart1.BackColor = Color.Transparent;
-            barChart1.ChartAreas[0].BackColor = Color.Transparent;
-
             barChart1.Series.Add(series);
-                        
+
+            //Create a new datatable, set the datatable equal to the returned datatable from the called function.
             DataTable dt = newDAO.LoadCustomerChartData();
 
             int i = 0;
 
+            //Load the data from the datatable into the column chart using the series objects.
             foreach (DataRow row in dt.Rows)
             {
                 string customerName = row["CUSTOMER_NAME"].ToString();
@@ -93,7 +99,8 @@ namespace KiczanProductionInfoSystem
 
                 i++;
             }
-            
+
+            //Set colors for data differentation on chart visual.
             Color[] dashboardColors = new Color[]
             {
                 Color.FromArgb(52, 116, 181),
@@ -118,18 +125,22 @@ namespace KiczanProductionInfoSystem
         //Method to populate operator pie chart data.
         private void PopulateOperatorChartData()
         {
+            //Instantiate new DAO object for chart population.
             DAO newDAO = new DAO();
 
+            //Clear chart to make ready for incoming data.
             pieChart1.Series.Clear();
             pieChart1.ChartAreas.Clear();
             pieChart1.Titles.Clear();
 
+            //Set chart properties for display.
             ChartArea pieChartArea = new ChartArea("pieChartArea");
             pieChart1.ChartAreas.Add(pieChartArea);
 
             pieChart1.Titles.Add("Bending Operator Parts Quantity in Last 6 Months");
             pieChart1.Titles[0].Font = new Font(new FontFamily("Arial"), 14, FontStyle.Bold);
 
+            //Create new series object, and set display properties.
             Series series = new Series("Quantity")
             {
                 ChartType = SeriesChartType.Pie,
@@ -140,30 +151,37 @@ namespace KiczanProductionInfoSystem
                 ToolTip = "Quantity: #VALY"
             };
 
+            //Set chart legend for display.
             series.Label = "#PERCENT{P1}";
             series.LegendText = "#VALX";
 
+            //Enable 3D pie chart for dashboard display.
             pieChartArea.Area3DStyle.Enable3D = true;
             pieChartArea.Area3DStyle.Inclination = 45;
 
             pieChart1.Series.Add(series);
 
+            //Create new legend object.
             Legend legend = new Legend("Main Legend")
             {
                 Docking = Docking.Right,
                 BackColor = Color.Transparent
             };
 
+            //Add legend object to chart with specified properties.
             pieChart1.Legends.Add(legend);
             pieChart1.Legends[0].Font = new Font(new FontFamily("Arial"), 10, FontStyle.Bold);
             pieChart1.Legends[0].BackColor = Color.Transparent;
-           
+
+            //Bind the charts datasource to the datatable returned from the called function.
             pieChart1.DataSource = newDAO.LoadOperatorChartData();
             pieChart1.DataBind();
 
+            //Set chart display properties.
             pieChart1.BackColor = Color.Transparent;
             pieChart1.ChartAreas[0].BackColor = Color.Transparent;
 
+            //Set colors for data differentation on chart visual.
             Color[] dashboardColors = new Color[]
             {
                 Color.FromArgb(52, 116, 181),
@@ -187,18 +205,22 @@ namespace KiczanProductionInfoSystem
         //Method to populate department pie chart data.
         private void PopulateDepartmentChartData()
         {
+            //Instantiate new DAO object for chart population.
             DAO newDAO = new DAO();
 
+            //Clear chart to make ready for incoming data.
             pieChart2.Series.Clear();
             pieChart2.ChartAreas.Clear();
             pieChart2.Titles.Clear();
 
+            //Set chart properties for display.
             ChartArea pieChartArea = new ChartArea("pieChartArea");
             pieChart2.ChartAreas.Add(pieChartArea);
 
             pieChart2.Titles.Add("Department Work Load in Next 6 Months");
             pieChart2.Titles[0].Font = new Font(new FontFamily("Arial"), 14, FontStyle.Bold);
 
+            //Create new series object, and set display properties.
             Series series = new Series("Quantity")
             {
                 ChartType = SeriesChartType.Pie,
@@ -209,30 +231,37 @@ namespace KiczanProductionInfoSystem
                 ToolTip = "Total Jobs: #VALY"
             };
 
+            //Set chart legend for display.
             series.Label = "#PERCENT{P1}";
             series.LegendText = "#VALX";
 
+            //Enable 3D pie chart for dashboard display.
             pieChartArea.Area3DStyle.Enable3D = true;
             pieChartArea.Area3DStyle.Inclination = 45;
 
             pieChart2.Series.Add(series);
 
+            //Create new legend object.
             Legend legend = new Legend("Main Legend")
             {
                 Docking = Docking.Right,
                 BackColor = Color.Transparent
             };
 
+            //Add legend object to chart with specified properties.
             pieChart2.Legends.Add(legend);
             pieChart2.Legends[0].Font = new Font(new FontFamily("Arial"), 10, FontStyle.Bold);
             pieChart2.Legends[0].BackColor = Color.Transparent;
 
+            //Bind the charts datasource to the datatable returned from the called function.
             pieChart2.DataSource = newDAO.LoadDepartmentChartData();
             pieChart2.DataBind();
 
+            //Set chart display properties.
             pieChart2.BackColor = Color.Transparent;
             pieChart2.ChartAreas[0].BackColor = Color.Transparent;
 
+            //Set colors for data differentation on chart visual.
             Color[] dashboardColors = new Color[]
             {
                 Color.FromArgb(52, 116, 181),
@@ -253,14 +282,18 @@ namespace KiczanProductionInfoSystem
             }
         }
         
+        //Method to populate department volume chart.
         private void PopulateVolumeChartData()
         {
+            //Instantiate new DAO object for chart population.
             DAO newDAO = new DAO();
 
+            //Clear chart to make ready for incoming data.
             columnChart1.Series.Clear();
             columnChart1.Titles.Clear();
             columnChart1.ChartAreas[0].AxisX.Interval = 1;
 
+            //Set chart properties for display.
             columnChart1.Titles.Add("Last Fiscal Year Quarterly Volume \n(Orders & Parts)");
             columnChart1.Titles[0].Font = new Font(new FontFamily("Arial"), 14, FontStyle.Bold);
 
@@ -271,6 +304,18 @@ namespace KiczanProductionInfoSystem
 
             columnChart1.ChartAreas[0].AxisX.LabelStyle.Angle = -90;
 
+            //Set column chart colors, fonts, and display properties.
+            columnChart1.BackColor = Color.Transparent;
+            columnChart1.ChartAreas[0].BackColor = Color.Transparent;
+            columnChart1.Legends[0].BackColor = Color.Transparent;
+            columnChart1.Legends[0].Font = new Font(new FontFamily("Arial"), 10, FontStyle.Bold);
+
+            columnChart1.ChartAreas[0].AxisX.MajorGrid.Enabled = false;
+            columnChart1.ChartAreas[0].AxisX.MinorGrid.Enabled = false;
+            columnChart1.ChartAreas[0].AxisY.MajorGrid.Enabled = false;
+            columnChart1.ChartAreas[0].AxisY.MinorGrid.Enabled = false;
+
+            //Create new series objects, and set display properties.
             Series seriesVolume = new Series("Total Orders")
             {
                 ChartType = SeriesChartType.Column,
@@ -295,26 +340,13 @@ namespace KiczanProductionInfoSystem
                 XValueType = ChartValueType.String
             };
 
-            columnChart1.BackColor = Color.Transparent;
-            columnChart1.ChartAreas[0].BackColor = Color.Transparent;
-            columnChart1.Legends[0].BackColor = Color.Transparent;
-            columnChart1.Legends[0].Font = new Font(new FontFamily("Arial"), 10, FontStyle.Bold);
-
-            columnChart1.ChartAreas[0].AxisX.MajorGrid.Enabled = false;
-            columnChart1.ChartAreas[0].AxisX.MinorGrid.Enabled = false;
-            columnChart1.ChartAreas[0].AxisY.MajorGrid.Enabled = false;
-            columnChart1.ChartAreas[0].AxisY.MinorGrid.Enabled = false;
-
             columnChart1.Series.Add(seriesVolume);
             columnChart1.Series.Add(seriesItems);
 
-            /*
-            columnChart1.DataSource = newDAO.LoadLastFiscalYearVolume();
-            columnChart1.DataBind();
-            */
-
+            //Create a new datatable, set the datatable equal to the returned datatable from the called function.
             DataTable dt = newDAO.LoadLastFiscalYearVolume();
 
+            //Load the data from the datatable into the column chart using the series objects.
             if (dt != null && dt.Rows.Count > 0)
             {
                 int i = 0;
@@ -336,6 +368,7 @@ namespace KiczanProductionInfoSystem
                 }
             }
         }
+        //Method to call DAO.cs method LoadDepartmentGridViewData() to dashboard.
         private void PopulateDepartmentGridView()
         {
             DAO newDAO = new DAO();
