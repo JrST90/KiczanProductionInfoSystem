@@ -78,11 +78,11 @@ namespace KiczanProductionInfoSystem
                 //Open connection to DB.
                 using (SqlConnection connection = new SqlConnection(sqlConnectionString))
                 {
-                    connection.Open();
-
                     //Get the stored procedure from the DB.
                     using (SqlCommand command = new SqlCommand("DATE_DUE_RANGE_QUERY_COUNT", connection))
                     {
+                        connection.Open();
+
                         command.CommandType = CommandType.StoredProcedure;
 
                         //Create new DateTime objects and use the Parse() function on dates
@@ -162,11 +162,11 @@ namespace KiczanProductionInfoSystem
                 //Open connection to DB.
                 using (SqlConnection connection = new SqlConnection(sqlConnectionString))
                 {
-                    connection.Open();
-
                     //Get the stored procedure from the DB.
                     using (SqlCommand command = new SqlCommand("PART_NUMBER_QUERY_COUNT", connection))
                     {
+                        connection.Open();
+
                         command.CommandType = CommandType.StoredProcedure;
 
                         //Add wildcard to broaden search term.
@@ -243,11 +243,11 @@ namespace KiczanProductionInfoSystem
                 //Open connection to DB.
                 using (SqlConnection connection = new SqlConnection(sqlConnectionString))
                 {
-                    connection.Open();
-
                     //Get the stored procedure from the DB.
                     using (SqlCommand command = new SqlCommand("PART_NUMBER_QUERY_ARCHIVE_COUNT", connection))
                     {
+                        connection.Open();
+
                         command.CommandType = CommandType.StoredProcedure;
 
                         //Add wildcard to broaden search term.
@@ -325,11 +325,11 @@ namespace KiczanProductionInfoSystem
                 //Open connection to DB.
                 using (SqlConnection connection = new SqlConnection(sqlConnectionString))
                 {
-                    connection.Open();
-
                     //Get the stored procedure from the DB.
                     using (SqlCommand command = new SqlCommand("OPERATOR_NAME_QUERY_COUNT", connection))
                     {
+                        connection.Open();
+
                         command.CommandType = CommandType.StoredProcedure;
 
                         //Add wildcard to broaden search term.
@@ -361,11 +361,11 @@ namespace KiczanProductionInfoSystem
                 //Open connection to DB.
                 using (SqlConnection connection = new SqlConnection(sqlConnectionString))
                 {
-                    connection.Open();
-
                     //Get the stored procedure from the DB.
                     using (SqlCommand command = new SqlCommand("MARK_PART_DELETED", connection))
                     {
+                        connection.Open();
+
                         command.CommandType = CommandType.StoredProcedure;
 
                         //Paramaterized to prevent SQL Injection.
@@ -390,11 +390,11 @@ namespace KiczanProductionInfoSystem
                 //Open connection to DB.
                 using (SqlConnection connection = new SqlConnection(sqlConnectionString))
                 {
-                    connection.Open();
-
                     //Get the stored procedure from the DB.
                     using (SqlCommand command = new SqlCommand("RESTORE_PART", connection))
                     {
+                        connection.Open();
+
                         command.CommandType = CommandType.StoredProcedure;
 
                         //Paramaterized to prevent SQL Injection.
@@ -458,11 +458,11 @@ namespace KiczanProductionInfoSystem
                 //Open connection to DB.
                 using (SqlConnection connection = new SqlConnection(sqlConnectionString))
                 {
-                    connection.Open();
-
                     //Get the stored procedure from the DB.
                     using (SqlCommand command = new SqlCommand("FABRICATION_DEPARTMENT_QUERY_COUNT", connection))
                     {
+                        connection.Open();
+
                         command.CommandType = CommandType.StoredProcedure;
 
                         //Execute query, save result in result object.
@@ -528,11 +528,11 @@ namespace KiczanProductionInfoSystem
                 //Open connection to DB.
                 using (SqlConnection connection = new SqlConnection(sqlConnectionString))
                 {
-                    connection.Open();
-
                     //Get the stored procedure from the DB.
                     using (SqlCommand command = new SqlCommand("NC_MACHINE_WORK_QUERY_COUNT", connection))
                     {
+                        connection.Open();
+
                         command.CommandType = CommandType.StoredProcedure;
 
                         //Execute query, save result in result object.
@@ -561,11 +561,11 @@ namespace KiczanProductionInfoSystem
                 //Open connection to DB.
                 using (SqlConnection connection = new SqlConnection(sqlConnectionString))
                 {
-                    connection.Open();
-
                     //Get the stored procedure from the DB.
                     using (SqlCommand command = new SqlCommand("GET_OPERATORS", connection))
                     {
+                        connection.Open();
+
                         command.CommandType = CommandType.StoredProcedure;
 
                         using (SqlDataReader reader = command.ExecuteReader())
@@ -601,11 +601,11 @@ namespace KiczanProductionInfoSystem
                 //Open connection to DB.
                 using (SqlConnection connection = new SqlConnection(sqlConnectionString))
                 {
-                    connection.Open();
-
                     //Get the stored procedure from the DB.
                     using (SqlCommand command = new SqlCommand("GET_CUSTOMERS", connection))
                     {
+                        connection.Open();
+
                         command.CommandType = CommandType.StoredProcedure;
 
                         using (SqlDataReader reader = command.ExecuteReader())
@@ -640,8 +640,6 @@ namespace KiczanProductionInfoSystem
                 //Open connection to DB.
                 using (SqlConnection connection = new SqlConnection(sqlConnectionString))
                 {
-                    connection.Open();
-
                     //Build array of type SqlParameter for storage.
                     SqlParameter[] pms = new SqlParameter[9];
 
@@ -676,6 +674,8 @@ namespace KiczanProductionInfoSystem
                     //Get the stored procedure from the DB.
                     using (SqlCommand command = new SqlCommand("CREATE_RECORD", connection))
                     {
+                        connection.Open();
+
                         //Build SQL command retreived from stored procedure "CREATE_RECORD".
                         command.CommandType = CommandType.StoredProcedure;
                         command.Parameters.AddRange(pms);
@@ -699,8 +699,6 @@ namespace KiczanProductionInfoSystem
                 //Open connection to DB.
                 using (SqlConnection connection = new SqlConnection(sqlConnectionString))
                 {
-                    connection.Open();
-
                     //Build array of type SqlParameter for storage.
                     SqlParameter[] pms = new SqlParameter[10];
 
@@ -738,6 +736,8 @@ namespace KiczanProductionInfoSystem
                     //Get the stored procedure from the DB.
                     using (SqlCommand command = new SqlCommand("UPDATE_RECORD", connection))
                     {
+                        connection.Open();
+
                         //Build SQL command retreived from stored procedure "UPDATE_RECORD".
                         command.CommandType = CommandType.StoredProcedure;
                         command.Parameters.AddRange(pms);
@@ -765,11 +765,11 @@ namespace KiczanProductionInfoSystem
                 //Open connection to DB.
                 using (SqlConnection connection = new SqlConnection(sqlConnectionString))
                 {
-                    connection.Open();
-
                     //Get the stored procedure from the DB.
                     using (SqlCommand command = new SqlCommand("USER_NAME_QUERY_COUNT", connection))
                     {
+                        connection.Open();
+
                         command.CommandType = CommandType.StoredProcedure;
 
                         //Paramaterized to prevent SQL Injection, bind values.
@@ -810,11 +810,11 @@ namespace KiczanProductionInfoSystem
                 //Open connection to DB.
                 using (SqlConnection connection = new SqlConnection(sqlConnectionString))
                 {
-                    connection.Open();
-
                     //Get the stored procedure from the DB.
                     using (SqlCommand command = new SqlCommand("USER_NAME_QUERY", connection))
                     {
+                        connection.Open();
+
                         command.CommandType = CommandType.StoredProcedure;
 
                         //Paramaterized to prevent SQL Injection, bind values.
