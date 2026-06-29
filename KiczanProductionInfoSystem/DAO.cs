@@ -980,8 +980,24 @@ namespace KiczanProductionInfoSystem
             }
             return dataTable;
         }
+    internal DataTable LoadQuarterHistory()
+        {
+            using (SqlConnection conn = new SqlConnection(sqlConnectionString))
+            using (SqlCommand cmd = new SqlCommand("sp_GetQuarterlyProduction", conn))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                {
+                    DataTable dt = new DataTable();
+                    da.Fill(dt);
+                    return dt;
+                }
+            }
+        }
     }
 }
+
 
 
 
