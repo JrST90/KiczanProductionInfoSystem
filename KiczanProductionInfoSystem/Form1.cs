@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using Excel = Microsoft.Office.Interop.Excel;
 
 namespace KiczanProductionInfoSystem
 {
@@ -37,6 +37,11 @@ namespace KiczanProductionInfoSystem
         {
             InitializeComponent();
             this.Text = "Kiczan Production Information System";
+            this.WindowState = FormWindowState.Normal;
+            this.ClientSize = new System.Drawing.Size(1205, 600);
+            this.FormBorderStyle = FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
+            this.StartPosition = FormStartPosition.CenterScreen;
 
             //If the user name exists, use the returned object properties to set role privileges.
             if (newDAO.userNameCheck(userName))
@@ -1824,6 +1829,13 @@ namespace KiczanProductionInfoSystem
             createRecord.Show();
         }
 
+        //Event handler for the click event for the Dashboard button.
+        private void button6_Click(object sender, EventArgs e)
+        {
+            Dashboard dashboard = new Dashboard();
+            dashboard.Show();
+        }
+
         //Event handler for the click event for the Export button.
         private void button3_Click(object sender, EventArgs e)
         {
@@ -1900,6 +1912,9 @@ namespace KiczanProductionInfoSystem
             //Get the column headers for dataGridView1.
             dataGridView1.ClipboardCopyMode = DataGridViewClipboardCopyMode.EnableAlwaysIncludeHeaderText;
 
+            //Turn off row indicators for grid copy.
+            dataGridView1.RowHeadersVisible = false;
+
             //Enable MultiSelect for all visible cells
             dataGridView1.MultiSelect = true;
 
@@ -1912,6 +1927,9 @@ namespace KiczanProductionInfoSystem
             {
                 Clipboard.SetDataObject(dataObject);
             }
+
+            //Turn row indicators back on after copy.
+            dataGridView1.RowHeadersVisible = true;
         }
 
         //Event handler for click event for Delete Record on right click menu.
