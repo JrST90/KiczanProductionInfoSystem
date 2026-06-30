@@ -40,7 +40,9 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
-
+    <None Update="connection.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="9.0.4" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="7.0.1" />

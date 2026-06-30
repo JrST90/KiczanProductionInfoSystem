@@ -3,14 +3,38 @@ using System.Collections.Generic;
 using System.Data;
 using Microsoft.Data.SqlClient;
 using System.Windows.Forms;
+using System.IO;
 
 namespace KiczanProductionInfoSystem
 {
     internal class DAO
     {
         //Build connection string to connect to Microsoft SQL Server.
-        private readonly string sqlConnectionString = "Server=(localdb)\\MSSQLLocalDB;Database=KICZAN_PRODUCTION_SYSTEM;Trusted_Connection=True;TrustServerCertificate=True;";
+        //private readonly string sqlConnectionString = "Server=(localdb)\\MSSQLLocalDB;Database=KICZAN_PRODUCTION_SYSTEM;Trusted_Connection=True;TrustServerCertificate=True;";
         //private readonly string sqlConnectionString = "Server=KICZANAPP01\\SQLEXPRESS;Database=KICZAN_PRODUCTION_SYSTEM;Trusted_Connection=True;Encrypt=True;TrustServerCertificate=True;Connect Timeout=30;";
+        private static readonly string sqlConnectionString;
+
+        //Static constructor to build connection string from appSettings.json, runs automatically.
+        static DAO()
+        {
+            try
+            {
+                string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "connection.txt");
+
+                if (File.Exists(filePath))
+                {
+                    sqlConnectionString = File.ReadAllText(filePath).Trim();
+                }
+                else
+                {
+                    throw new FileNotFoundException("Could not find connection.txt in the application directory.");
+                }
+            }
+            catch(Exception ex)
+            {
+                throw new InvalidOperationException("Failed to load appSettings.json. Make sure 'Copy to Output Directory' is set", ex);
+            }
+        }
 
         //Reads data from DB source, returns dataTable from DATE_DUE_RANGE_QUERY stored procedure. 
         //Reads beginning date and end date from user input from text box on UI.
@@ -980,20 +1004,31 @@ namespace KiczanProductionInfoSystem
             }
             return dataTable;
         }
-    internal DataTable LoadQuarterHistory()
+        //Method to run sp_GetQuarterlyProduction query from SQL server to populate chart with queried data.
+        internal DataTable LoadQuarterHistory()
         {
-            using (SqlConnection conn = new SqlConnection(sqlConnectionString))
-            using (SqlCommand cmd = new SqlCommand("sp_GetQuarterlyProduction", conn))
+            DataTable dataTable = new DataTable();
+            try
             {
-                cmd.CommandType = CommandType.StoredProcedure;
-
-                using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                using (SqlConnection conn = new SqlConnection(sqlConnectionString))
                 {
-                    DataTable dt = new DataTable();
-                    da.Fill(dt);
-                    return dt;
+                    using (SqlCommand cmd = new SqlCommand("sp_GetQuarterlyProduction", conn))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
+                        {
+                            
+                            adapter.Fill(dataTable);
+                            return dataTable;
+                        }
+                    }
                 }
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to last and predicted fiscal year volume dashboard data: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            return dataTable;
         }
     }
 }

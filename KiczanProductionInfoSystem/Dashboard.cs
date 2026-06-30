@@ -20,7 +20,7 @@ namespace KiczanProductionInfoSystem
             InitializeComponent();
             this.Text = "Kiczan: Dashboard";
             this.WindowState = FormWindowState.Normal;
-            this.ClientSize = new Size(1270, 750);
+            this.ClientSize = new Size(1270, 600);
             this.FormBorderStyle = FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.StartPosition = FormStartPosition.CenterScreen;
@@ -30,22 +30,26 @@ namespace KiczanProductionInfoSystem
         private void Dashboard_Load(object sender, EventArgs e)
         {
             PopulateCustomerChartData();
-            //PopulateOperatorChartData();
+            PopulateOperatorChartData();
             PopulateDepartmentChartData();
             PopulateDepartmentGridView();
             PopulateVolumeChartData();
             PopulateOrdersChartData();
-        }
 
+            this.AutoScroll = true;
+        }
         //Method to populate customer bar chart data.
         private void PopulateCustomerChartData()
         {
+            //Instantiate new DAO object for chart population.
             DAO newDAO = new DAO();
 
+            //Clear chart to make ready for incoming data.
             barChart1.Series.Clear();
             barChart1.ChartAreas.Clear();
             barChart1.Titles.Clear();
 
+            //Set chart properties for display.
             ChartArea barChartArea = new ChartArea("barChartArea");
             barChart1.ChartAreas.Add(barChartArea);
 
@@ -63,33 +67,49 @@ namespace KiczanProductionInfoSystem
 
             barChart1.Legends.Clear();
 
-            barChart1.Left = -30;
-
             barChart1.Titles.Add("Customer Parts Quantity in Last 6 Months");
             barChart1.Titles[0].Font = new Font(new FontFamily("Arial"), 14, FontStyle.Bold);
-
-            barChart1.ChartAreas[0].AxisX.LabelStyle.Font = new Font(new FontFamily("Arial"), 10, FontStyle.Bold);
-            barChart1.ChartAreas[0].AxisY2.LabelStyle.Font = new Font(new FontFamily("Arial"), 10, FontStyle.Bold);
-
-            Series series = new Series("Quantity")
-            {
-                ChartType = SeriesChartType.Bar,
-                XValueMember = "CUSTOMER_NAME",
-                YValueMembers = "TotalQuantity",
-                IsValueShownAsLabel = true,
-                ["BarLabelStyle"] = "Center",
-                Font = new Font(new FontFamily("Arial"), 10, FontStyle.Bold),
-                XAxisType = AxisType.Primary,
-                YAxisType = AxisType.Secondary
-            };
 
             barChart1.BackColor = Color.Transparent;
             barChart1.ChartAreas[0].BackColor = Color.Transparent;
 
-            barChart1.Series.Add(series);
-            barChart1.DataSource = newDAO.LoadCustomerChartData();
-            barChart1.DataBind();
+            barChart1.ChartAreas[0].AxisX.LabelStyle.Font = new Font(new FontFamily("Arial"), 10, FontStyle.Bold);
+            barChart1.ChartAreas[0].AxisY2.LabelStyle.Font = new Font(new FontFamily("Arial"), 10, FontStyle.Bold);
 
+            //Create new series object, and set display properties.
+            Series series = new Series("Quantity")
+            {
+                ChartType = SeriesChartType.Bar,
+                IsValueShownAsLabel = true,
+                ["BarLabelStyle"] = "Center",
+                Font = new Font(new FontFamily("Arial"), 10, FontStyle.Bold),
+                XAxisType = AxisType.Primary,
+                YAxisType = AxisType.Primary,
+                XValueType = ChartValueType.String
+            };
+
+            barChart1.Series.Add(series);
+
+            //Create a new datatable, set the datatable equal to the returned datatable from the called function.
+            DataTable dt = newDAO.LoadCustomerChartData();
+
+            int i = 0;
+
+            //Load the data from the datatable into the column chart using the series objects.
+            foreach (DataRow row in dt.Rows)
+            {
+                string customerName = row["CUSTOMER_NAME"].ToString();
+
+                int totalQuantity = Convert.ToInt32(row["TotalQuantity"]);
+
+                int newIndex = barChart1.Series["Quantity"].Points.AddXY(i, totalQuantity);
+
+                barChart1.Series["Quantity"].Points[newIndex].AxisLabel = customerName;
+
+                i++;
+            }
+
+            //Set colors for data differentation on chart visual.
             Color[] dashboardColors = new Color[]
             {
                 Color.FromArgb(52, 116, 181),
@@ -101,18 +121,19 @@ namespace KiczanProductionInfoSystem
                 Color.FromArgb(13, 148, 136)
             };
 
-            for (int i = 0; i < barChart1.Series["Quantity"].Points.Count; i++)
+            for (int j = 0; j < barChart1.Series["Quantity"].Points.Count; j++)
             {
-                var point = barChart1.Series["Quantity"].Points[i];
-                Color chosenColor = dashboardColors[i % dashboardColors.Length];
+                var point = barChart1.Series["Quantity"].Points[j];
+                Color chosenColor = dashboardColors[j % dashboardColors.Length];
                 point.Color = chosenColor;
                 point.BorderColor = Color.White;
-                point.BorderWidth = 2;
+                point.BorderWidth = 1;
             }
         }
+
         //Method to populate operator pie chart data.
-        /* private void PopulateOperatorChartData()
-         {
+        private void PopulateOperatorChartData()
+        {
              DAO newDAO = new DAO();
 
              pieChart1.Series.Clear();
@@ -145,7 +166,8 @@ namespace KiczanProductionInfoSystem
 
              Legend legend = new Legend("Main Legend")
              {
-                 Docking = Docking.Right,
+                 Docking = Docking.Top,
+                 Alignment = StringAlignment.Center,
                  BackColor = Color.Transparent
              };
 
@@ -177,9 +199,9 @@ namespace KiczanProductionInfoSystem
                   slice.BorderColor = Color.White;
                   slice.BorderWidth = 2;
              }
-         }*/
+        }
         //Method to populate department pie chart data.
-       private void PopulateDepartmentChartData()
+        private void PopulateDepartmentChartData()
         {
             DAO newDAO = new DAO();
 
@@ -213,7 +235,8 @@ namespace KiczanProductionInfoSystem
 
             Legend legend = new Legend("Main Legend")
             {
-                Docking = Docking.Right,
+                //Docking = Docking.Top,
+                //Alignment = StringAlignment.Center,
                 BackColor = Color.Transparent
             };
 
@@ -255,6 +278,7 @@ namespace KiczanProductionInfoSystem
             columnChart1.Titles.Clear();
 
             columnChart1.Titles.Add("Quarterly Scheduled Items (Actual + Forecast)");
+            columnChart1.Titles[0].Font = new Font(new FontFamily("Arial"), 14, FontStyle.Bold);
 
             Series actual = new Series("Actual Scheduled Items")
             {
@@ -312,6 +336,7 @@ namespace KiczanProductionInfoSystem
             chartOrders.Titles.Clear();
 
             chartOrders.Titles.Add("Quarterly Orders (Actual + Forecast)");
+            chartOrders.Titles[0].Font = new Font(new FontFamily("Arial"), 14, FontStyle.Bold);
 
             Series actual = new Series("Actual Orders")
             {
@@ -418,8 +443,8 @@ namespace KiczanProductionInfoSystem
         {
             var area = chart.ChartAreas[0];
 
-            chart.BackColor = Color.White;
-            area.BackColor = Color.WhiteSmoke;
+            chart.BackColor = Color.Transparent;
+            area.BackColor = Color.Transparent;
 
             // Axis styling
             area.AxisX.Interval = 1;
