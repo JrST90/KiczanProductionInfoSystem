@@ -1,0 +1,1 @@
+﻿Server=(localdb)\MSSQLLocalDB;Database=KICZAN_PRODUCTION_SYSTEM;Trusted_Connection=True;TrustServerCertificate=True;
