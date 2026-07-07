@@ -9,31 +9,13 @@ namespace KiczanProductionInfoSystem
 {
     internal class DAO
     {
-        //Build connection string to connect to Microsoft SQL Server.
-        //private readonly string sqlConnectionString = "Server=(localdb)\\MSSQLLocalDB;Database=KICZAN_PRODUCTION_SYSTEM;Trusted_Connection=True;TrustServerCertificate=True;";
-        //private readonly string sqlConnectionString = "Server=KICZANAPP01\\SQLEXPRESS;Database=KICZAN_PRODUCTION_SYSTEM;Trusted_Connection=True;Encrypt=True;TrustServerCertificate=True;Connect Timeout=30;";
-        private static readonly string sqlConnectionString;
+        //private static readonly string sqlConnectionString;
 
-        //Static constructor to build connection string from appSettings.json, runs automatically.
-        static DAO()
+        public static string sqlConnectionString { get; private set; }
+
+        internal static void InitializeConnection(string connectionString)
         {
-            try
-            {
-                string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "connection.txt");
-
-                if (File.Exists(filePath))
-                {
-                    sqlConnectionString = File.ReadAllText(filePath).Trim();
-                }
-                else
-                {
-                    throw new FileNotFoundException("Could not find connection.txt in the application directory.");
-                }
-            }
-            catch(Exception ex)
-            {
-                throw new InvalidOperationException("Failed to load appSettings.json. Make sure 'Copy to Output Directory' is set", ex);
-            }
+            sqlConnectionString = connectionString;
         }
 
         //Reads data from DB source, returns dataTable from DATE_DUE_RANGE_QUERY stored procedure. 

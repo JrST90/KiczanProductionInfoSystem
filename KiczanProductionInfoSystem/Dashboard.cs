@@ -166,8 +166,6 @@ namespace KiczanProductionInfoSystem
 
              Legend legend = new Legend("Main Legend")
              {
-                 Docking = Docking.Top,
-                 Alignment = StringAlignment.Center,
                  BackColor = Color.Transparent
              };
 
@@ -235,8 +233,6 @@ namespace KiczanProductionInfoSystem
 
             Legend legend = new Legend("Main Legend")
             {
-                //Docking = Docking.Top,
-                //Alignment = StringAlignment.Center,
                 BackColor = Color.Transparent
             };
 
