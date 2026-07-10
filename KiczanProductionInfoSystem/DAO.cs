@@ -3,14 +3,20 @@ using System.Collections.Generic;
 using System.Data;
 using Microsoft.Data.SqlClient;
 using System.Windows.Forms;
+using System.IO;
 
 namespace KiczanProductionInfoSystem
 {
     internal class DAO
     {
-        //Build connection string to connect to Microsoft SQL Server.
-        private readonly string sqlConnectionString = "Server=(localdb)\\MSSQLLocalDB;Database=KICZAN_PRODUCTION_SYSTEM;Trusted_Connection=True;TrustServerCertificate=True;";
-        //private readonly string sqlConnectionString = "Server=KICZANAPP01\\SQLEXPRESS;Database=KICZAN_PRODUCTION_SYSTEM;Trusted_Connection=True;Encrypt=True;TrustServerCertificate=True;Connect Timeout=30;";
+        //private static readonly string sqlConnectionString;
+
+        public static string sqlConnectionString { get; private set; }
+
+        internal static void InitializeConnection(string connectionString)
+        {
+            sqlConnectionString = connectionString;
+        }
 
         //Reads data from DB source, returns dataTable from DATE_DUE_RANGE_QUERY stored procedure. 
         //Reads beginning date and end date from user input from text box on UI.
@@ -980,8 +986,35 @@ namespace KiczanProductionInfoSystem
             }
             return dataTable;
         }
+        //Method to run sp_GetQuarterlyProduction query from SQL server to populate chart with queried data.
+        internal DataTable LoadQuarterHistory()
+        {
+            DataTable dataTable = new DataTable();
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(sqlConnectionString))
+                {
+                    using (SqlCommand cmd = new SqlCommand("sp_GetQuarterlyProduction", conn))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
+                        {
+                            
+                            adapter.Fill(dataTable);
+                            return dataTable;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to last and predicted fiscal year volume dashboard data: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            return dataTable;
+        }
     }
 }
+
 
 
 
