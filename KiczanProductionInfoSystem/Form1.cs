@@ -44,21 +44,18 @@ namespace KiczanProductionInfoSystem
             this.StartPosition = FormStartPosition.CenterScreen;
 
             //If the user name exists, use the returned object properties to set role privileges.
-            if (newDAO.userNameCheck(userName))
+            Users currentUser = newDAO.getUserInfo(userName);
+            if (currentUser.ROLES_ID == 2 || currentUser.ROLES_ID == 4)
             {
-                Users currentUser = newDAO.getUserInfo(userName);
-                if (currentUser.ROLES_ID == 2 || currentUser.ROLES_ID == 4)
-                {
-                    this.Text = "Kiczan Production Information System | Current User: " + currentUser.USER_NAME + " | " + "User Role: " + currentUser.ROLE_NAME;
-                    button2.Enabled = false;
-                    button2.Visible = false;
-                }
-                else if (currentUser.ROLES_ID == 1 || currentUser.ROLES_ID == 3)
-                {
-                    this.Text = "Kiczan Production Information System | Current User: " + currentUser.USER_NAME + " | " + "User Role: " + currentUser.ROLE_NAME;
-                    button2.Enabled = true;
-                    button2.Visible = true;
-                }
+                this.Text = "Kiczan Production Information System | Current User: " + currentUser.USER_NAME + " | " + "User Role: " + currentUser.ROLE_NAME;
+                button2.Enabled = false;
+                button2.Visible = false;
+            }
+            else if (currentUser.ROLES_ID == 1 || currentUser.ROLES_ID == 3)
+            {
+                this.Text = "Kiczan Production Information System | Current User: " + currentUser.USER_NAME + " | " + "User Role: " + currentUser.ROLE_NAME;
+                button2.Enabled = true;
+                button2.Visible = true;
             }
         }
 

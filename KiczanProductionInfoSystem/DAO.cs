@@ -757,91 +757,38 @@ namespace KiczanProductionInfoSystem
             }
             return rowsAffected > 0;
         }
-        //Function to check if a userName exists within the DB.
-        internal bool userNameCheck(string userName)
-        {
-            //int variable to store number of records with matching userName.
-            int userCount = 0;
 
-            //bool variable to serve as flag for existent of userName in DB.
-            bool flag = false;
-
-            try
-            {
-                //Open connection to DB.
-                using (SqlConnection connection = new SqlConnection(sqlConnectionString))
-                {
-                    //Get the stored procedure from the DB.
-                    using (SqlCommand command = new SqlCommand("USER_NAME_QUERY_COUNT", connection))
-                    {
-                        connection.Open();
-
-                        command.CommandType = CommandType.StoredProcedure;
-
-                        //Paramaterized to prevent SQL Injection, bind values.
-                        command.Parameters.AddWithValue("userName", userName);
-
-                        //Execute query, save result in result object.
-                        object returnedCount = command.ExecuteScalar();
-
-                        //Convert to count.
-                        userCount = Convert.ToInt32(returnedCount);
-
-                        //Conditional to set flag value based on userCount.
-                        if (userCount != 1)
-                        {
-                            flag = false;
-                        }
-                        else if (userCount == 1)
-                        {
-                            flag = true;
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Failed to find username for authentication: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            return flag;
-        }
         //Function to get user information for a given userName.
         internal Users getUserInfo(string userName)
         {
-            //Create new Users object to store returned user information.
-            Users user = new Users();
+            //Create new Users object and start as null. If the user doesn't exist, it stays null.
+            Users user = null;
 
-            try
+            //Open connection to DB.
+            using (SqlConnection connection = new SqlConnection(sqlConnectionString))
             {
-                //Open connection to DB.
-                using (SqlConnection connection = new SqlConnection(sqlConnectionString))
+                //Get the stored procedure from the DB.
+                using (SqlCommand command = new SqlCommand("USER_NAME_QUERY", connection))
                 {
-                    //Get the stored procedure from the DB.
-                    using (SqlCommand command = new SqlCommand("USER_NAME_QUERY", connection))
+                    connection.Open();
+
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    //Paramaterized to prevent SQL Injection, bind values.
+                    command.Parameters.AddWithValue("userName", userName);
+
+                    using (SqlDataReader reader = command.ExecuteReader())
                     {
-                        connection.Open();
-
-                        command.CommandType = CommandType.StoredProcedure;
-
-                        //Paramaterized to prevent SQL Injection, bind values.
-                        command.Parameters.AddWithValue("userName", userName);
-
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        if (reader.Read())
                         {
-                            while (reader.Read())
-                            {
-                                user.USER_ID = reader.GetInt32(0);
-                                user.USER_NAME = reader.GetString(1);
-                                user.ROLES_ID = reader.GetInt32(2);
-                                user.ROLE_NAME = reader.GetString(3);
-                            }
+                            user = new Users();
+                            user.USER_ID = reader.GetInt32(0);
+                            user.USER_NAME = reader.GetString(1);
+                            user.ROLES_ID = reader.GetInt32(2);
+                            user.ROLE_NAME = reader.GetString(3);
                         }
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Failed to load user data: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             return user;
         }
