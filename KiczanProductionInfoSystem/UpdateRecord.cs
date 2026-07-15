@@ -6,7 +6,7 @@ using System.Windows.Forms;
 
 namespace KiczanProductionInfoSystem
 {
-    public partial class UpdateRecord : Form
+    internal partial class UpdateRecord : Form
     {
         //List to hold operator names returned from function.
         private List<Operators> operators = new List<Operators>();
@@ -15,7 +15,7 @@ namespace KiczanProductionInfoSystem
         private List<Customers> customers = new List<Customers>();
         
         private int partHistoryID;
-        public UpdateRecord(int convertedPartHistoryID, string retrievedCustomerName, string retrievedOperatorName, string retrievedPartNumber, string retrievedPurchaseOrderNumber, string retrievedQuantity, string retrievedDateReceived, string retrievedDateDue, string retrievedOperations)
+        internal UpdateRecord(int convertedPartHistoryID, string retrievedCustomerName, string retrievedOperatorName, string retrievedPartNumber, string retrievedPurchaseOrderNumber, string retrievedQuantity, string retrievedDateReceived, string retrievedDateDue, string retrievedOperations)
         {
             InitializeComponent();
 

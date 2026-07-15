@@ -6,14 +6,14 @@ using System.Windows.Forms;
 
 namespace KiczanProductionInfoSystem
 {
-    public partial class CreateRecord : Form
+    internal partial class CreateRecord : Form
     {
         //List to hold operator names returned from function.
         private List<Operators> operators = new List<Operators>();
 
         //List to hold customer names returned from function.
         private List<Customers> customers = new List<Customers>();
-        public CreateRecord()
+        internal CreateRecord()
         {
             InitializeComponent();
 

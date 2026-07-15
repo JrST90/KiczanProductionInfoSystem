@@ -775,7 +775,7 @@ namespace KiczanProductionInfoSystem
                     command.CommandType = CommandType.StoredProcedure;
 
                     //Paramaterized to prevent SQL Injection, bind values.
-                    command.Parameters.AddWithValue("userName", userName);
+                    command.Parameters.Add("@username", SqlDbType.VarChar, 48).Value = userName;
 
                     using (SqlDataReader reader = command.ExecuteReader())
                     {

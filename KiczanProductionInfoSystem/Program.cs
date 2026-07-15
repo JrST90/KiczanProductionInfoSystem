@@ -34,10 +34,10 @@ namespace KiczanProductionInfoSystem
 
                 //Get the current OS username.
                 string userName = Environment.UserName;
-
+               
                 //Initialize a Users object to the returned object from getUserInfo().
                 Users currentUser = newDAO.getUserInfo(userName);
-
+              
                 //Catch unauthorized users who either do not exist in the DB, or those who have not been assigned a role.
                 if(currentUser == null || currentUser.USER_ID == 0 || currentUser.ROLES_ID == 0)
                 {
@@ -45,7 +45,7 @@ namespace KiczanProductionInfoSystem
                     return;
                 }
 
-                Application.Run(new Form1());
+                Application.Run(new Form1(currentUser));
             }
             catch (Exception ex)
             {

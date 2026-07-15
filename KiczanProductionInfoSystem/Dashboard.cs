@@ -13,9 +13,9 @@ using Microsoft.ML.TimeSeries;
 
 namespace KiczanProductionInfoSystem
 {
-    public partial class Dashboard : Form
+    internal partial class Dashboard : Form
     {
-        public Dashboard()
+        internal Dashboard()
         {
             InitializeComponent();
             this.Text = "Kiczan: Dashboard";
