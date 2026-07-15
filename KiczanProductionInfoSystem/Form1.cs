@@ -27,9 +27,13 @@ namespace KiczanProductionInfoSystem
         string partNumber = "";
         string dateRange = "";
 
-        //Create new DAO Object for user authentication.
-        DAO newDAO = new DAO();
+        //Create new DAO Object.
+        private DAO newDAO = new DAO();
 
+        //Create new DataValidation Object for input validation.
+        private DataValidation newDV = new DataValidation();
+
+        //Create new Users object for authorization.
         private readonly Users _currentUser;
         
         internal Form1(Users currentUser)
@@ -65,16 +69,10 @@ namespace KiczanProductionInfoSystem
         }
 
         //Events to occur on button click for selection from comboBox1.
-        private void button1_Click(object sender, EventArgs e)
+        private async void button1_Click(object sender, EventArgs e)
         {
             //Get index value from comboBox1 after user selection.
             int searchTypeIndex = comboBox1.SelectedIndex;
-
-            //Create new DAO Object for query
-            DAO newDAO = new DAO();
-
-            //Create new DataValidation Object for input validation.
-            DataValidation newDV = new DataValidation();
 
             //Button click event is dependent on selected index from comboBox1.
             switch (searchTypeIndex)
@@ -121,13 +119,13 @@ namespace KiczanProductionInfoSystem
                         currentPageIndex = 1;
 
                         //Bind dataBaseSource to dateDueRangeQuery results, passing the arguments dateRange, pageSize, and currentPageIndex.
-                        dataBaseSource.DataSource = newDAO.dateDueRangeQuery(dateRange, pageSize, currentPageIndex);
+                        dataBaseSource.DataSource = await newDAO.dateDueRangeQuery(dateRange, pageSize, currentPageIndex);
 
                         //Bind dataGridView1 to dataBaseSource.
                         dataGridView1.DataSource = dataBaseSource;
 
                         //Get the total rows returned by dateDueRangeQueryCount with passed argument dateRange and set to variable totalRows.
-                        totalRows = newDAO.dateDueRangeQueryCount(dateRange);
+                        totalRows = await newDAO.dateDueRangeQueryCount(dateRange);
 
                         //Divide the totalRows variable by the pageSize variable and set value to totalPages variable.
                         totalPages = (int)Math.Ceiling((double)totalRows / pageSize);
@@ -286,19 +284,19 @@ namespace KiczanProductionInfoSystem
                     }
                     
                     //If the partNumber is of the right format and the number of matching records is greater than 0, execute the search query.
-                    if (newDV.validatePartNumber(partNumber) == true && newDAO.partNumberQueryCount(partNumber) > 0)
+                    if (newDV.validatePartNumber(partNumber) == true && await newDAO.partNumberQueryCount(partNumber) > 0)
                     {
                         //Set currentPageIndex for query.
                         currentPageIndex = 1;
 
                         //Bind dataBaseSource to partNumberQuery results, passing the arguments partNumber, pageSize, and currentPageIndex.
-                        dataBaseSource.DataSource = newDAO.partNumberQuery(partNumber, pageSize, currentPageIndex);
+                        dataBaseSource.DataSource = await newDAO.partNumberQuery(partNumber, pageSize, currentPageIndex);
 
                         //Bind dateGridView1 to dataBaseSource.
                         dataGridView1.DataSource = dataBaseSource;
 
                         //Get the total rows returned by partNumberQueryCount with passed argument partNumber and set to variable totalRows.
-                        totalRows = newDAO.partNumberQueryCount(partNumber);
+                        totalRows = await newDAO.partNumberQueryCount(partNumber);
 
                         //Divide the totalRows variable by the pageSize variable and set value to totalPages variable.
                         totalPages = (int)Math.Ceiling((double)totalRows / pageSize);
@@ -325,19 +323,19 @@ namespace KiczanProductionInfoSystem
                         label4.ForeColor = Color.Green;
                     }
                     //If the partNumber is of the right format and the number of matching records is 0, execute the search query.
-                    else if (newDV.validatePartNumber(partNumber) == true && newDAO.partNumberQueryCount(partNumber) == 0)
+                    else if (newDV.validatePartNumber(partNumber) == true && await newDAO.partNumberQueryCount(partNumber) == 0)
                     {
                         //Reset the currentPageIndex variable value.
                         currentPageIndex = 1;
 
                         //Bind dataBaseSource to partNumberQuery results, passing the arguments partNumber, pageSize, and currentPageIndex.
-                        dataBaseSource.DataSource = newDAO.partNumberQuery(partNumber, pageSize, currentPageIndex);
+                        dataBaseSource.DataSource = await newDAO.partNumberQuery(partNumber, pageSize, currentPageIndex);
 
                         //Bind dateGridView1 to dataBaseSource.
                         dataGridView1.DataSource = dataBaseSource;
 
                         //Get the total rows returned by partNumberQueryCount with passed argument partNumber and set to variable totalRows.
-                        totalRows = newDAO.partNumberQueryCount(partNumber);
+                        totalRows = await newDAO.partNumberQueryCount(partNumber);
 
                         //Save the number of pages to ensure an output of 0.
                         totalPages = (int)Math.Ceiling((double)totalRows / pageSize);
@@ -453,13 +451,13 @@ namespace KiczanProductionInfoSystem
                     currentPageIndex = 1;
 
                     //Bind dataBaseSource to operatorQuery results passing the arguments of the operator name from comboBox2, pageSize, and currentPageIndex.
-                    dataBaseSource.DataSource = newDAO.operatorNameQuery(comboBox2.Text, pageSize, currentPageIndex);
+                    dataBaseSource.DataSource = await newDAO.operatorNameQuery(comboBox2.Text, pageSize, currentPageIndex);
 
                     //Bind dateGridView to dataBaseSource.
                     dataGridView1.DataSource = dataBaseSource;
 
                     //Get the total rows returned by operatorQueryCount with the passed argument of comboBox2's selected operator name and set to variable totalRows.
-                    totalRows = newDAO.operatorNameQueryCount(comboBox2.Text);
+                    totalRows = await newDAO.operatorNameQueryCount(comboBox2.Text);
 
                     //Divide the totalRows variable by the pageSize variable and set value to totalPages variable.
                     totalPages = (int)Math.Ceiling((double)totalRows / pageSize);
@@ -523,13 +521,13 @@ namespace KiczanProductionInfoSystem
                     currentPageIndex = 1;
 
                     //Bind dataBaseSource to fabricationDepartmentQuery results passing the arguments of pageSize, and currentPageIndex.
-                    dataBaseSource.DataSource = newDAO.fabricationDepartmentQuery(pageSize, currentPageIndex);
+                    dataBaseSource.DataSource = await newDAO.fabricationDepartmentQuery(pageSize, currentPageIndex);
 
                     //Bind dateGridView to dataBaseSource.
                     dataGridView1.DataSource = dataBaseSource;
 
                     //Get the total rows returned by fabricationDepartmentQueryCount.
-                    totalRows = newDAO.fabricationDepartmentQueryCount();
+                    totalRows = await newDAO.fabricationDepartmentQueryCount();
 
                     //Divide the totalRows variable by the pageSize variable and set value to totalPages variable.
                     totalPages = (int)Math.Ceiling((double)totalRows / pageSize);
@@ -590,13 +588,13 @@ namespace KiczanProductionInfoSystem
                     currentPageIndex = 1;
 
                     //Bind dataBaseSource to fabricationDepartmentQuery results passing the arguments of pageSize, and currentPageIndex.
-                    dataBaseSource.DataSource = newDAO.machiningDepartmentQuery(pageSize, currentPageIndex);
+                    dataBaseSource.DataSource = await newDAO.machiningDepartmentQuery(pageSize, currentPageIndex);
 
                     //Bind dateGridView to dataBaseSource.
                     dataGridView1.DataSource = dataBaseSource;
 
                     //Get the total rows returned by fabricationDepartmentQueryCount.
-                    totalRows = newDAO.machiningDepartmentQueryCount();
+                    totalRows = await newDAO.machiningDepartmentQueryCount();
 
                     //Divide the totalRows variable by the pageSize variable and set value to totalPages variable.
                     totalPages = (int)Math.Ceiling((double)totalRows / pageSize);
@@ -656,19 +654,19 @@ namespace KiczanProductionInfoSystem
                     }
 
                     //If the partNumber is of the right format, execute the search query.
-                    if (newDV.validatePartNumber(partNumber) == true && newDAO.partNumberQueryCountArchive(partNumber) > 0)
+                    if (newDV.validatePartNumber(partNumber) == true && await newDAO.partNumberQueryCountArchive(partNumber) > 0)
                     {
                         //Set currentPageIndex for query.
                         currentPageIndex = 1;
 
                         //Bind dataBaseSource to partNumberQuery results, passing the arguments partNumber, pageSize, and currentPageIndex.
-                        dataBaseSource.DataSource = newDAO.partNumberQueryArchive(partNumber, pageSize, currentPageIndex);
+                        dataBaseSource.DataSource = await newDAO.partNumberQueryArchive(partNumber, pageSize, currentPageIndex);
 
                         //Bind dateGridView1 to dataBaseSource.
                         dataGridView1.DataSource = dataBaseSource;
 
                         //Get the total rows returned by partNumberQueryCount with passed argument partNumber and set to variable totalRows.
-                        totalRows = newDAO.partNumberQueryCountArchive(partNumber);
+                        totalRows = await newDAO.partNumberQueryCountArchive(partNumber);
 
                         //Divide the totalRows variable by the pageSize variable and set value to totalPages variable.
                         totalPages = (int)Math.Ceiling((double)totalRows / pageSize);
@@ -695,19 +693,19 @@ namespace KiczanProductionInfoSystem
                         label4.ForeColor = Color.Green;
                     }
                     //If the partNumber is of the right format and the number of matching records is 0, execute the search query.
-                    else if (newDV.validatePartNumber(partNumber) == true && newDAO.partNumberQueryCountArchive(partNumber) == 0)
+                    else if (newDV.validatePartNumber(partNumber) == true && await newDAO.partNumberQueryCountArchive(partNumber) == 0)
                     {
                         //Reset the currentPageIndex variable value.
                         currentPageIndex = 1;
 
                         //Bind dataBaseSource to partNumberQuery results, passing the arguments partNumber, pageSize, and currentPageIndex.
-                        dataBaseSource.DataSource = newDAO.partNumberQueryArchive(partNumber, pageSize, currentPageIndex);
+                        dataBaseSource.DataSource = await newDAO.partNumberQueryArchive(partNumber, pageSize, currentPageIndex);
 
                         //Bind dataGridView1 to dataBaseSource
                         dataGridView1.DataSource = dataBaseSource;
 
                         //Get the total rows returned by partNumberQueryCount with passed argument partNumber and set to variable totalRows.
-                        totalRows = newDAO.partNumberQueryCountArchive(partNumber);
+                        totalRows = await newDAO.partNumberQueryCountArchive(partNumber);
 
                         //Save the number of pages to ensure an output of 0
                         totalPages = (int)Math.Ceiling((double)totalRows / pageSize);
@@ -788,16 +786,10 @@ namespace KiczanProductionInfoSystem
         }
 
         //Events to occur on drop down selector change for comboBox1.
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        private async void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             //Get index value from comboBox1 after user selection.
             int searchTypeIndex = comboBox1.SelectedIndex;
-
-            //Create new DAO Object for query.
-            DAO newDAO = new DAO();
-
-            //Create new DataValidation Object for input validation.
-            DataValidation newDV = new DataValidation();
 
             switch (searchTypeIndex)
             {
@@ -876,7 +868,7 @@ namespace KiczanProductionInfoSystem
                     textBox1.Clear();
 
                     //Set the operators List object to be populated with the list returned by GetOperators().
-                    operators = newDAO.GetOperators();
+                    operators = await newDAO.GetOperators();
 
                     //Bind comboBox2's datasource to the operators List.
                     comboBox2.DataSource = operators;
@@ -1036,18 +1028,12 @@ namespace KiczanProductionInfoSystem
         }
 
         //Event handler for Next Button.
-        private void button4_Click(object sender, EventArgs e)
+        private async void button4_Click(object sender, EventArgs e)
         {
             if (currentPageIndex < totalPages && dataBaseSource.DataSource != null)
             {
                 //Get index value from comboBox1 after user selection.
                 int searchType = comboBox1.SelectedIndex;
-
-                //Create new DAO Object for query.
-                DAO newDAO = new DAO();
-
-                //Create new DataValidation object.
-                DataValidation newDV = new DataValidation();
 
                 switch (searchType)
                 {
@@ -1062,7 +1048,7 @@ namespace KiczanProductionInfoSystem
                             label6.Text = "Current Page: " + currentPageIndex;
 
                             //Query to update page.
-                            dataBaseSource.DataSource = newDAO.dateDueRangeQuery(dateRange, pageSize, currentPageIndex);
+                            dataBaseSource.DataSource = await newDAO.dateDueRangeQuery(dateRange, pageSize, currentPageIndex);
 
                             //Bind results to dataGridView1.
                             dataGridView1.DataSource = dataBaseSource;
@@ -1175,7 +1161,7 @@ namespace KiczanProductionInfoSystem
                             label6.Text = "Current Page: " + currentPageIndex;
 
                             //Query to update page.
-                            dataBaseSource.DataSource = newDAO.partNumberQuery(partNumber, pageSize, currentPageIndex);
+                            dataBaseSource.DataSource = await newDAO.partNumberQuery(partNumber, pageSize, currentPageIndex);
 
                             //Bind results to dataGridView1.
                             dataGridView1.DataSource = dataBaseSource;
@@ -1238,7 +1224,7 @@ namespace KiczanProductionInfoSystem
                         label6.Text = "Current Page: " + currentPageIndex;
 
                         //Query to update page.
-                        dataBaseSource.DataSource = newDAO.operatorNameQuery(comboBox2.Text, pageSize, currentPageIndex);
+                        dataBaseSource.DataSource = await newDAO.operatorNameQuery(comboBox2.Text, pageSize, currentPageIndex);
 
                         //Bind results to dataGridView1.
                         dataGridView1.DataSource = dataBaseSource;
@@ -1252,7 +1238,7 @@ namespace KiczanProductionInfoSystem
                         label6.Text = "Current Page: " + currentPageIndex;
 
                         //Query to update page.
-                        dataBaseSource.DataSource = newDAO.fabricationDepartmentQuery(pageSize, currentPageIndex);
+                        dataBaseSource.DataSource = await newDAO.fabricationDepartmentQuery(pageSize, currentPageIndex);
 
                         //Bind results to dataGridView1.
                         dataGridView1.DataSource = dataBaseSource;
@@ -1267,7 +1253,7 @@ namespace KiczanProductionInfoSystem
                         label6.Text = "Current Page: " + currentPageIndex;
 
                         //Query to update page.
-                        dataBaseSource.DataSource = newDAO.machiningDepartmentQuery(pageSize, currentPageIndex);
+                        dataBaseSource.DataSource = await newDAO.machiningDepartmentQuery(pageSize, currentPageIndex);
 
                         //Bind results to dataGridView1.
                         dataGridView1.DataSource = dataBaseSource;
@@ -1285,7 +1271,7 @@ namespace KiczanProductionInfoSystem
                             label6.Text = "Current Page: " + currentPageIndex;
 
                             //Query to update page.
-                            dataBaseSource.DataSource = newDAO.partNumberQueryArchive(partNumber, pageSize, currentPageIndex);
+                            dataBaseSource.DataSource = await newDAO.partNumberQueryArchive(partNumber, pageSize, currentPageIndex);
 
                             //Bind results to dataGridView1.
                             dataGridView1.DataSource = dataBaseSource;
@@ -1343,18 +1329,12 @@ namespace KiczanProductionInfoSystem
             }
         }
         //Event handler for Previous Button.
-        private void button5_Click(object sender, EventArgs e)
+        private async void button5_Click(object sender, EventArgs e)
         {
             if (currentPageIndex > 1)
             {
                 //Get index value from comboBox1 after user selection.
                 int searchType = comboBox1.SelectedIndex;
-
-                //Create new DAO Object for query.
-                DAO newDAO = new DAO();
-
-                //Create new DataValidation object.
-                DataValidation newDV = new DataValidation();
 
                 switch (searchType)
                 {
@@ -1368,7 +1348,7 @@ namespace KiczanProductionInfoSystem
                             label6.Text = "Current Page: " + currentPageIndex;
 
                             //Query to update page.
-                            dataBaseSource.DataSource = newDAO.dateDueRangeQuery(textBox1.Text, pageSize, currentPageIndex);
+                            dataBaseSource.DataSource = await newDAO.dateDueRangeQuery(textBox1.Text, pageSize, currentPageIndex);
 
                             //Bind results to dataGridView1.
                             dataGridView1.DataSource = dataBaseSource;
@@ -1480,7 +1460,7 @@ namespace KiczanProductionInfoSystem
                             label6.Text = "Current Page: " + currentPageIndex;
 
                             //Query to update page.
-                            dataBaseSource.DataSource = newDAO.partNumberQuery(partNumber, pageSize, currentPageIndex);
+                            dataBaseSource.DataSource = await newDAO.partNumberQuery(partNumber, pageSize, currentPageIndex);
 
                             //Bind results to dataGridView1.
                             dataGridView1.DataSource = dataBaseSource;
@@ -1543,7 +1523,7 @@ namespace KiczanProductionInfoSystem
                         label6.Text = "Current Page: " + currentPageIndex;
 
                         //Query to update page.
-                        dataBaseSource.DataSource = newDAO.operatorNameQuery(comboBox2.Text, pageSize, currentPageIndex);
+                        dataBaseSource.DataSource = await newDAO.operatorNameQuery(comboBox2.Text, pageSize, currentPageIndex);
 
                         //Bind results to dataGridView1.
                         dataGridView1.DataSource = dataBaseSource;
@@ -1557,7 +1537,7 @@ namespace KiczanProductionInfoSystem
                         label6.Text = "Current Page: " + currentPageIndex;
 
                         // Query to update page.
-                        dataBaseSource.DataSource = newDAO.fabricationDepartmentQuery(pageSize, currentPageIndex);
+                        dataBaseSource.DataSource = await newDAO.fabricationDepartmentQuery(pageSize, currentPageIndex);
 
                         // Bind results to dataGridView1.
                         dataGridView1.DataSource = dataBaseSource;
@@ -1572,7 +1552,7 @@ namespace KiczanProductionInfoSystem
                         label6.Text = "Current Page: " + currentPageIndex;
 
                         // Query to update page.
-                        dataBaseSource.DataSource = newDAO.machiningDepartmentQuery(pageSize, currentPageIndex);
+                        dataBaseSource.DataSource = await newDAO.machiningDepartmentQuery(pageSize, currentPageIndex);
 
                         // Bind results to dataGridView1.
                         dataGridView1.DataSource = dataBaseSource;
@@ -1589,7 +1569,7 @@ namespace KiczanProductionInfoSystem
                             label6.Text = "Current Page: " + currentPageIndex;
 
                             //Query to update page.
-                            dataBaseSource.DataSource = newDAO.partNumberQueryArchive(partNumber, pageSize, currentPageIndex);
+                            dataBaseSource.DataSource = await newDAO.partNumberQueryArchive(partNumber, pageSize, currentPageIndex);
 
                             //Bind results to dataGridView1.
                             dataGridView1.DataSource = dataBaseSource;
@@ -1936,76 +1916,135 @@ namespace KiczanProductionInfoSystem
         }
 
         //Event handler for click event for Delete Record on right click menu.
-        private void deleteRecordToolStripMenuItem_Click(object sender, EventArgs e)
+        private async void deleteRecordToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //Create new DAO Object for query.
-            DAO newDAO = new DAO();
-
-            //Retrieve the selected row.
-            DataGridViewRow selectedRow = dataGridView1.SelectedRows[0];
-
-            //Initialize variable to hold part history id as a string.
-            string retreivedPartHistoryID;
-
-            //Initialize variable to hold party history id converted from string to int.
-            int convertedPartHistoryID;
-
-            //Retrieve the value of the first column of the selected row (PART_HISTORY_ID).
-            object cellValueByIndex = selectedRow.Cells[0].Value;
-
-            //Validate, convert PART_HISTORY_ID to string if not null.
-            if (cellValueByIndex != null)
+            //Check if a row is actually selected.
+            if (dataGridView1.SelectedRows.Count == 0)
             {
-                retreivedPartHistoryID = cellValueByIndex.ToString();
-            }
-            else
-            {
-                retreivedPartHistoryID = string.Empty;
+                return;
             }
 
-            //Convert the string value to an int for processing.
-            convertedPartHistoryID = int.Parse(retreivedPartHistoryID);
+            try
+            {
+                //Ask for confirmation before deleting.
+                DialogResult confirmation = MessageBox.Show("Are you sure you want to delete this record?", "Confirm Deletion", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
 
-            //Pass the PART_HISTORY_ID value to the delete query for record update to mark for delete.
-            newDAO.softDeleteQuery(convertedPartHistoryID);
-            button1_Click(sender, e);
-          
+                if (confirmation == DialogResult.No)
+                {
+                    return;
+                }
+
+                dataGridView1.Enabled = false;
+
+                //Retrieve the selected row.
+                DataGridViewRow selectedRow = dataGridView1.SelectedRows[0];
+
+                //Initialize variable to hold part history id as a string.
+                string retreivedPartHistoryID;
+
+                //Initialize variable to hold party history id converted from string to int.
+                int convertedPartHistoryID;
+
+                //Retrieve the value of the first column of the selected row (PART_HISTORY_ID).
+                object cellValueByIndex = selectedRow.Cells[0].Value;
+
+                //Validate, convert PART_HISTORY_ID to string if not null.
+                if (cellValueByIndex != null)
+                {
+                    retreivedPartHistoryID = cellValueByIndex.ToString();
+                }
+                else
+                {
+                    retreivedPartHistoryID = string.Empty;
+                }
+
+                //Convert the string value to an int for processing.
+                convertedPartHistoryID = int.Parse(retreivedPartHistoryID);
+
+                //Pass the PART_HISTORY_ID value to the delete query for record update to mark for delete.
+                await newDAO.softDeleteQuery(convertedPartHistoryID);
+
+                //Refresh the grid.
+                button1_Click(sender, e);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"An unexpected error ocurred while deleting the record: {ex.Message}", "Application Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                //Re-enable the grid.
+                dataGridView1.Enabled = true;
+            }
         }
 
         //Event handler for click event for Restore Record on right click menu.
-        private void restoreRecordMainTableToolStripMenuItem_Click(object sender, EventArgs e)
+        private async void restoreRecordMainTableToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //Create new DAO Object for query.
-            DAO newDAO = new DAO();
-
-            //Retrieve the selected row.
-            DataGridViewRow selectedRow = dataGridView1.SelectedRows[0];
-
-            //Initialize variable to hold part history id as a string.
-            string retreivedPartHistoryID;
-
-            //Initialize variable to hold party history id converted from string to int.
-            int convertedPartHistoryID;
-
-            //Retrieve the value of the first column of the selected row (PART_HISTORY_ID).
-            object cellValueByIndex = selectedRow.Cells[0].Value;
-
-            //Validate, convert PART_HISTORY_ID to string if not null.
-            if (cellValueByIndex != null)
+            if (dataGridView1.SelectedRows.Count == 0)
             {
-                retreivedPartHistoryID = cellValueByIndex.ToString();
-            }
-            else
-            {
-                retreivedPartHistoryID = string.Empty;
+                return;
             }
 
-            //Convert the string value to an int for processing.
-            convertedPartHistoryID = int.Parse(retreivedPartHistoryID);
+            try
+            {
+                //Ask for confirmation before restoring.
+                DialogResult confirmation = MessageBox.Show("Are you sure you want to restore this record?", "Confirm Restoration", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
 
-            //Pass the PART_HISTORY_ID value to the restore query for record update to restore record.
-            newDAO.restoreRecordQuery(convertedPartHistoryID);
-            button1_Click(sender, e);
+                if (confirmation == DialogResult.No)
+                {
+                    return;
+                }
+
+                dataGridView1.Enabled = false;
+
+                //Retrieve the selected row.
+                DataGridViewRow selectedRow = dataGridView1.SelectedRows[0];
+
+                //Initialize variable to hold part history id as a string.
+                string retreivedPartHistoryID;
+
+                //Initialize variable to hold party history id converted from string to int.
+                int convertedPartHistoryID;
+
+                //Retrieve the value of the first column of the selected row (PART_HISTORY_ID).
+                object cellValueByIndex = selectedRow.Cells[0].Value;
+
+                //Validate, convert PART_HISTORY_ID to string if not null.
+                if (cellValueByIndex != null)
+                {
+                    retreivedPartHistoryID = cellValueByIndex.ToString();
+                }
+                else
+                {
+                    retreivedPartHistoryID = string.Empty;
+                }
+
+                //Convert the string value to an int for processing.
+                convertedPartHistoryID = int.Parse(retreivedPartHistoryID);
+
+                //Pass the PART_HISTORY_ID value to the restore query for record update to restore record.
+                await newDAO.restoreRecordQuery(convertedPartHistoryID);
+
+                //Refresh the grid.
+                button1_Click(sender, e);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"An unexpected error ocurred while deleting the record: {ex.Message}", "Application Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                //Re-enable the grid.
+                dataGridView1.Enabled = true;
+            }
+        }
+        private void textBox1_Enter(object sender, EventArgs e)
+        {
+            if(textBox1.Text == "MM/DD/YYYY-MM/DD/YYYY")
+            {
+                textBox1.Text = "";
+            }
         }
     }
 }

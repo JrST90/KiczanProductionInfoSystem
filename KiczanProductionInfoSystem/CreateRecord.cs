@@ -3,16 +3,23 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 using System.Windows.Forms;
+using System.Threading.Tasks;
 
 namespace KiczanProductionInfoSystem
 {
     internal partial class CreateRecord : Form
     {
+        //Create new DAO object for query.
+        private DAO newDAO = new DAO();
+
+        //Create new DataValidation Object for input validation.
+        private DataValidation newDV = new DataValidation();
+
         //List to hold operator names returned from function.
-        private List<Operators> operators = new List<Operators>();
+        private List<Operators> operators;
 
         //List to hold customer names returned from function.
-        private List<Customers> customers = new List<Customers>();
+        private List<Customers> customers;
         internal CreateRecord()
         {
             InitializeComponent();
@@ -23,39 +30,6 @@ namespace KiczanProductionInfoSystem
             this.FormBorderStyle = FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.StartPosition = FormStartPosition.CenterScreen;
-
-            //Create new DAO object for query.
-            DAO newDAO = new DAO();
-
-            //Set the operators List object to be populated with the list returned by GetOperators().
-            operators = newDAO.GetOperators();
-
-            //Set the customers List object to be populated with the list returned by GetCustomers().
-            customers = newDAO.GetCustomers();
-
-            //Bind operatorComboBox datasource to the operators list.
-            operatorComboBox.DataSource = operators;
-
-            //Bind customerComboBox datasource to the customers list.
-            customerComboBox.DataSource = customers;
-
-            //Set the display values for operatorComboBox.
-            operatorComboBox.DisplayMember = "OPERATOR_NAME";
-
-            //Set the stored values for operatorComboBox.
-            operatorComboBox.ValueMember = "OPERATOR_ID";
-
-            //Set the display values for customerComboBox.
-            customerComboBox.DisplayMember = "CUSTOMER_NAME";
-
-            //Set the stored values for customerComboBox.
-            customerComboBox.ValueMember = "CUSTOMER_ID";
-
-            //Set the initial value of operatorComboBox to empty.
-            operatorComboBox.SelectedIndex = -1;
-
-            //Set the initial value of customerComboBox to empty.
-            customerComboBox.SelectedIndex = -1;
         }
         //eventhandler for checkboxlist
         private void checkedListBox1_SelectedIndexChanged(object sender, EventArgs e)
@@ -66,9 +40,6 @@ namespace KiczanProductionInfoSystem
         //eventhandler for create record button
         private void button1_Click(object sender, EventArgs e)
         {
-            //Create new DataValidation Object for input validation.
-            DataValidation newDV = new DataValidation();
-
             //Get part number value
             string partNumber = textBoxPartNumber.Text;
 
@@ -203,7 +174,6 @@ namespace KiczanProductionInfoSystem
                 DateTime parsedDateReceived = DateTime.ParseExact(dateReceived, "MM/dd/yyyy", CultureInfo.InvariantCulture);
                 DateTime parsedDueDate = DateTime.ParseExact(dateDue, "MM/dd/yyyy", CultureInfo.InvariantCulture);
 
-                DAO newDAO = new DAO();
                 newDAO.CreateRecord(custID, opID, partNumber, parsedDueDate, poNumber, quantity, checkedOperations, parsedDateReceived, 0);
 
                 labelRecordStatus.Text = "Record Status: Record Successfully Created!";
@@ -256,10 +226,52 @@ namespace KiczanProductionInfoSystem
             this.Close();
         }
 
-        private void CreateRecord_Load(object sender, EventArgs e)
+        private async void CreateRecord_Load(object sender, EventArgs e)
         {
+            try
+            {
+                operatorComboBox.Enabled = false;
+                customerComboBox.Enabled = false;
 
+                //Set the operators List object to be populated with the list returned by GetOperators().
+                operators = await newDAO.GetOperators();
+
+                //Set the customers List object to be populated with the list returned by GetCustomers().
+                customers = await newDAO.GetCustomers();
+
+                //Bind operatorComboBox datasource to the operators list.
+                operatorComboBox.DataSource = operators;
+
+                //Bind customerComboBox datasource to the customers list.
+                customerComboBox.DataSource = customers;
+
+                //Set the display values for operatorComboBox.
+                operatorComboBox.DisplayMember = "OPERATOR_NAME";
+
+                //Set the stored values for operatorComboBox.
+                operatorComboBox.ValueMember = "OPERATOR_ID";
+
+                //Set the display values for customerComboBox.
+                customerComboBox.DisplayMember = "CUSTOMER_NAME";
+
+                //Set the stored values for customerComboBox.
+                customerComboBox.ValueMember = "CUSTOMER_ID";
+
+                //Set the initial value of operatorComboBox to empty.
+                operatorComboBox.SelectedIndex = -1;
+
+                //Set the initial value of customerComboBox to empty.
+                customerComboBox.SelectedIndex = -1;
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show($"Failed to load initialization lists: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                operatorComboBox.Enabled = true;
+                customerComboBox.Enabled = true;
+            }
         }
-
     }
 }

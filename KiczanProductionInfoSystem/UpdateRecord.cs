@@ -8,12 +8,21 @@ namespace KiczanProductionInfoSystem
 {
     internal partial class UpdateRecord : Form
     {
+        //Create new DAO object for query.
+        private DAO newDAO = new DAO();
+
+        //Create new DataValidation Object for input validation.
+        private DataValidation newDV = new DataValidation();
+
         //List to hold operator names returned from function.
-        private List<Operators> operators = new List<Operators>();
+        private List<Operators> operators;
 
         //List to hold customer names returned from function.
-        private List<Customers> customers = new List<Customers>();
-        
+        private List<Customers> customers;
+
+        //Variables to hold target partHistoryID, customer and operator names from record selection.
+        private string _targetCustomerName;
+        private string _targetOperatorName;
         private int partHistoryID;
         internal UpdateRecord(int convertedPartHistoryID, string retrievedCustomerName, string retrievedOperatorName, string retrievedPartNumber, string retrievedPurchaseOrderNumber, string retrievedQuantity, string retrievedDateReceived, string retrievedDateDue, string retrievedOperations)
         {
@@ -26,44 +35,16 @@ namespace KiczanProductionInfoSystem
             this.MaximizeBox = false;
             this.StartPosition = FormStartPosition.CenterScreen;
 
-            //Create new DAO object for query.
-            DAO newDAO = new DAO();
-
-            //Set the operators List object to be populated with the list returned by GetOperators().
-            operators = newDAO.GetOperators();
-
-            //Set the customers List object to be populated with the list returned by GetCustomers().
-            customers = newDAO.GetCustomers();
-           
-            //Bind operatorComboBox datasource to the operators list.
-            operatorComboBox.DataSource = operators;
-
-            //Bind customerComboBox datasource to the customers list.
-            customerComboBox.DataSource = customers;
-
-            //Set the display values for operatorComboBox.
-            operatorComboBox.DisplayMember = "OPERATOR_NAME";
-
-            //Set the stored values for operatorComboBox.
-            operatorComboBox.ValueMember = "OPERATOR_ID";
-
-            //Set the display values for customerComboBox.
-            customerComboBox.DisplayMember = "CUSTOMER_NAME";
-
-            //Set the stored values for customerComboBox.
-            customerComboBox.ValueMember = "CUSTOMER_ID";
-
             //Set form values to values retrieved from selected record.
             partHistoryID = convertedPartHistoryID;
-            int customerIndex = customerComboBox.FindString(retrievedCustomerName);
-            int operatorIndex = operatorComboBox.FindString(retrievedOperatorName);
-            customerComboBox.SelectedIndex = customerIndex;
-            operatorComboBox.SelectedIndex = operatorIndex;
+            _targetCustomerName = retrievedCustomerName;
+            _targetOperatorName = retrievedOperatorName;
             textBoxPartNumber.Text = retrievedPartNumber;
             textBoxPO.Text = retrievedPurchaseOrderNumber;
             textBoxQuantity.Text = retrievedQuantity;
             textBoxDateReceived.Text = retrievedDateReceived;
             textboxDueDate.Text = retrievedDateDue;
+
             //Get checked box values from selected record and display on UpdateRecord form.
             if(retrievedOperations.Contains("Laser"))
             {
@@ -122,9 +103,6 @@ namespace KiczanProductionInfoSystem
         //eventhandler for update record button
         private void button1_Click(object sender, EventArgs e)
         {
-            //Create new DataValidation Object for input validation.
-            DataValidation newDV = new DataValidation();
-
             //Get part number value
             string partNumber = textBoxPartNumber.Text;
 
@@ -258,8 +236,6 @@ namespace KiczanProductionInfoSystem
                 DateTime parsedDateReceived = DateTime.ParseExact(dateReceived, "MM/dd/yyyy", CultureInfo.InvariantCulture);
                 DateTime parsedDueDate = DateTime.ParseExact(dateDue, "MM/dd/yyyy", CultureInfo.InvariantCulture);
        
-                //TO DO: Create DAO object and Function call to Update Record.
-                DAO newDAO = new DAO();
                 newDAO.UpdateRecord(partHistoryID, custID, opID, partNumber, parsedDueDate, poNumber, quantity, checkedOperations, parsedDateReceived, 0);
 
                 labelRecordStatus.Text = "Record Status: Record Successfully Updated!";
@@ -310,9 +286,59 @@ namespace KiczanProductionInfoSystem
             this.Close();
         }
 
-        private void UpdateRecord_Load(object sender, EventArgs e)
+        private async void UpdateRecord_Load(object sender, EventArgs e)
         {
+            try
+            {
+                customerComboBox.Enabled = false;
+                operatorComboBox.Enabled = false;
 
+                //Set the operators List object to be populated with the list returned by GetOperators().
+                operators = await newDAO.GetOperators();
+
+                //Set the customers List object to be populated with the list returned by GetCustomers().
+                customers = await newDAO.GetCustomers();
+
+                //Bind operatorComboBox datasource to the operators list.
+                operatorComboBox.DataSource = operators;
+
+                //Bind customerComboBox datasource to the customers list.
+                customerComboBox.DataSource = customers;
+
+                //Set the display values for operatorComboBox.
+                operatorComboBox.DisplayMember = "OPERATOR_NAME";
+
+                //Set the stored values for operatorComboBox.
+                operatorComboBox.ValueMember = "OPERATOR_ID";
+
+                //Set the display values for customerComboBox.
+                customerComboBox.DisplayMember = "CUSTOMER_NAME";
+
+                //Set the stored values for customerComboBox.
+                customerComboBox.ValueMember = "CUSTOMER_ID";
+
+                int customerIndex = customerComboBox.FindString(_targetCustomerName);
+                int operatorIndex = operatorComboBox.FindString(_targetOperatorName);
+
+                if (customerIndex != -1)
+                {
+                    customerComboBox.SelectedIndex = customerIndex;
+                }
+
+                if (operatorIndex != -1)
+                {
+                    operatorComboBox.SelectedIndex = operatorIndex;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to load record details: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                customerComboBox.Enabled = true;
+                operatorComboBox.Enabled = true;
+            }
         }
     }
 }
