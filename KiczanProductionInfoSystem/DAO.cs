@@ -306,7 +306,7 @@ namespace KiczanProductionInfoSystem
                         String searchWildTerm = "%" + operatorName + "%";
 
                         //Paramaterized to prevent SQL Injection, bind values.
-                        command.Parameters.Add("@partNo", SqlDbType.VarChar, 50).Value = searchWildTerm;
+                        command.Parameters.Add("@opName", SqlDbType.VarChar, 10).Value = searchWildTerm;
                         command.Parameters.Add("@pageSize", SqlDbType.Int).Value = pageSize;
                         command.Parameters.Add("@offsetNum", SqlDbType.Int).Value = offsetNum;
 
@@ -346,7 +346,7 @@ namespace KiczanProductionInfoSystem
                         String searchWildTerm = "%" + operatorName + "%";
 
                         //Paramaterized to prevent SQL Injection, bind values.
-                        command.Parameters.Add("@partNo", SqlDbType.VarChar, 50).Value = searchWildTerm;
+                        command.Parameters.Add("@opName", SqlDbType.VarChar, 10).Value = searchWildTerm;
 
                         await connection.OpenAsync();
 
