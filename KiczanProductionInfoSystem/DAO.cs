@@ -647,7 +647,7 @@ namespace KiczanProductionInfoSystem
         }
 
         //Method to create new record.
-        internal bool CreateRecord(int custID, int opID, string partNumber, DateTime dateDue, string poNumber, string quantity, string checkedOperations, DateTime dateReceived, int toDelete)
+        internal async Task<bool> CreateRecord(int custID, int opID, string partNumber, DateTime dateDue, string poNumber, string quantity, string checkedOperations, DateTime dateReceived, int toDelete)
         {
             int rowsAffected = 0;
 
@@ -690,12 +690,14 @@ namespace KiczanProductionInfoSystem
                     //Get the stored procedure from the DB.
                     using (SqlCommand command = new SqlCommand("CREATE_RECORD", connection))
                     {
-                        connection.Open();
-
                         //Build SQL command retreived from stored procedure "CREATE_RECORD".
                         command.CommandType = CommandType.StoredProcedure;
+
+                        await connection.OpenAsync();
+
                         command.Parameters.AddRange(pms);
-                        rowsAffected = command.ExecuteNonQuery();
+
+                        rowsAffected = await command.ExecuteNonQueryAsync();
                     }
                 }
             }
@@ -707,7 +709,7 @@ namespace KiczanProductionInfoSystem
         }
 
         //Method to update selected record.
-        internal bool UpdateRecord(int partID, int custID, int opID, string partNumber, DateTime dateDue, string poNumber, string quantity, string checkedOperations, DateTime dateReceived, int toDelete)
+        internal async Task<bool> UpdateRecord(int partID, int custID, int opID, string partNumber, DateTime dateDue, string poNumber, string quantity, string checkedOperations, DateTime dateReceived, int toDelete)
         {
             int rowsAffected = 0;
             try
@@ -752,12 +754,14 @@ namespace KiczanProductionInfoSystem
                     //Get the stored procedure from the DB.
                     using (SqlCommand command = new SqlCommand("UPDATE_RECORD", connection))
                     {
-                        connection.Open();
-
                         //Build SQL command retreived from stored procedure "UPDATE_RECORD".
                         command.CommandType = CommandType.StoredProcedure;
+
+                        await connection.OpenAsync();
+
                         command.Parameters.AddRange(pms);
-                        rowsAffected = command.ExecuteNonQuery();
+
+                        rowsAffected = await command.ExecuteNonQueryAsync();
                     }
                 }
             }

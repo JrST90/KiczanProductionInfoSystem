@@ -37,7 +37,7 @@ namespace KiczanProductionInfoSystem
         }
 
         //eventhandler for create record button
-        private void button1_Click(object sender, EventArgs e)
+        private async void button1_Click(object sender, EventArgs e)
         {
             //Get part number value
             string partNumber = textBoxPartNumber.Text;
@@ -166,28 +166,23 @@ namespace KiczanProductionInfoSystem
                 isValid = false;
             }
 
-
             //final check before to comfirm
             if (isValid)
             {
                 DateTime parsedDateReceived = DateTime.ParseExact(dateReceived, "MM/dd/yyyy", CultureInfo.InvariantCulture);
                 DateTime parsedDueDate = DateTime.ParseExact(dateDue, "MM/dd/yyyy", CultureInfo.InvariantCulture);
 
-                newDAO.CreateRecord(custID, opID, partNumber, parsedDueDate, poNumber, quantity, checkedOperations, parsedDateReceived, 0);
+                await newDAO.CreateRecord(custID, opID, partNumber, parsedDueDate, poNumber, quantity, checkedOperations, parsedDateReceived, 0);
 
                 labelRecordStatus.Text = "Record Status: Record Successfully Created!";
-                   
             }
-
             else
             {
-
                 labelRecordStatus.Text = "Record Status: Record Creation Error!";
-
             }
-            
         }
 
+        //Event handler to Clear button.
         private void button2_Click(object sender, EventArgs e)
         {
             operatorComboBox.SelectedIndex = -1;

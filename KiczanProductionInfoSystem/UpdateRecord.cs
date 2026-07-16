@@ -101,7 +101,7 @@ namespace KiczanProductionInfoSystem
 
         }
         //eventhandler for update record button
-        private void button1_Click(object sender, EventArgs e)
+        private async void button1_Click(object sender, EventArgs e)
         {
             //Get part number value
             string partNumber = textBoxPartNumber.Text;
@@ -212,6 +212,7 @@ namespace KiczanProductionInfoSystem
 
             //Date received validation
             string dateReceivedError = newDV.validateDateReceived(dateReceived);
+
             if (!string.IsNullOrEmpty(dateReceivedError))
             {
                 labelDateReceivedError.Text = dateReceivedError;
@@ -229,26 +230,23 @@ namespace KiczanProductionInfoSystem
                 isValid = false;
             }
 
-
             //final check before to confirm
             if (isValid)
             {
                 DateTime parsedDateReceived = DateTime.ParseExact(dateReceived, "MM/dd/yyyy", CultureInfo.InvariantCulture);
                 DateTime parsedDueDate = DateTime.ParseExact(dateDue, "MM/dd/yyyy", CultureInfo.InvariantCulture);
        
-                newDAO.UpdateRecord(partHistoryID, custID, opID, partNumber, parsedDueDate, poNumber, quantity, checkedOperations, parsedDateReceived, 0);
+                await newDAO.UpdateRecord(partHistoryID, custID, opID, partNumber, parsedDueDate, poNumber, quantity, checkedOperations, parsedDateReceived, 0);
 
                 labelRecordStatus.Text = "Record Status: Record Successfully Updated!";
-
             }
             else
             {
-
                 labelRecordStatus.Text = "Record Status: Record Update Error!";
-
             }
         }
-        //Event handler for Clear button
+
+        //Event handler for Clear button.
         private void button2_Click(object sender, EventArgs e)
         {
             operatorComboBox.SelectedIndex = -1;
