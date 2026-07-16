@@ -15,6 +15,9 @@ namespace KiczanProductionInfoSystem
 {
     internal partial class Dashboard : Form
     {
+        //Create new DAO Object.
+        private DAO newDAO = new DAO();
+
         internal Dashboard()
         {
             InitializeComponent();
@@ -39,11 +42,8 @@ namespace KiczanProductionInfoSystem
             this.AutoScroll = true;
         }
         //Method to populate customer bar chart data.
-        private void PopulateCustomerChartData()
+        private async void PopulateCustomerChartData()
         {
-            //Instantiate new DAO object for chart population.
-            DAO newDAO = new DAO();
-
             //Clear chart to make ready for incoming data.
             barChart1.Series.Clear();
             barChart1.ChartAreas.Clear();
@@ -91,7 +91,7 @@ namespace KiczanProductionInfoSystem
             barChart1.Series.Add(series);
 
             //Create a new datatable, set the datatable equal to the returned datatable from the called function.
-            DataTable dt = newDAO.LoadCustomerChartData();
+            DataTable dt = await newDAO.LoadCustomerChartData();
 
             int i = 0;
 
@@ -132,10 +132,8 @@ namespace KiczanProductionInfoSystem
         }
 
         //Method to populate operator pie chart data.
-        private void PopulateOperatorChartData()
+        private async void PopulateOperatorChartData()
         {
-             DAO newDAO = new DAO();
-
              pieChart1.Series.Clear();
              pieChart1.ChartAreas.Clear();
              pieChart1.Titles.Clear();
@@ -173,7 +171,7 @@ namespace KiczanProductionInfoSystem
              pieChart1.Legends[0].Font = new Font(new FontFamily("Arial"), 10, FontStyle.Bold);
              pieChart1.Legends[0].BackColor = Color.Transparent;
 
-             pieChart1.DataSource = newDAO.LoadOperatorChartData();
+             pieChart1.DataSource = await newDAO.LoadOperatorChartData();
              pieChart1.DataBind();
 
              pieChart1.BackColor = Color.Transparent;
@@ -199,10 +197,8 @@ namespace KiczanProductionInfoSystem
              }
         }
         //Method to populate department pie chart data.
-        private void PopulateDepartmentChartData()
+        private async void PopulateDepartmentChartData()
         {
-            DAO newDAO = new DAO();
-
             pieChart2.Series.Clear();
             pieChart2.ChartAreas.Clear();
             pieChart2.Titles.Clear();
@@ -240,7 +236,7 @@ namespace KiczanProductionInfoSystem
             pieChart2.Legends[0].Font = new Font(new FontFamily("Arial"), 10, FontStyle.Bold);
             pieChart2.Legends[0].BackColor = Color.Transparent;
 
-            pieChart2.DataSource = newDAO.LoadDepartmentChartData();
+            pieChart2.DataSource = await newDAO.LoadDepartmentChartData();
             pieChart2.DataBind();
 
             pieChart2.BackColor = Color.Transparent;
@@ -265,10 +261,9 @@ namespace KiczanProductionInfoSystem
                 slice.BorderWidth = 2;
             }
         }
-        private void PopulateVolumeChartData()
+        private async void PopulateVolumeChartData()
         {
-            DAO dao = new DAO();
-            DataTable dt = dao.LoadQuarterHistory();
+            DataTable dt = await newDAO.LoadQuarterHistory();
 
             columnChart1.Series.Clear();
             columnChart1.Titles.Clear();
@@ -323,10 +318,9 @@ namespace KiczanProductionInfoSystem
 
             ApplyChartStyle(columnChart1);
         }
-        private void PopulateOrdersChartData()
+        private async void PopulateOrdersChartData()
         {
-            DAO dao = new DAO();
-            DataTable dt = dao.LoadQuarterHistory();
+            DataTable dt = await newDAO.LoadQuarterHistory();
 
             chartOrders.Series.Clear();
             chartOrders.Titles.Clear();
@@ -429,10 +423,9 @@ namespace KiczanProductionInfoSystem
         }
 
 
-        private void PopulateDepartmentGridView()
+        private async void PopulateDepartmentGridView()
         {
-            DAO newDAO = new DAO();
-            dataGridView1.DataSource = newDAO.LoadDepartmentGridViewData();
+            dataGridView1.DataSource = await newDAO.LoadDepartmentGridViewData();
         }
 
         private void ApplyChartStyle(Chart chart)

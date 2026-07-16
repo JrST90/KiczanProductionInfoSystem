@@ -784,9 +784,9 @@ namespace KiczanProductionInfoSystem
                 //Get the stored procedure from the DB.
                 using (SqlCommand command = new SqlCommand("USER_NAME_QUERY", connection))
                 {
-                    connection.Open();
-
                     command.CommandType = CommandType.StoredProcedure;
+
+                    connection.Open();
 
                     //Paramaterized to prevent SQL Injection, bind values.
                     command.Parameters.Add("@username", SqlDbType.VarChar, 48).Value = userName;
@@ -808,7 +808,7 @@ namespace KiczanProductionInfoSystem
         }
 
         //Method to run GET_CUSTOMER_QTY_LAST_6_MONTHS query from SQL server to populate chart with queried data.
-        internal DataTable LoadCustomerChartData()
+        internal async Task<DataTable> LoadCustomerChartData()
         {
             //Create new datatable to store query results.
             DataTable dataTable = new DataTable();
@@ -822,9 +822,12 @@ namespace KiczanProductionInfoSystem
                     using (SqlCommand command = new SqlCommand("GET_CUSTOMER_QTY_LAST_6_MONTHS", connection))
                     {
                         command.CommandType = CommandType.StoredProcedure;
-                        using (SqlDataAdapter adapter = new SqlDataAdapter(command))
+
+                        await connection.OpenAsync();
+
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
-                            adapter.Fill(dataTable);
+                            dataTable.Load(reader);
                         }
                     }
                 }
@@ -836,7 +839,7 @@ namespace KiczanProductionInfoSystem
             return dataTable;
         }
         //Method to run GET_OPERATOR_QTY_LAST_6_MONTHS query from SQL server to populate chart with queried data.
-        internal DataTable LoadOperatorChartData()
+        internal async Task<DataTable> LoadOperatorChartData()
         {
             //Create new datatable to store query results.
             DataTable dataTable = new DataTable();
@@ -850,9 +853,12 @@ namespace KiczanProductionInfoSystem
                     using (SqlCommand command = new SqlCommand("GET_OPERATOR_QTY_LAST_6_MONTHS", connection))
                     {
                         command.CommandType = CommandType.StoredProcedure;
-                        using (SqlDataAdapter adapter = new SqlDataAdapter(command))
+
+                        await connection.OpenAsync();
+
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
-                            adapter.Fill(dataTable);
+                            dataTable.Load(reader);
                         }
                     }
                 }
@@ -864,7 +870,7 @@ namespace KiczanProductionInfoSystem
             return dataTable;
         }
         //Method to run NEXT_SIX_MONTHS_BY_DEPARTMENT query from SQL server to populate chart with queried data.
-        internal DataTable LoadDepartmentChartData()
+        internal async Task<DataTable> LoadDepartmentChartData()
         {
             //Create new datatable to store query results.
             DataTable dataTable = new DataTable();
@@ -878,9 +884,12 @@ namespace KiczanProductionInfoSystem
                     using (SqlCommand command = new SqlCommand("NEXT_SIX_MONTHS_BY_DEPARTMENT", connection))
                     {
                         command.CommandType = CommandType.StoredProcedure;
-                        using (SqlDataAdapter adapter = new SqlDataAdapter(command))
+
+                        await connection.OpenAsync();
+
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
-                            adapter.Fill(dataTable);
+                            dataTable.Load(reader);
                         }
                     }
                 }
@@ -892,7 +901,7 @@ namespace KiczanProductionInfoSystem
             return dataTable;
         }
         //Method to run NEXT_SIX_MONTHS_JOBS_BY_DEPARTMENT query from SQL server to populate datagridview with queried data.
-        internal DataTable LoadDepartmentGridViewData()
+        internal async Task<DataTable> LoadDepartmentGridViewData()
         {
             //Create new datatable to store query results.
             DataTable dataTable = new DataTable();
@@ -906,9 +915,12 @@ namespace KiczanProductionInfoSystem
                     using (SqlCommand command = new SqlCommand("NEXT_SIX_MONTHS_JOBS_BY_DEPARTMENT", connection))
                     {
                         command.CommandType = CommandType.StoredProcedure;
-                        using (SqlDataAdapter adapter = new SqlDataAdapter(command))
+
+                        await connection.OpenAsync();
+
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
-                            adapter.Fill(dataTable);
+                            dataTable.Load(reader);
                         }
                     }
                 }
@@ -919,57 +931,31 @@ namespace KiczanProductionInfoSystem
             }
             return dataTable;
         }
-        //Method to run GET_VOLUME_BY_QUARTER_LAST_FISCAL_YEAR query from SQL server to populate chart with queried data.
-        internal DataTable LoadLastFiscalYearVolume()
-        {
-            //Create new datatable to store query results.
-            DataTable dataTable = new DataTable();
 
+        //Method to run sp_GetQuarterlyProduction query from SQL server to populate chart with queried data.
+        internal async Task<DataTable> LoadQuarterHistory()
+        {
+            DataTable dataTable = new DataTable();
             try
             {
-                //Open connection to DB.
                 using (SqlConnection connection = new SqlConnection(sqlConnectionString))
                 {
-                    //Get the stored procedure from the DB.
-                    using (SqlCommand command = new SqlCommand("GET_VOLUME_BY_QUARTER_LAST_FISCAL_YEAR", connection))
+                    using (SqlCommand command = new SqlCommand("sp_GetQuarterlyProduction", connection))
                     {
                         command.CommandType = CommandType.StoredProcedure;
-                        using (SqlDataAdapter adapter = new SqlDataAdapter(command))
+
+                        await connection.OpenAsync();
+
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
-                            adapter.Fill(dataTable);
+                            dataTable.Load(reader);
                         }
                     }
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Failed to last fiscal year volume dashboard data: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            return dataTable;
-        }
-        //Method to run sp_GetQuarterlyProduction query from SQL server to populate chart with queried data.
-        internal DataTable LoadQuarterHistory()
-        {
-            DataTable dataTable = new DataTable();
-            try
-            {
-                using (SqlConnection conn = new SqlConnection(sqlConnectionString))
-                {
-                    using (SqlCommand cmd = new SqlCommand("sp_GetQuarterlyProduction", conn))
-                    {
-                        cmd.CommandType = CommandType.StoredProcedure;
-                        using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
-                        {
-                            
-                            adapter.Fill(dataTable);
-                            return dataTable;
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Failed to last and predicted fiscal year volume dashboard data: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Failed to load last and predicted fiscal year volume dashboard data: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             return dataTable;
         }
