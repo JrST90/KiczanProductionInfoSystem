@@ -6,10 +6,6 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using Microsoft.ML;
-using Microsoft.ML.TimeSeries;
-
-
-
 
 namespace KiczanProductionInfoSystem
 {
