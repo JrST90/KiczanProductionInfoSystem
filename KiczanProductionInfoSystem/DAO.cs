@@ -3,14 +3,12 @@ using System.Collections.Generic;
 using System.Data;
 using Microsoft.Data.SqlClient;
 using System.Windows.Forms;
-using System.IO;
+using System.Threading.Tasks;
 
 namespace KiczanProductionInfoSystem
 {
     internal class DAO
     {
-        //private static readonly string sqlConnectionString;
-
         public static string sqlConnectionString { get; private set; }
 
         internal static void InitializeConnection(string connectionString)
@@ -20,7 +18,7 @@ namespace KiczanProductionInfoSystem
 
         //Reads data from DB source, returns dataTable from DATE_DUE_RANGE_QUERY stored procedure. 
         //Reads beginning date and end date from user input from text box on UI.
-        internal DataTable dateDueRangeQuery(string dateRange, int pageSize, int currentPageIndex)
+        internal async Task<DataTable> dateDueRangeQuery(string dateRange, int pageSize, int currentPageIndex)
         {
             //Create new dataTable to store query results.
             DataTable dataTable = new DataTable();
@@ -49,15 +47,17 @@ namespace KiczanProductionInfoSystem
                         DateTime ed = DateTime.Parse(dateArray[1]);
 
                         //Paramaterized to prevent SQL Injection, bind values.
-                        command.Parameters.AddWithValue("dateB", bd);
-                        command.Parameters.AddWithValue("dateE", ed);
-                        command.Parameters.AddWithValue("pageSize", pageSize);
-                        command.Parameters.AddWithValue("offsetNum", offsetNum);
+                        command.Parameters.Add("@dateB", SqlDbType.DateTime).Value = bd;
+                        command.Parameters.Add("@dateE", SqlDbType.DateTime).Value = ed;
+                        command.Parameters.Add("@pageSize", SqlDbType.Int).Value = pageSize;
+                        command.Parameters.Add("@offsetNum", SqlDbType.Int).Value = offsetNum;
 
-                        //Use adapter object to fill dataTable with query results.
-                        using (SqlDataAdapter adapter = new SqlDataAdapter(command))
+                        await connection.OpenAsync();
+
+                        //Use reader object to fill dataTable with query results.
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
-                            adapter.Fill(dataTable);
+                            dataTable.Load(reader);
                         }
                     }
                 }
@@ -70,7 +70,7 @@ namespace KiczanProductionInfoSystem
         }
 
         //Count all records for DATE_DUE_RANGE_QUERY.
-        internal int dateDueRangeQueryCount(string dateRange)
+        internal async Task<int> dateDueRangeQueryCount(string dateRange)
         {
             //Set initial value of totalRows.
             int totalRows = 0;
@@ -87,8 +87,6 @@ namespace KiczanProductionInfoSystem
                     //Get the stored procedure from the DB.
                     using (SqlCommand command = new SqlCommand("DATE_DUE_RANGE_QUERY_COUNT", connection))
                     {
-                        connection.Open();
-
                         command.CommandType = CommandType.StoredProcedure;
 
                         //Create new DateTime objects and use the Parse() function on dates
@@ -97,11 +95,13 @@ namespace KiczanProductionInfoSystem
                         DateTime ed = DateTime.Parse(dateArray[1]);
 
                         //Paramaterized to prevent SQL Injection, bind values.
-                        command.Parameters.AddWithValue("dateB", bd);
-                        command.Parameters.AddWithValue("dateE", ed);
+                        command.Parameters.Add("@dateB", SqlDbType.DateTime).Value = bd;
+                        command.Parameters.Add("@dateE", SqlDbType.DateTime).Value = ed;
+
+                        await connection.OpenAsync();
 
                         //Execute query, save result in result object.
-                        object returnedCount = command.ExecuteScalar();
+                        object returnedCount = await command.ExecuteScalarAsync();
 
                         //Convert to count.
                         totalRows = Convert.ToInt32(returnedCount);
@@ -117,7 +117,7 @@ namespace KiczanProductionInfoSystem
 
         //Reads data from DB source, returns dataTable from PART_NUMBER_QUERY stored procedure.
         //Reads partNumber from user input in text box.
-        internal DataTable partNumberQuery(string partNumber, int pageSize, int currentPageIndex)
+        internal async Task<DataTable> partNumberQuery(string partNumber, int pageSize, int currentPageIndex)
         {
             //Create new dataTable to store query results.
             DataTable dataTable = new DataTable();
@@ -139,13 +139,15 @@ namespace KiczanProductionInfoSystem
                         String searchWildTerm = "%" + partNumber + "%";
 
                         //Paramaterized to prevent SQL Injection, bind values.
-                        command.Parameters.AddWithValue("partNo", searchWildTerm);
-                        command.Parameters.AddWithValue("pageSize", pageSize);
-                        command.Parameters.AddWithValue("offsetNum", offsetNum);
+                        command.Parameters.Add("@partNo", SqlDbType.VarChar, 50).Value = searchWildTerm;
+                        command.Parameters.Add("@pageSize", SqlDbType.Int).Value = pageSize;
+                        command.Parameters.Add("@offsetNum", SqlDbType.Int).Value = offsetNum;
 
-                        using (SqlDataAdapter adapter = new SqlDataAdapter(command))
+                        await connection.OpenAsync();
+
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
-                            adapter.Fill(dataTable);
+                            dataTable.Load(reader);
                         }
                     }
                 }
@@ -158,7 +160,7 @@ namespace KiczanProductionInfoSystem
         }
 
         //Count all records for PART_NUMBER_QUERY.
-        internal int partNumberQueryCount(string partNumber)
+        internal async Task<int> partNumberQueryCount(string partNumber)
         {
             //Set initial value of totalRows.
             int totalRows = 0;
@@ -171,18 +173,18 @@ namespace KiczanProductionInfoSystem
                     //Get the stored procedure from the DB.
                     using (SqlCommand command = new SqlCommand("PART_NUMBER_QUERY_COUNT", connection))
                     {
-                        connection.Open();
-
                         command.CommandType = CommandType.StoredProcedure;
 
                         //Add wildcard to broaden search term.
                         String searchWildTerm = "%" + partNumber + "%";
 
                         //Paramaterized to prevent SQL Injection, bind values.
-                        command.Parameters.AddWithValue("partNo", searchWildTerm);
+                        command.Parameters.Add("@partNo", SqlDbType.VarChar, 50).Value = searchWildTerm;
+
+                        await connection.OpenAsync();
 
                         //Execute query, save result in result object.
-                        object returnedCount = command.ExecuteScalar();
+                        object returnedCount = await command.ExecuteScalarAsync();
 
                         //Convert to count.
                         totalRows = Convert.ToInt32(returnedCount);
@@ -198,7 +200,7 @@ namespace KiczanProductionInfoSystem
 
         //Reads data from DB source, returns dataTable from PART_NUMBER_QUERY_ARCHIVE stored procedure.
         //Reads partNumber from user input in text box.
-        internal DataTable partNumberQueryArchive(string partNumber, int pageSize, int currentPageIndex)
+        internal async Task<DataTable> partNumberQueryArchive(string partNumber, int pageSize, int currentPageIndex)
         {
             //Create new dataTable to store query results.
             DataTable dataTable = new DataTable();
@@ -220,13 +222,15 @@ namespace KiczanProductionInfoSystem
                         String searchWildTerm = "%" + partNumber + "%";
 
                         //Paramaterized to prevent SQL Injection, bind values.
-                        command.Parameters.AddWithValue("partNo", searchWildTerm);
-                        command.Parameters.AddWithValue("pageSize", pageSize);
-                        command.Parameters.AddWithValue("offsetNum", offsetNum);
+                        command.Parameters.Add("@partNo", SqlDbType.VarChar, 50).Value = searchWildTerm;
+                        command.Parameters.Add("@pageSize", SqlDbType.Int).Value = pageSize;
+                        command.Parameters.Add("@offsetNum", SqlDbType.Int).Value = offsetNum;
 
-                        using (SqlDataAdapter adapter = new SqlDataAdapter(command))
+                        await connection.OpenAsync();
+
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
-                            adapter.Fill(dataTable);
+                            dataTable.Load(reader);
                         }
                     }
                 }
@@ -239,7 +243,7 @@ namespace KiczanProductionInfoSystem
         }
 
         //Count all records for PART_NUMBER_QUERY_ARCHIVE.
-        internal int partNumberQueryCountArchive(string partNumber)
+        internal async Task<int> partNumberQueryCountArchive(string partNumber)
         {
             //Set initial value of totalRows.
             int totalRows = 0;
@@ -252,18 +256,18 @@ namespace KiczanProductionInfoSystem
                     //Get the stored procedure from the DB.
                     using (SqlCommand command = new SqlCommand("PART_NUMBER_QUERY_ARCHIVE_COUNT", connection))
                     {
-                        connection.Open();
-
                         command.CommandType = CommandType.StoredProcedure;
 
                         //Add wildcard to broaden search term.
                         String searchWildTerm = "%" + partNumber + "%";
 
                         //Paramaterized to prevent SQL Injection, bind values.
-                        command.Parameters.AddWithValue("partNo", searchWildTerm);
+                        command.Parameters.Add("@partNo", SqlDbType.VarChar, 50).Value = searchWildTerm;
+
+                        await connection.OpenAsync();
 
                         //Execute query, save result in result object.
-                        object returnedCount = command.ExecuteScalar();
+                        object returnedCount = await command.ExecuteScalarAsync();
 
                         //Convert to count.
                         totalRows = Convert.ToInt32(returnedCount);
@@ -279,7 +283,7 @@ namespace KiczanProductionInfoSystem
 
         // Reads data from DB source, returns dataTable from OPERATOR_NAME_QUERY stored procedure.
         // Reads operatorName from user input in text box.
-        internal DataTable operatorNameQuery(string operatorName, int pageSize, int currentPageIndex)
+        internal async Task<DataTable> operatorNameQuery(string operatorName, int pageSize, int currentPageIndex)
 
         {
             //Create new dataTable to store query results.
@@ -302,13 +306,15 @@ namespace KiczanProductionInfoSystem
                         String searchWildTerm = "%" + operatorName + "%";
 
                         //Paramaterized to prevent SQL Injection, bind values.
-                        command.Parameters.AddWithValue("opName", searchWildTerm);
-                        command.Parameters.AddWithValue("pageSize", pageSize);
-                        command.Parameters.AddWithValue("offsetNum", offsetNum);
+                        command.Parameters.Add("@opName", SqlDbType.VarChar, 10).Value = searchWildTerm;
+                        command.Parameters.Add("@pageSize", SqlDbType.Int).Value = pageSize;
+                        command.Parameters.Add("@offsetNum", SqlDbType.Int).Value = offsetNum;
 
-                        using (SqlDataAdapter adapter = new SqlDataAdapter(command))
+                        await connection.OpenAsync();
+
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
-                            adapter.Fill(dataTable);
+                            dataTable.Load(reader);
                         }
                     }
                 }
@@ -321,7 +327,7 @@ namespace KiczanProductionInfoSystem
         }
 
         // Count all records for OPERATOR_NAME_QUERY.
-        internal int operatorNameQueryCount(string operatorName)
+        internal async Task<int> operatorNameQueryCount(string operatorName)
         {
             //Set initial value of totalRows.
             int totalRows = 0;
@@ -334,18 +340,18 @@ namespace KiczanProductionInfoSystem
                     //Get the stored procedure from the DB.
                     using (SqlCommand command = new SqlCommand("OPERATOR_NAME_QUERY_COUNT", connection))
                     {
-                        connection.Open();
-
                         command.CommandType = CommandType.StoredProcedure;
 
                         //Add wildcard to broaden search term.
                         String searchWildTerm = "%" + operatorName + "%";
 
                         //Paramaterized to prevent SQL Injection, bind values.
-                        command.Parameters.AddWithValue("opName", searchWildTerm);
+                        command.Parameters.Add("@opName", SqlDbType.VarChar, 10).Value = searchWildTerm;
+
+                        await connection.OpenAsync();
 
                         //Execute query, save result in result object.
-                        object returnedCount = command.ExecuteScalar();
+                        object returnedCount = await command.ExecuteScalarAsync();
 
                         //Convert to count.
                         totalRows = Convert.ToInt32(returnedCount);
@@ -360,7 +366,7 @@ namespace KiczanProductionInfoSystem
         }
 
         //Execute query to mark recorded as deleted.
-        internal void softDeleteQuery(int part_history_id)
+        internal async Task softDeleteQuery(int part_history_id)
         {
             try
             {
@@ -370,15 +376,15 @@ namespace KiczanProductionInfoSystem
                     //Get the stored procedure from the DB.
                     using (SqlCommand command = new SqlCommand("MARK_PART_DELETED", connection))
                     {
-                        connection.Open();
-
                         command.CommandType = CommandType.StoredProcedure;
 
                         //Paramaterized to prevent SQL Injection.
-                        command.Parameters.AddWithValue("p_part_history_id", part_history_id);
+                        command.Parameters.Add("@p_part_history_id", SqlDbType.Int).Value = part_history_id;
+
+                        await connection.OpenAsync();
 
                         //Execute the stored procedure to mark record as deleted.
-                        command.ExecuteNonQuery();
+                        await command.ExecuteNonQueryAsync();
                     }
                 }
             }
@@ -389,7 +395,7 @@ namespace KiczanProductionInfoSystem
         }
 
         //Execute query to restore previously deleted record.
-        internal void restoreRecordQuery(int part_history_id)
+        internal async Task restoreRecordQuery(int part_history_id)
         {
             try
             {
@@ -399,15 +405,15 @@ namespace KiczanProductionInfoSystem
                     //Get the stored procedure from the DB.
                     using (SqlCommand command = new SqlCommand("RESTORE_PART", connection))
                     {
-                        connection.Open();
-
                         command.CommandType = CommandType.StoredProcedure;
 
                         //Paramaterized to prevent SQL Injection.
-                        command.Parameters.AddWithValue("p_part_history_id", part_history_id);
+                        command.Parameters.Add("@p_part_history_id", SqlDbType.Int).Value = part_history_id;
+
+                        await connection.OpenAsync();
 
                         //Execute the stored procedure to mark record as deleted.
-                        command.ExecuteNonQuery();
+                        await command.ExecuteNonQueryAsync();
                     }
                 }
             }
@@ -417,7 +423,7 @@ namespace KiczanProductionInfoSystem
             }
         }
         //Reads data from DB source, returns dataTable from FABRICATION_DEPARTMENT_QUERY stored procedure.
-        internal DataTable fabricationDepartmentQuery(int pageSize, int currentPageIndex)
+        internal async Task<DataTable> fabricationDepartmentQuery(int pageSize, int currentPageIndex)
         {
             //Create new dataTable to store query results.
             DataTable dataTable = new DataTable();
@@ -436,12 +442,14 @@ namespace KiczanProductionInfoSystem
                         int offsetNum = ((currentPageIndex - 1) * pageSize);
 
                         //Paramaterized to prevent SQL Injection, bind values.
-                        command.Parameters.AddWithValue("pageSize", pageSize);
-                        command.Parameters.AddWithValue("offsetNum", offsetNum);
+                        command.Parameters.Add("@pageSize", SqlDbType.Int).Value = pageSize;
+                        command.Parameters.Add("@offsetNum", SqlDbType.Int).Value = offsetNum;
 
-                        using (SqlDataAdapter adapter = new SqlDataAdapter(command))
+                        await connection.OpenAsync();
+
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
-                            adapter.Fill(dataTable);
+                            dataTable.Load(reader);
                         }
                     }
                 }
@@ -454,7 +462,7 @@ namespace KiczanProductionInfoSystem
         }
 
         //Count all records for FABRICATION_DEPARTMENT_QUERY.
-        internal int fabricationDepartmentQueryCount()
+        internal async Task<int> fabricationDepartmentQueryCount()
         {
             //Set initial value of totalRows.
             int totalRows = 0;
@@ -467,12 +475,12 @@ namespace KiczanProductionInfoSystem
                     //Get the stored procedure from the DB.
                     using (SqlCommand command = new SqlCommand("FABRICATION_DEPARTMENT_QUERY_COUNT", connection))
                     {
-                        connection.Open();
-
                         command.CommandType = CommandType.StoredProcedure;
 
+                        await connection.OpenAsync();
+
                         //Execute query, save result in result object.
-                        object returnedCount = command.ExecuteScalar();
+                        object returnedCount = await command.ExecuteScalarAsync();
 
                         //Convert to count.
                         totalRows = Convert.ToInt32(returnedCount);
@@ -487,7 +495,7 @@ namespace KiczanProductionInfoSystem
         }
 
         //Reads data from DB source, returns dataTable from NC_MACHINE_WORK_QUERY stored procedure.
-        internal DataTable machiningDepartmentQuery(int pageSize, int currentPageIndex)
+        internal async Task<DataTable> machiningDepartmentQuery(int pageSize, int currentPageIndex)
         {
             //Create new dataTable to store query results.
             DataTable dataTable = new DataTable();
@@ -506,12 +514,14 @@ namespace KiczanProductionInfoSystem
                         int offsetNum = ((currentPageIndex - 1) * pageSize);
 
                         //Paramaterized to prevent SQL Injection, bind values.
-                        command.Parameters.AddWithValue("pageSize", pageSize);
-                        command.Parameters.AddWithValue("offsetNum", offsetNum);
+                        command.Parameters.Add("@pageSize", SqlDbType.Int).Value = pageSize;
+                        command.Parameters.Add("@offsetNum", SqlDbType.Int).Value = offsetNum;
 
-                        using (SqlDataAdapter adapter = new SqlDataAdapter(command))
+                        await connection.OpenAsync();
+
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
-                            adapter.Fill(dataTable);
+                            dataTable.Load(reader);
                         }
                     }
                 }
@@ -524,7 +534,7 @@ namespace KiczanProductionInfoSystem
         }
 
         //Count all records for NC_MACHINE_WORK_QUERY.
-        internal int machiningDepartmentQueryCount()
+        internal async Task<int> machiningDepartmentQueryCount()
         {
             //Set initial value of totalRows.
             int totalRows = 0;
@@ -537,12 +547,12 @@ namespace KiczanProductionInfoSystem
                     //Get the stored procedure from the DB.
                     using (SqlCommand command = new SqlCommand("NC_MACHINE_WORK_QUERY_COUNT", connection))
                     {
-                        connection.Open();
-
                         command.CommandType = CommandType.StoredProcedure;
 
+                        await connection.OpenAsync();
+
                         //Execute query, save result in result object.
-                        object returnedCount = command.ExecuteScalar();
+                        object returnedCount = await command.ExecuteScalarAsync();
 
                         //Convert to count.
                         totalRows = Convert.ToInt32(returnedCount);
@@ -557,7 +567,7 @@ namespace KiczanProductionInfoSystem
         }
 
         //Get operator names for drop down menu comboBox2 and operatorComboBox
-        internal List<Operators> GetOperators()
+        internal async Task<List<Operators>> GetOperators()
         {
             //Create new List object.
             List<Operators> returnList = new List<Operators>();
@@ -570,13 +580,13 @@ namespace KiczanProductionInfoSystem
                     //Get the stored procedure from the DB.
                     using (SqlCommand command = new SqlCommand("GET_OPERATORS", connection))
                     {
-                        connection.Open();
-
                         command.CommandType = CommandType.StoredProcedure;
 
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        await connection.OpenAsync();
+
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
-                            while (reader.Read())
+                            while (await reader.ReadAsync())
                             {
                                 Operators op = new Operators
                                 {
@@ -597,7 +607,7 @@ namespace KiczanProductionInfoSystem
         }
 
         //Get customer names for customerComboBox
-        internal List<Customers> GetCustomers()
+        internal async Task<List<Customers>> GetCustomers()
         {
             //Create new List object.
             List<Customers> returnList = new List<Customers>();
@@ -610,13 +620,13 @@ namespace KiczanProductionInfoSystem
                     //Get the stored procedure from the DB.
                     using (SqlCommand command = new SqlCommand("GET_CUSTOMERS", connection))
                     {
-                        connection.Open();
-
                         command.CommandType = CommandType.StoredProcedure;
 
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        await connection.OpenAsync();
+
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
-                            while (reader.Read())
+                            while (await reader.ReadAsync())
                             {
                                 Customers cust = new Customers
                                 {
@@ -637,7 +647,7 @@ namespace KiczanProductionInfoSystem
         }
 
         //Method to create new record.
-        internal bool CreateRecord(int custID, int opID, string partNumber, DateTime dateDue, string poNumber, string quantity, string checkedOperations, DateTime dateReceived, int toDelete)
+        internal async Task<bool> CreateRecord(int custID, int opID, string partNumber, DateTime dateDue, string poNumber, string quantity, string checkedOperations, DateTime dateReceived, int toDelete)
         {
             int rowsAffected = 0;
 
@@ -680,12 +690,14 @@ namespace KiczanProductionInfoSystem
                     //Get the stored procedure from the DB.
                     using (SqlCommand command = new SqlCommand("CREATE_RECORD", connection))
                     {
-                        connection.Open();
-
                         //Build SQL command retreived from stored procedure "CREATE_RECORD".
                         command.CommandType = CommandType.StoredProcedure;
+
+                        await connection.OpenAsync();
+
                         command.Parameters.AddRange(pms);
-                        rowsAffected = command.ExecuteNonQuery();
+
+                        rowsAffected = await command.ExecuteNonQueryAsync();
                     }
                 }
             }
@@ -697,7 +709,7 @@ namespace KiczanProductionInfoSystem
         }
 
         //Method to update selected record.
-        internal bool UpdateRecord(int partID, int custID, int opID, string partNumber, DateTime dateDue, string poNumber, string quantity, string checkedOperations, DateTime dateReceived, int toDelete)
+        internal async Task<bool> UpdateRecord(int partID, int custID, int opID, string partNumber, DateTime dateDue, string poNumber, string quantity, string checkedOperations, DateTime dateReceived, int toDelete)
         {
             int rowsAffected = 0;
             try
@@ -742,12 +754,14 @@ namespace KiczanProductionInfoSystem
                     //Get the stored procedure from the DB.
                     using (SqlCommand command = new SqlCommand("UPDATE_RECORD", connection))
                     {
-                        connection.Open();
-
                         //Build SQL command retreived from stored procedure "UPDATE_RECORD".
                         command.CommandType = CommandType.StoredProcedure;
+
+                        await connection.OpenAsync();
+
                         command.Parameters.AddRange(pms);
-                        rowsAffected = command.ExecuteNonQuery();
+
+                        rowsAffected = await command.ExecuteNonQueryAsync();
                     }
                 }
             }
@@ -757,97 +771,44 @@ namespace KiczanProductionInfoSystem
             }
             return rowsAffected > 0;
         }
-        //Function to check if a userName exists within the DB.
-        internal bool userNameCheck(string userName)
-        {
-            //int variable to store number of records with matching userName.
-            int userCount = 0;
 
-            //bool variable to serve as flag for existent of userName in DB.
-            bool flag = false;
-
-            try
-            {
-                //Open connection to DB.
-                using (SqlConnection connection = new SqlConnection(sqlConnectionString))
-                {
-                    //Get the stored procedure from the DB.
-                    using (SqlCommand command = new SqlCommand("USER_NAME_QUERY_COUNT", connection))
-                    {
-                        connection.Open();
-
-                        command.CommandType = CommandType.StoredProcedure;
-
-                        //Paramaterized to prevent SQL Injection, bind values.
-                        command.Parameters.AddWithValue("userName", userName);
-
-                        //Execute query, save result in result object.
-                        object returnedCount = command.ExecuteScalar();
-
-                        //Convert to count.
-                        userCount = Convert.ToInt32(returnedCount);
-
-                        //Conditional to set flag value based on userCount.
-                        if (userCount != 1)
-                        {
-                            flag = false;
-                        }
-                        else if (userCount == 1)
-                        {
-                            flag = true;
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Failed to find username for authentication: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            return flag;
-        }
         //Function to get user information for a given userName.
         internal Users getUserInfo(string userName)
         {
-            //Create new Users object to store returned user information.
-            Users user = new Users();
+            //Create new Users object and start as null. If the user doesn't exist, it stays null.
+            Users user = null;
 
-            try
+            //Open connection to DB.
+            using (SqlConnection connection = new SqlConnection(sqlConnectionString))
             {
-                //Open connection to DB.
-                using (SqlConnection connection = new SqlConnection(sqlConnectionString))
+                //Get the stored procedure from the DB.
+                using (SqlCommand command = new SqlCommand("USER_NAME_QUERY", connection))
                 {
-                    //Get the stored procedure from the DB.
-                    using (SqlCommand command = new SqlCommand("USER_NAME_QUERY", connection))
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    connection.Open();
+
+                    //Paramaterized to prevent SQL Injection, bind values.
+                    command.Parameters.Add("@username", SqlDbType.VarChar, 48).Value = userName;
+
+                    using (SqlDataReader reader = command.ExecuteReader())
                     {
-                        connection.Open();
-
-                        command.CommandType = CommandType.StoredProcedure;
-
-                        //Paramaterized to prevent SQL Injection, bind values.
-                        command.Parameters.AddWithValue("userName", userName);
-
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        if (reader.Read())
                         {
-                            while (reader.Read())
-                            {
-                                user.USER_ID = reader.GetInt32(0);
-                                user.USER_NAME = reader.GetString(1);
-                                user.ROLES_ID = reader.GetInt32(2);
-                                user.ROLE_NAME = reader.GetString(3);
-                            }
+                            user = new Users();
+                            user.USER_ID = reader.GetInt32(0);
+                            user.USER_NAME = reader.GetString(1);
+                            user.ROLES_ID = reader.GetInt32(2);
+                            user.ROLE_NAME = reader.GetString(3);
                         }
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Failed to load user data: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             return user;
         }
 
         //Method to run GET_CUSTOMER_QTY_LAST_6_MONTHS query from SQL server to populate chart with queried data.
-        internal DataTable LoadCustomerChartData()
+        internal async Task<DataTable> LoadCustomerChartData()
         {
             //Create new datatable to store query results.
             DataTable dataTable = new DataTable();
@@ -861,9 +822,12 @@ namespace KiczanProductionInfoSystem
                     using (SqlCommand command = new SqlCommand("GET_CUSTOMER_QTY_LAST_6_MONTHS", connection))
                     {
                         command.CommandType = CommandType.StoredProcedure;
-                        using (SqlDataAdapter adapter = new SqlDataAdapter(command))
+
+                        await connection.OpenAsync();
+
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
-                            adapter.Fill(dataTable);
+                            dataTable.Load(reader);
                         }
                     }
                 }
@@ -875,7 +839,7 @@ namespace KiczanProductionInfoSystem
             return dataTable;
         }
         //Method to run GET_OPERATOR_QTY_LAST_6_MONTHS query from SQL server to populate chart with queried data.
-        internal DataTable LoadOperatorChartData()
+        internal async Task<DataTable> LoadOperatorChartData()
         {
             //Create new datatable to store query results.
             DataTable dataTable = new DataTable();
@@ -889,9 +853,12 @@ namespace KiczanProductionInfoSystem
                     using (SqlCommand command = new SqlCommand("GET_OPERATOR_QTY_LAST_6_MONTHS", connection))
                     {
                         command.CommandType = CommandType.StoredProcedure;
-                        using (SqlDataAdapter adapter = new SqlDataAdapter(command))
+
+                        await connection.OpenAsync();
+
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
-                            adapter.Fill(dataTable);
+                            dataTable.Load(reader);
                         }
                     }
                 }
@@ -903,7 +870,7 @@ namespace KiczanProductionInfoSystem
             return dataTable;
         }
         //Method to run NEXT_SIX_MONTHS_BY_DEPARTMENT query from SQL server to populate chart with queried data.
-        internal DataTable LoadDepartmentChartData()
+        internal async Task<DataTable> LoadDepartmentChartData()
         {
             //Create new datatable to store query results.
             DataTable dataTable = new DataTable();
@@ -917,9 +884,12 @@ namespace KiczanProductionInfoSystem
                     using (SqlCommand command = new SqlCommand("NEXT_SIX_MONTHS_BY_DEPARTMENT", connection))
                     {
                         command.CommandType = CommandType.StoredProcedure;
-                        using (SqlDataAdapter adapter = new SqlDataAdapter(command))
+
+                        await connection.OpenAsync();
+
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
-                            adapter.Fill(dataTable);
+                            dataTable.Load(reader);
                         }
                     }
                 }
@@ -931,7 +901,7 @@ namespace KiczanProductionInfoSystem
             return dataTable;
         }
         //Method to run NEXT_SIX_MONTHS_JOBS_BY_DEPARTMENT query from SQL server to populate datagridview with queried data.
-        internal DataTable LoadDepartmentGridViewData()
+        internal async Task<DataTable> LoadDepartmentGridViewData()
         {
             //Create new datatable to store query results.
             DataTable dataTable = new DataTable();
@@ -945,9 +915,12 @@ namespace KiczanProductionInfoSystem
                     using (SqlCommand command = new SqlCommand("NEXT_SIX_MONTHS_JOBS_BY_DEPARTMENT", connection))
                     {
                         command.CommandType = CommandType.StoredProcedure;
-                        using (SqlDataAdapter adapter = new SqlDataAdapter(command))
+
+                        await connection.OpenAsync();
+
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
-                            adapter.Fill(dataTable);
+                            dataTable.Load(reader);
                         }
                     }
                 }
@@ -958,57 +931,31 @@ namespace KiczanProductionInfoSystem
             }
             return dataTable;
         }
-        //Method to run GET_VOLUME_BY_QUARTER_LAST_FISCAL_YEAR query from SQL server to populate chart with queried data.
-        internal DataTable LoadLastFiscalYearVolume()
-        {
-            //Create new datatable to store query results.
-            DataTable dataTable = new DataTable();
 
+        //Method to run sp_GetQuarterlyProduction query from SQL server to populate chart with queried data.
+        internal async Task<DataTable> LoadQuarterHistory()
+        {
+            DataTable dataTable = new DataTable();
             try
             {
-                //Open connection to DB.
                 using (SqlConnection connection = new SqlConnection(sqlConnectionString))
                 {
-                    //Get the stored procedure from the DB.
-                    using (SqlCommand command = new SqlCommand("GET_VOLUME_BY_QUARTER_LAST_FISCAL_YEAR", connection))
+                    using (SqlCommand command = new SqlCommand("sp_GetQuarterlyProduction", connection))
                     {
                         command.CommandType = CommandType.StoredProcedure;
-                        using (SqlDataAdapter adapter = new SqlDataAdapter(command))
+
+                        await connection.OpenAsync();
+
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
-                            adapter.Fill(dataTable);
+                            dataTable.Load(reader);
                         }
                     }
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Failed to last fiscal year volume dashboard data: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            return dataTable;
-        }
-        //Method to run sp_GetQuarterlyProduction query from SQL server to populate chart with queried data.
-        internal DataTable LoadQuarterHistory()
-        {
-            DataTable dataTable = new DataTable();
-            try
-            {
-                using (SqlConnection conn = new SqlConnection(sqlConnectionString))
-                {
-                    using (SqlCommand cmd = new SqlCommand("sp_GetQuarterlyProduction", conn))
-                    {
-                        cmd.CommandType = CommandType.StoredProcedure;
-                        using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
-                        {
-                            
-                            adapter.Fill(dataTable);
-                            return dataTable;
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Failed to last and predicted fiscal year volume dashboard data: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Failed to load last and predicted fiscal year volume dashboard data: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             return dataTable;
         }
