@@ -257,7 +257,7 @@ upon receiving new work orders, and update existing records in the event of erro
           - **Result:** Application initialization will begin and the user will be given access to the query interface. If the logged in user has a business role of Shipping or Quality Department Manager, access will be restricted to read only, where the Create Record Button will not be visible or accessible on the query interface, and when querying records based on query and input selection, the right click menu will not be accessible, where the events of Update, Delete, and Restore will not be visible or accessible to the user.
           - **Input:** The Kiczan User logs into their Kiczan terminal with a username that does exist within the DB and starts the Kiczan Production Info System application.
           - **Result:** Application initialization will begin and the user will be given access to the query interface. If the logged in user has a business role of Machine Shop or Fabrication Department Manager, full CRUD access will be granted, where the Create Record Button will be visible and accessible on the query interface, and when querying records based on query and input selection, the right click menu will be accessible, where the events of Update, Delete, and Restore will be visible and accessible to the user.
-- **Feature:** User Authentication
+- **Feature:** Dashboard
      - **Description:** A Dashboard accessible from the main user interface by clicking a designated button that opens a secondary interface where users may see data analytics derived from records that have been input into the system by its users.
      - **Usage Instructions:**
          - Press the "Dashboard" button visible on the right hand side of the main user interface.
