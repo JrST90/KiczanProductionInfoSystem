@@ -130,16 +130,19 @@ namespace KiczanProductionInfoSystem
         //Method to populate operator pie chart data.
         private async void PopulateOperatorChartData()
         {
+            //Clear chart.
              pieChart1.Series.Clear();
              pieChart1.ChartAreas.Clear();
              pieChart1.Titles.Clear();
 
+             //Set chart properties.
              ChartArea pieChartArea = new ChartArea("pieChartArea");
              pieChart1.ChartAreas.Add(pieChartArea);
 
              pieChart1.Titles.Add("Bending Operator Parts Quantity in Last 6 Months");
              pieChart1.Titles[0].Font = new Font(new FontFamily("Arial"), 14, FontStyle.Bold);
 
+             //Create new series object.
              Series series = new Series("Quantity")
              {
                  ChartType = SeriesChartType.Pie,
@@ -167,6 +170,7 @@ namespace KiczanProductionInfoSystem
              pieChart1.Legends[0].Font = new Font(new FontFamily("Arial"), 10, FontStyle.Bold);
              pieChart1.Legends[0].BackColor = Color.Transparent;
 
+             //Populate chart with data.
              pieChart1.DataSource = await newDAO.LoadOperatorChartData();
              pieChart1.DataBind();
 
@@ -195,16 +199,19 @@ namespace KiczanProductionInfoSystem
         //Method to populate department pie chart data.
         private async void PopulateDepartmentChartData()
         {
+            //Clear chart.
             pieChart2.Series.Clear();
             pieChart2.ChartAreas.Clear();
             pieChart2.Titles.Clear();
 
+            //Set chart properties.
             ChartArea pieChartArea = new ChartArea("pieChartArea");
             pieChart2.ChartAreas.Add(pieChartArea);
 
             pieChart2.Titles.Add("Department Work Load in Next 6 Months");
             pieChart2.Titles[0].Font = new Font(new FontFamily("Arial"), 14, FontStyle.Bold);
 
+            //Create series object.
             Series series = new Series("Quantity")
             {
                 ChartType = SeriesChartType.Pie,
@@ -232,6 +239,7 @@ namespace KiczanProductionInfoSystem
             pieChart2.Legends[0].Font = new Font(new FontFamily("Arial"), 10, FontStyle.Bold);
             pieChart2.Legends[0].BackColor = Color.Transparent;
 
+            //Populate chart with data.
             pieChart2.DataSource = await newDAO.LoadDepartmentChartData();
             pieChart2.DataBind();
 
@@ -316,14 +324,18 @@ namespace KiczanProductionInfoSystem
         }
         private async void PopulateOrdersChartData()
         {
+            //Load data table.
             DataTable dt = await newDAO.LoadQuarterHistory();
 
+            //Clear chart.
             chartOrders.Series.Clear();
             chartOrders.Titles.Clear();
 
+            //Set properties.
             chartOrders.Titles.Add("Quarterly Orders (Actual + Forecast)");
             chartOrders.Titles[0].Font = new Font(new FontFamily("Arial"), 14, FontStyle.Bold);
 
+            //Create series object.
             Series actual = new Series("Actual Orders")
             {
                 ChartType = SeriesChartType.Column,
@@ -334,6 +346,7 @@ namespace KiczanProductionInfoSystem
 
             int i = 0;
 
+            //Load each row from the datatable into the bar chart.
             foreach (DataRow row in dt.Rows)
             {
                 string label = $"Q{row["QuarterNumber"]} {row["Year"]}";
@@ -349,6 +362,7 @@ namespace KiczanProductionInfoSystem
 
             var forecast = ForecastSeries(orders);
 
+            //Create series object.
             Series forecastSeries = new Series("Forecast Orders")
             {
                 ChartType = SeriesChartType.Column,
@@ -359,6 +373,7 @@ namespace KiczanProductionInfoSystem
             int lastQuarter = Convert.ToInt32(dt.Rows[dt.Rows.Count - 1]["QuarterNumber"]);
 
             List<string> futureLabels = GenerateFutureQuarters(lastYear, lastQuarter, 4);
+
 
             for (int f = 0; f < 4; f++)
             {
@@ -418,7 +433,7 @@ namespace KiczanProductionInfoSystem
             return results.Forecasted;
         }
 
-
+        //Method to fill GridView with Department records to accompany departmenet pie chart.
         private async void PopulateDepartmentGridView()
         {
             dataGridView1.DataSource = await newDAO.LoadDepartmentGridViewData();
