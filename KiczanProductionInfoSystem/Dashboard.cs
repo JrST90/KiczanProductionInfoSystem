@@ -267,14 +267,18 @@ namespace KiczanProductionInfoSystem
         }
         private async void PopulateVolumeChartData()
         {
+            //Load data table.
             DataTable dt = await newDAO.LoadQuarterHistory();
 
+            //Clear chart.
             columnChart1.Series.Clear();
             columnChart1.Titles.Clear();
 
+            //Set properties.
             columnChart1.Titles.Add("Quarterly Scheduled Items (Actual + Forecast)");
             columnChart1.Titles[0].Font = new Font(new FontFamily("Arial"), 14, FontStyle.Bold);
 
+            //Create series object.
             Series actual = new Series("Actual Scheduled Items")
             {
                 ChartType = SeriesChartType.Column,
@@ -285,6 +289,7 @@ namespace KiczanProductionInfoSystem
 
             int i = 0;
 
+            //Load each row from the datatable into the bar chart.
             foreach (DataRow row in dt.Rows)
             {
                 string label = $"Q{row["QuarterNumber"]} {row["Year"]}";
