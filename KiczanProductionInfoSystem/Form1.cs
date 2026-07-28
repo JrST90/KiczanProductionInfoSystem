@@ -49,21 +49,21 @@ namespace KiczanProductionInfoSystem
             _currentUser = currentUser;
 
             //If the user name exists, use the returned object properties to set role privileges.
-            if (_currentUser.ROLE_NAME == "Shipping Manager" || _currentUser.ROLE_NAME == "Quality Manager")
-            {
-                this.Text = "Kiczan Production Information System | Current User: " + _currentUser.USER_NAME + " | " + "User Role: " + _currentUser.ROLE_NAME;
-
-                //Disable Create Record Button.
-                button2.Enabled = false;
-                button2.Visible = false;
-            }
-            else
+            if (_currentUser.ROLE_NAME == "Fabrication Manager" || _currentUser.ROLE_NAME == "Machining Manager")
             {
                 this.Text = "Kiczan Production Information System | Current User: " + _currentUser.USER_NAME + " | " + "User Role: " + _currentUser.ROLE_NAME;
 
                 //Enable Create Record Button.
                 button2.Enabled = true;
                 button2.Visible = true;
+            }
+            else
+            {
+                this.Text = "Kiczan Production Information System | Current User: " + _currentUser.USER_NAME + " | " + "User Role: " + _currentUser.ROLE_NAME;
+
+                //Enable Create Record Button.
+                button2.Enabled = false;
+                button2.Visible = false;
             }
         }
 
