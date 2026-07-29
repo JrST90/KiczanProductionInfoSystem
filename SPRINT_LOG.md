@@ -2,7 +2,7 @@
 
 ## 1. Planning & Assignments
 * **Sprint Dates:** 2026-01-20 to 2026-02-01
-* **Team Name:** Team 2 | **Members Present:** Daniel Puharic, Elian Garica, Justin Kisner, Josh Stanczyk
+* **Team Name:** Kiczan Production Info System Team | **Members Present:** Daniel Puharic, Elian Garica, Justin Kisner, Josh Stanczyk
 * **Sprint Goals:** Completion of Sprint 1 goals which include deployment of Database Script, creation of main user interface, and addition of part number and due date search queries.
 
 | Task Description | Assigned Owner | Priority | Status |
@@ -49,7 +49,7 @@
 
 ## 1. Planning & Assignments
 * **Sprint Dates:** 2026-02-02 to 2026-02-15
-* **Team Name:** Team 2 | **Members Present:** Daniel Puharic, Elian Garica, Justin Kisner, Josh Stanczyk
+* **Team Name:** Kiczan Production Info System Team | **Members Present:** Daniel Puharic, Elian Garica, Justin Kisner, Josh Stanczyk
 * **Sprint Goals:** Completion of Sprint 2 goals which include , Main User Interface – Search by Operator Name – Develop & Test, Main User Interface – Search by Fabrication Department – Develop & Test, and Create Record Interface – Initial State – Develop & Test.
 
 | Task Description | Assigned Owner | Priority | Status |
@@ -114,7 +114,7 @@ from XX/XX/XXXX-XX/XX/XXXX to MM/DD/YYYY-MM/DD/YYYY]
 
 ## 1. Planning & Assignments
 * **Sprint Dates:** 2026-02-16 to 2026-03-01
-* **Team Name:** Team 2 | **Members Present:** Daniel Puharic, Elian Garica, Justin Kisner, Josh Stanczyk
+* **Team Name:** Kiczan Production Info System Team | **Members Present:** Daniel Puharic, Elian Garica, Justin Kisner, Josh Stanczyk
 * **Sprint Goals:** Completion of Sprint 3 goals which include, Create Record Interface – Part Number & Purchase Order Number Validation – Develop & Test & Create Record Interface – Quantity & Operations Validation – Develop & Test.
 
 | Task Description | Assigned Owner | Priority | Status |
@@ -156,7 +156,7 @@ from XX/XX/XXXX-XX/XX/XXXX to MM/DD/YYYY-MM/DD/YYYY]
 
 ## 1. Planning & Assignments
 * **Sprint Dates:** 2026-03-01 to 2026-03-22
-* **Team Name:** Team 2 | **Members Present:** Daniel Puharic, Elian Garica, Justin Kisner, Josh Stanczyk
+* **Team Name:** Kiczan Production Info System Team | **Members Present:** Daniel Puharic, Elian Garica, Justin Kisner, Josh Stanczyk
 * **Sprint Goals:** Completion of Sprint 4 goals which include, Create Record Interface – Date Received/Due Validation – Develop & Test & Create Record Interface – Customer & Operator Validation/Record Insertion.
 
 | Task Description | Assigned Owner | Priority | Status |
@@ -198,7 +198,7 @@ from XX/XX/XXXX-XX/XX/XXXX to MM/DD/YYYY-MM/DD/YYYY]
 
 ## 1. Planning & Assignments
 * **Sprint Dates:** 2026-03-23 to 2026-04-05
-* **Team Name:** Team 2 | **Members Present:** Daniel Puharic, Elian Garica, Justin Kisner, Josh Stanczyk
+* **Team Name:** Kiczan Production Info System Team | **Members Present:** Daniel Puharic, Elian Garica, Justin Kisner, Josh Stanczyk
 * **Sprint Goals:** Completion of Sprint 5 goals which include, Update Record Interface – Customer & Operator Validation/ Operations & Quantity Validation – Develop & Test & Update Record Interface – Part & Order Number Validation/Date Received & Date Due Validation/Update Record/Clean & Menu Buttons – Develop & Test.
 
 | Task Description | Assigned Owner | Priority | Status |
@@ -244,7 +244,7 @@ from XX/XX/XXXX-XX/XX/XXXX to MM/DD/YYYY-MM/DD/YYYY]
 
 ## 1. Planning & Assignments
 * **Sprint Dates:** 2026-04-06 to 2026-04-19
-* **Team Name:** Team 2 | **Members Present:** Daniel Puharic, Elian Garica, Justin Kisner, Josh Stanczyk
+* **Team Name:** Kiczan Production Info System Team | **Members Present:** Daniel Puharic, Elian Garica, Justin Kisner, Josh Stanczyk
 * **Sprint Goals:** Progress or completion of Sprint 6 goals which include, User Manual Query & Delete/Restore & User Manual Create & Update Records, and User Authentication.
 
 | Task Description | Assigned Owner | Priority | Status |
