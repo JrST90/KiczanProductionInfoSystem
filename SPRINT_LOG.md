@@ -251,13 +251,13 @@ from XX/XX/XXXX-XX/XX/XXXX to MM/DD/YYYY-MM/DD/YYYY]
 | :--- | :--- | :--- | :--- |
 | Sprint 6: User Manual Query & Delete/Restore | Elian Garcia, Daniel Puharic | High | Completed |
 | Sub Task |  Assigned Owner | Test Procedure | Status |
-| User Manual Screen Shots & Description: User Queries | Elian Garcia | Review and revise user manual content | Completed |
-| User Manual Screen Shots & Description: Delete/Restore | Daniel Puharic | Review and revise user manual content | Completed | 
+| User Manual Screen Shots & Description: User Queries | Elian Garcia | Review and revise user manual content | Passed |
+| User Manual Screen Shots & Description: Delete/Restore | Daniel Puharic | Review and revise user manual content | Passed | 
 | Sprint 6: User Manual Create & Update Records | Justin Kisner, Josh Stanczyk | High | Completed |
 | Sub Task |  Assigned Owner | Test Procedure | Status |
-| User Manual Screen Shots & Description: Create Record | Justin Kisner | Review and revise user manual content | Completed |
-| User Manual Screen Shots & Description: Update Record | Josh Stanczyk | Review and revise user manual content | Completed |
-| Feature Fix: User Authentication with Role Based Access | Josh Stanczyk | Application retreives OS current user name from Environment class. Verifies existence within DB, uses the username to retreive Role ID from DB to grant role based access | Completed |
+| User Manual Screen Shots & Description: Create Record | Justin Kisner | Review and revise user manual content | Passed |
+| User Manual Screen Shots & Description: Update Record | Josh Stanczyk | Review and revise user manual content | Passed |
+| Feature Fix: User Authentication with Role Based Access | Josh Stanczyk | Application retreives OS current user name from Environment class. Verifies existence within DB, uses the username to retreive Role ID from DB to grant role based access | Passed |
 
 ## 2. Progress & Blockers
 * **Completed Work:**
@@ -284,4 +284,114 @@ from XX/XX/XXXX-XX/XX/XXXX to MM/DD/YYYY-MM/DD/YYYY]
 * **Bug Description:** [Add Operations checkboxes for Mill and Lathe to UpdateRecord.cs and CreateRecord.cs]
 * **Severity:** [High] | **Fix Status:** [Fixed]
 * **Bug Description:** [Missing DAO.cs function and UI elements in Form1.cs and Form1.Designer.cs for Machining Department Query in DB]
+* **Severity:** [High] | **Fix Status:** [Fixed]
+
+# Sprint 7 Technical Log
+
+## 1. Planning & Assignments
+* **Sprint Dates:** 2026-05-18 to 2026-06-02
+* **Team Name:** Kiczan Production Info System Team | **Members Present:** Daniel Puharic, Josh Stanczyk
+* **Sprint Goals:** Completion of Sprint 7 goals which include conversion of Database and backend code from MySQL to Microsoft SQL Server, and development of data analytics dashboard.
+
+| Task Description | Assigned Owner | Priority | Status |
+| :--- | :--- | :--- | :--- |
+| Sprint 7: Conversion of code dependencies from MySQL to Microsoft SQL Server - Develop & Test | Josh Stanczyk | High | Completed |
+| Sub Task |  Assigned Owner | Test Procedure | Status |
+| Convert all dependencies, objects, and functions to Microsoft SQL Server | Josh Stanczyk | All backend code functions properly with Microsoft SQL Server DB Instance for Kiczan Production Info System Records. | Passed |
+| Sprint 7: Creation of initial data analytics dashboard - Develop & Test | Josh Stanczyk | Medium | Completed |
+| Sub Task |  Assigned Owner | Test Procedure | Status |
+| Create initial dashboard mockup that launches from main user interface | Josh Stanczyk | Dashboard launches from main user interface, and is populated with bar and pie charts derived from DB queries on existing records | Passed |
+
+## 2. Progress & Blockers
+* **Completed Work:**
+* Sprint 7: Conversion of code dependencies from MySQL to Microsoft SQL Server - Develop & Test
+* Sprint 7: Creation of initial data analytics dashboard - Develop & Test
+* **Incomplete Tasks:**
+* All Sprint 7 Tasks Completed
+* **Resolution Plan:**
+* All Sprint 7 Tasks Completed
+* **Blockers:**
+* None at this time
+
+## 3. System Test Report
+| Test Case | Type | Result | Evidence/PR # |
+| :--- | :--- | :--- | :--- |
+| [Convert all dependencies, objects, and functions to Microsoft SQL Server] | System | Passed | PR #62 |
+| [Create initial dashboard mockup that launches from main user interface] | System | Passed | PR #62 |
+
+## 4. Bug Tracking
+* **Bug Description:** [DAO function query calls and their connections were not properly encapsulated within using statements to release network resources]
+* **Severity:** [High] | **Fix Status:** [Fixed]
+* **Bug Description:** [Forms sizes, fonts, and readability were left at default settings]
+* **Severity:** [Moderate] | **Fix Status:** [Fixed]
+
+# Sprint 8 Technical Log
+
+## 1. Planning & Assignments
+* **Sprint Dates:** 2026-06-15 to 2026-06-30
+* **Team Name:** Kiczan Production Info System Team | **Members Present:** Daniel Puharic, Josh Stanczyk
+* **Sprint Goals:** Completion of Sprint 8 goals which include updating the application to use the .NET 8.0 framework and integrating a ML analytical model to forecast order volume within the dashboard.
+
+| Task Description | Assigned Owner | Priority | Status |
+| :--- | :--- | :--- | :--- |
+| Sprint 8: Update application to .NET 8.0 framework - Develop & Test | Josh Stanczyk | High | Completed |
+| Sub Task |  Assigned Owner | Test Procedure | Status |
+| Update dependencies and project files to switch application from old .NET framework to the modern .NET 8.0 framework | Josh Stanczyk | Project files, XML configuration files, and dashboard objects updated properly to ensure application is running efficiently with .NET 8.0 framework | Passed |
+| Sprint 8: Integrate ML model to provide users with volume forecasting within the dashboard - Develop & Test | Daniel Puharic | High | Completed |
+| Sub Task |  Assigned Owner | Test Procedure | Status |
+| Integrate ML dependencies and create objects and functions within Dashboard.cs, and queries within the DB to provide forecasting charts to user for customer volume | Daniel Puharic | Dashboard properly visualizes volume forecasting in conjunction with object method calls to the DB requesting queries to populate future forecasting charts for users | Passed |
+
+## 2. Progress & Blockers
+* **Completed Work:**
+* Sprint 8: Update application to .NET 8.0 framework - Develop & Test
+* Sprint 8: Integrate ML model to provide users with volume forecasting within the dashboard - Develop & Test
+* **Incomplete Tasks:**
+* All Sprint 8 Tasks Completed
+* **Resolution Plan:**
+* All Sprint 8 Tasks Completed
+* **Blockers:**
+* None at this time
+
+## 3. System Test Report
+| Test Case | Type | Result | Evidence/PR # |
+| :--- | :--- | :--- | :--- |
+| [Update dependencies and project files to switch application from old .NET framework to the modern .NET 8.0 framework] | System & Unit | Passed | PR #62 |
+| [Integrate ML dependencies and create objects and functions within Dashboard.cs, and queries within the DB to provide forecasting charts to user for customer volume | System & Unit | Passed | PR #62 |
+
+## 4. Bug Tracking
+* **Bug Description:** [Migration to .NET 8.0 changed dependencies required for column charts within the dashboard and orientations made charts unreadable]
+* **Severity:** [High] | **Fix Status:** [Fixed]
+
+# Sprint 9 Technical Log
+
+## 1. Planning & Assignments
+* **Sprint Dates:** 2026-07-06 to 2026-07-28
+* **Team Name:** Kiczan Production Info System Team | **Members Present:** Daniel Puharic, Josh Stanczyk
+* **Sprint Goals:** Completion of Sprint 9 goals which include final modifications to reinforce authorization/authentication security and network resource usage to ensure code base is production ready.
+
+| Task Description | Assigned Owner | Priority | Status |
+| :--- | :--- | :--- | :--- |
+| Sprint 9: Optimize back end code base to optimize query time and resource usage and reinforce user authorization - Develop & Test | Josh Stanczyk | High | Completed |
+| Sub Task |  Assigned Owner | Test Procedure | Status |
+| Optimize and update authorization logic | Josh Stanczyk | Conditional logic for user authorization optimized and reinforced to restrict user roles more efficiently, users that have no role assigned are now prevented from using application | Passed |
+| Optimize all DAO.cs queries to improve UI/UX for user and reduce strain on network resources | Josh Stanczyk | User selected queries and dashboard queries now run asynchronously, improving application performance and preventing UI freezes during large requests | Passed |
+
+## 2. Progress & Blockers
+* **Completed Work:**
+* Sprint 9: Optimize back end code base to optimize query time and resource usage and reinforce user authorization - Develop & Test
+* **Incomplete Tasks:**
+* All Sprint 9 Tasks Completed
+* **Resolution Plan:**
+* All Sprint 9 Tasks Completed
+* **Blockers:**
+* None at this time
+
+## 3. System Test Report
+| Test Case | Type | Result | Evidence/PR # |
+| :--- | :--- | :--- | :--- |
+| [Optimize and update authorization logic] | System & Unit | Passed | PR #64 |
+| [Optimize all DAO.cs queries to improve UI/UX for user and reduce strain on network resources] | System & Unit | Passed | PR #64 |
+
+## 4. Bug Tracking
+* **Bug Description:** [Previous authorization conditional logic permitted a user without an assigned role full CRUD access to the DB through the application]
 * **Severity:** [High] | **Fix Status:** [Fixed]
