@@ -10,7 +10,8 @@ upon receiving new work orders, and update existing records in the event of erro
 
 ## Setup & Installation
 * **Dependencies**:
-  -  MySql.Data.MySqlClient
+  -  Microsoft.Data.SqlClient
+  -  System.Threading.Tasks
   -  System.Text.RegularExpressions
   -  System.Globalization
   -  System.Collections.Generic
@@ -18,17 +19,14 @@ upon receiving new work orders, and update existing records in the event of erro
   -  System.Drawing
   -  System.Runtime.InteropServices
   -  System.Windows.Forms
-  -  System.Windows.Forms
 * **Build Environment**:
-  - MySQL Workbench CE
-  - MAMP to host SQL Server
+  - SQL Server Management Studio 22
+  - Microsoft SQL Server
   - IDE (Microsoft Visual Studio or Visual Studio Code)
-  - MySQL.Data package version 9.6.0 by Oracle Corporation
-  - Microsoft.Office.Interop.Excel by Microsoft
 * **Set-Up Instructions (Production Code from Development)**:
-  - Install MAMP to local device.
+  - Install Microsoft SQL Server to local device.
       - During installation, ensure virtual servers are specified as private and not public when prompted.
-  - Install MySQL Workbench CE to local device.
+  - Install SQL Server Management Studio 22 to local device.
       - Copy SQL code from KPS DB Script and execute to deploy schema and DB.
       - Copy SQL code from Delimiter KPS Stored Procedures to deploy stored procedures for query and record retrieval.
   - Install Microsoft Visual Studio
@@ -36,9 +34,9 @@ upon receiving new work orders, and update existing records in the event of erro
       - Use right click Checkout on remote repository branch Application-Main and pull to local repository.
       - Run the solution, application will run in its current production state.
 * **Set-Up Instructions (Full Production Release)**:
-  - Install MySQL Server to local server on site.
-      - IT Personel will ensure that MySQL Server is restricted to onsite access only with no remote connections.
-  - Install MySQL Workbench CE to Fabrication Department Kiczan Terminal for DB Sys Admin responsibilities.
+  - Install Microsoft SQL Server to local server on site.
+      - IT Personel will ensure that Microsoft SQL Server is restricted to onsite access only with no remote connections.
+  - Install SQL Server Management Studio 22 to Fabrication Department Kiczan Terminal for DB Sys Admin responsibilities.
       - Copy SQL code from KPS DB Script and execute to deploy schema and DB.
       - Copy SQL code from Delimiter KPS Stored Procedures to deploy stored procedures.
   - Copy executable file containing the packaged version of Kiczan Production Info System to desktop.
@@ -247,7 +245,7 @@ upon receiving new work orders, and update existing records in the event of erro
           - The Kiczan user presses the Search button and fills the table with the results.
           - The Kiczan user presses the Export button, which opens Excel, and copies the current page of results to an Excel Spreadsheet Workbook page.
  - **Feature:** User Authentication
-      - **Description:** A User Authentication event that occurs at application startup, checks the current OS username using the Environment class, verifies with the DB if the username exists, then verifies the usernames Role ID, Role ID is then used in conditional logic to grant CRUD privileges based on business role where Shipping & Quality Department managers are granted Ready Only access to query, and Machine Shop & Fabrication Department managers are granted full CRUD access.
+      - **Description:** A User Authentication event that occurs at application startup, checks the current OS username using the Environment class, verifies with the DB if the username exists, then verifies the usernames Role Name, Role Name is then used in conditional logic to grant CRUD privileges based on business role where Shipping & Quality Department managers are granted Ready Only access to query, and Machine Shop & Fabrication Department managers are granted full CRUD access.
       - **Usage Instructions:**
           - Log into Kiczan Terminal using Kiczan login credentials stored within active directory work group.
           - Start Kiczan Production Info System application.
@@ -259,7 +257,15 @@ upon receiving new work orders, and update existing records in the event of erro
           - **Result:** Application initialization will begin and the user will be given access to the query interface. If the logged in user has a business role of Shipping or Quality Department Manager, access will be restricted to read only, where the Create Record Button will not be visible or accessible on the query interface, and when querying records based on query and input selection, the right click menu will not be accessible, where the events of Update, Delete, and Restore will not be visible or accessible to the user.
           - **Input:** The Kiczan User logs into their Kiczan terminal with a username that does exist within the DB and starts the Kiczan Production Info System application.
           - **Result:** Application initialization will begin and the user will be given access to the query interface. If the logged in user has a business role of Machine Shop or Fabrication Department Manager, full CRUD access will be granted, where the Create Record Button will be visible and accessible on the query interface, and when querying records based on query and input selection, the right click menu will be accessible, where the events of Update, Delete, and Restore will be visible and accessible to the user.
-       
+- **Feature:** Dashboard
+     - **Description:** A Dashboard accessible from the main user interface by clicking a designated button that opens a secondary interface where users may see data analytics derived from records that have been input into the system by its users.
+     - **Usage Instructions:**
+         - Press the "Dashboard" button visible on the right hand side of the main user interface.
+         - A second interface will load and populate a collection of charts whose data is derived from current records that exist within the Kiczan Production Information System.
+     - **Usage Example:**
+         - **Input:** The Kiczan user presses the "Dashboard" button visible on the right hand side of the main user interface.
+         - **Result:** The "Dashboard" interface will initialize and populate several charts viewable to the user to provide data analytics derived from records that exist within the Kiczan Production Information System.
+
 ## Test Credentials
   - Prior to production, testing will be performed with all developers on Team 2 having full CRUD access to ensure the expected functionality exists for Create, Read, Update, and Delete processes.
   - Once the application has been deployed to production, and the applications associated database has been deployed and populated with existing data, authentication will be performed as follows:

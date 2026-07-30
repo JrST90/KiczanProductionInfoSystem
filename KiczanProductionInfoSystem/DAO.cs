@@ -1,19 +1,24 @@
-﻿using MySql.Data.MySqlClient;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using Microsoft.Data.SqlClient;
+using System.Windows.Forms;
+using System.Threading.Tasks;
 
 namespace KiczanProductionInfoSystem
 {
     internal class DAO
     {
-        //Set the connection string to establish a conncetion to the database
-        private string connectionString = "datasource=localhost;port=3306;username=root;" +
-            "password=root;database=kiczan_production_system;";
+        public static string sqlConnectionString { get; private set; }
+
+        internal static void InitializeConnection(string connectionString)
+        {
+            sqlConnectionString = connectionString;
+        }
 
         //Reads data from DB source, returns dataTable from DATE_DUE_RANGE_QUERY stored procedure. 
         //Reads beginning date and end date from user input from text box on UI.
-        internal DataTable dateDueRangeQuery(string dateRange, int pageSize, int currentPageIndex)
+        internal async Task<DataTable> dateDueRangeQuery(string dateRange, int pageSize, int currentPageIndex)
         {
             //Create new dataTable to store query results.
             DataTable dataTable = new DataTable();
@@ -22,686 +27,941 @@ namespace KiczanProductionInfoSystem
             //Split date range at occurence of '-' character. EX: 01/01/2024-02/01/2024
             string[] dateArray = dateRange.Split('-');
 
-            //Connect to db.
-            MySqlConnection connection = new MySqlConnection(connectionString);
-            connection.Open();
-
-            //Get stored procedure "DATE_DUE_RANGE_QUERY" from SQL server.
-            MySqlCommand command = new MySqlCommand("DATE_DUE_RANGE_QUERY", connection);
-            command.CommandType = CommandType.StoredProcedure;
-
-            //Set offset to be bound using currentPageIndex and pageSize arguments.
-            int offsetNum = ((currentPageIndex - 1) * pageSize);
-
-            //Create new DateTime objects and use the Parse() function on dates
-            //from user input date range.
-            //stored in dateArray[0], and dateArray[1].
-            DateTime bd = DateTime.Parse(dateArray[0]);
-            DateTime ed = DateTime.Parse(dateArray[1]);
-
-            //Paramaterized to prevent SQL Injection, bind values.
-            command.Parameters.AddWithValue("dateB", bd);
-            command.Parameters.AddWithValue("dateE", ed);
-            command.Parameters.AddWithValue("pageSize", pageSize);
-            command.Parameters.AddWithValue("offsetNum", offsetNum);
-
-            //Use adapter object to fill dataTable with query results.
-            using (MySqlDataAdapter adapter = new MySqlDataAdapter(command))
+            try
             {
-                adapter.Fill(dataTable);
+                //Open connection to DB.
+                using (SqlConnection connection = new SqlConnection(sqlConnectionString))
+                {
+                    //Get the stored procedure from the DB.
+                    using (SqlCommand command = new SqlCommand("DATE_DUE_RANGE_QUERY", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+
+                        //Set offset to be bound using currentPageIndex and pageSize arguments.
+                        int offsetNum = ((currentPageIndex - 1) * pageSize);
+
+                        //Create new DateTime objects and use the Parse() function on dates
+                        //from user input date range.
+                        //stored in dateArray[0], and dateArray[1].
+                        DateTime bd = DateTime.Parse(dateArray[0]);
+                        DateTime ed = DateTime.Parse(dateArray[1]);
+
+                        //Paramaterized to prevent SQL Injection, bind values.
+                        command.Parameters.Add("@dateB", SqlDbType.DateTime).Value = bd;
+                        command.Parameters.Add("@dateE", SqlDbType.DateTime).Value = ed;
+                        command.Parameters.Add("@pageSize", SqlDbType.Int).Value = pageSize;
+                        command.Parameters.Add("@offsetNum", SqlDbType.Int).Value = offsetNum;
+
+                        await connection.OpenAsync();
+
+                        //Use reader object to fill dataTable with query results.
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                        {
+                            dataTable.Load(reader);
+                        }
+                    }
+                }
             }
-
-            connection.Close();
-
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to query due date range record data: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
             return dataTable;
         }
 
         //Count all records for DATE_DUE_RANGE_QUERY.
-        internal int dateDueRangeQueryCount(string dateRange)
+        internal async Task<int> dateDueRangeQueryCount(string dateRange)
         {
             //Set initial value of totalRows.
             int totalRows = 0;
 
-            //Split dateRange at the occurence of a hyphen.
+            //Create array to store date values from string input.
+            //Split date range at occurence of '-' character. EX: 01/01/2024-02/01/2024
             string[] dateArray = dateRange.Split('-');
 
-            //Connect to db.
-            MySqlConnection connection = new MySqlConnection(connectionString);
-            connection.Open();
+            try
+            {
+                //Open connection to DB.
+                using (SqlConnection connection = new SqlConnection(sqlConnectionString))
+                {
+                    //Get the stored procedure from the DB.
+                    using (SqlCommand command = new SqlCommand("DATE_DUE_RANGE_QUERY_COUNT", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
 
-            //Get the stored procedure from the DB.
-            MySqlCommand command = new MySqlCommand("DATE_DUE_RANGE_QUERY_COUNT", connection);
-            command.CommandType = CommandType.StoredProcedure;
+                        //Create new DateTime objects and use the Parse() function on dates
+                        //from user input date range.
+                        DateTime bd = DateTime.Parse(dateArray[0]);
+                        DateTime ed = DateTime.Parse(dateArray[1]);
 
-            //Parts date values stored in dateArray.
-            DateTime bd = DateTime.Parse(dateArray[0]);
-            DateTime ed = DateTime.Parse(dateArray[1]);
+                        //Paramaterized to prevent SQL Injection, bind values.
+                        command.Parameters.Add("@dateB", SqlDbType.DateTime).Value = bd;
+                        command.Parameters.Add("@dateE", SqlDbType.DateTime).Value = ed;
 
-            //Paramaterized to prevent SQL Injection, bind values.
-            command.Parameters.AddWithValue("dateB", bd);
-            command.Parameters.AddWithValue("dateE", ed);
+                        await connection.OpenAsync();
 
-            //Execute query, save result in result object
-            object result = command.ExecuteScalar();
+                        //Execute query, save result in result object.
+                        object returnedCount = await command.ExecuteScalarAsync();
 
-            //Convert result to Int and save in totalRows.
-            totalRows = Convert.ToInt32(result);
-
-            connection.Close();
-
+                        //Convert to count.
+                        totalRows = Convert.ToInt32(returnedCount);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to retrieve due date range record count: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
             return totalRows;
         }
 
         //Reads data from DB source, returns dataTable from PART_NUMBER_QUERY stored procedure.
         //Reads partNumber from user input in text box.
-        internal DataTable partNumberQuery(string partNumber, int pageSize, int currentPageIndex)
+        internal async Task<DataTable> partNumberQuery(string partNumber, int pageSize, int currentPageIndex)
         {
             //Create new dataTable to store query results.
             DataTable dataTable = new DataTable();
 
-            //Connect to db.
-            MySqlConnection connection = new MySqlConnection(connectionString);
-            connection.Open();
-
-            //Get stored procedure "PART_NUMBER_QUERY" from SQL server.
-            MySqlCommand command = new MySqlCommand("PART_NUMBER_QUERY", connection);
-            command.CommandType = CommandType.StoredProcedure;
-
-            //Set offset to be bound using currentPageIndex and pageSize arguments.
-            int offsetNum = ((currentPageIndex - 1) * pageSize);
-
-            //Add wildcard to broaden search term.
-            String searchWildTerm = "%" + partNumber + "%";
-
-            //Paramaterized to prevent SQL Injection.
-            command.Parameters.AddWithValue("partNo", searchWildTerm);
-            command.Parameters.AddWithValue("pageSize", pageSize);
-            command.Parameters.AddWithValue("offsetNum", offsetNum);
-
-            //Use adapter object to fill dataTable with query results.
-            using (MySqlDataAdapter adapter = new MySqlDataAdapter(command))
+            try
             {
-                adapter.Fill(dataTable);
+                //Open connection to DB.
+                using (SqlConnection connection = new SqlConnection(sqlConnectionString))
+                {
+                    //Get the stored procedure from the DB.
+                    using (SqlCommand command = new SqlCommand("PART_NUMBER_QUERY", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+
+                        //Set offset to be bound using currentPageIndex and pageSize arguments.
+                        int offsetNum = ((currentPageIndex - 1) * pageSize);
+
+                        //Add wildcard to broaden search term.
+                        String searchWildTerm = "%" + partNumber + "%";
+
+                        //Paramaterized to prevent SQL Injection, bind values.
+                        command.Parameters.Add("@partNo", SqlDbType.VarChar, 50).Value = searchWildTerm;
+                        command.Parameters.Add("@pageSize", SqlDbType.Int).Value = pageSize;
+                        command.Parameters.Add("@offsetNum", SqlDbType.Int).Value = offsetNum;
+
+                        await connection.OpenAsync();
+
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                        {
+                            dataTable.Load(reader);
+                        }
+                    }
+                }
             }
-
-            connection.Close();
-
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to query part number record data: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
             return dataTable;
         }
 
         //Count all records for PART_NUMBER_QUERY.
-        internal int partNumberQueryCount(string partNumber)
+        internal async Task<int> partNumberQueryCount(string partNumber)
         {
             //Set initial value of totalRows.
             int totalRows = 0;
 
-            //Connect to db.
-            MySqlConnection connection = new MySqlConnection(connectionString);
-            connection.Open();
+            try
+            {
+                //Open connection to DB.
+                using (SqlConnection connection = new SqlConnection(sqlConnectionString))
+                {
+                    //Get the stored procedure from the DB.
+                    using (SqlCommand command = new SqlCommand("PART_NUMBER_QUERY_COUNT", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
 
-            //Get the stored procedure from the DB.
-            MySqlCommand command = new MySqlCommand("PART_NUMBER_QUERY_COUNT", connection);
-            command.CommandType = CommandType.StoredProcedure;
+                        //Add wildcard to broaden search term.
+                        String searchWildTerm = "%" + partNumber + "%";
 
-            //Add wildcard to broaden search term.
-            String searchWildTerm = "%" + partNumber + "%";
+                        //Paramaterized to prevent SQL Injection, bind values.
+                        command.Parameters.Add("@partNo", SqlDbType.VarChar, 50).Value = searchWildTerm;
 
-            //Paramaterized to prevent SQL Injection, bind values.
-            command.Parameters.AddWithValue("partNo", searchWildTerm);
+                        await connection.OpenAsync();
 
-            //Execute query, save result in result object.
-            object result = command.ExecuteScalar();
+                        //Execute query, save result in result object.
+                        object returnedCount = await command.ExecuteScalarAsync();
 
-            //Convert result to Int and save in totalRows.
-            totalRows = Convert.ToInt32(result);
-
-            connection.Close();
-
+                        //Convert to count.
+                        totalRows = Convert.ToInt32(returnedCount);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to retrieve part number record count: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
             return totalRows;
         }
 
         //Reads data from DB source, returns dataTable from PART_NUMBER_QUERY_ARCHIVE stored procedure.
         //Reads partNumber from user input in text box.
-        internal DataTable partNumberQueryArchive(string partNumber, int pageSize, int currentPageIndex)
+        internal async Task<DataTable> partNumberQueryArchive(string partNumber, int pageSize, int currentPageIndex)
         {
             //Create new dataTable to store query results.
             DataTable dataTable = new DataTable();
 
-            //Connect to db.
-            MySqlConnection connection = new MySqlConnection(connectionString);
-            connection.Open();
-
-            //Get stored procedure "PART_NUMBER_QUERY_ARCHIVE" from SQL server.
-            MySqlCommand command = new MySqlCommand("PART_NUMBER_QUERY_ARCHIVE", connection);
-            command.CommandType = CommandType.StoredProcedure;
-
-            //Set offset to be bound using currentPageIndex and pageSize arguments.
-            int offsetNum = ((currentPageIndex - 1) * pageSize);
-
-            //Add wildcard to broaden search term.
-            String searchWildTerm = "%" + partNumber + "%";
-
-            //Paramaterized to prevent SQL Injection.
-            command.Parameters.AddWithValue("partNo", searchWildTerm);
-            command.Parameters.AddWithValue("pageSize", pageSize);
-            command.Parameters.AddWithValue("offsetNum", offsetNum);
-
-            //Use adapter object to fill dataTable with query results.
-            using (MySqlDataAdapter adapter = new MySqlDataAdapter(command))
+            try
             {
-                adapter.Fill(dataTable);
+                //Open connection to DB.
+                using (SqlConnection connection = new SqlConnection(sqlConnectionString))
+                {
+                    //Get the stored procedure from the DB.
+                    using (SqlCommand command = new SqlCommand("PART_NUMBER_QUERY_ARCHIVE", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+
+                        //Set offset to be bound using currentPageIndex and pageSize arguments.
+                        int offsetNum = ((currentPageIndex - 1) * pageSize);
+
+                        //Add wildcard to broaden search term.
+                        String searchWildTerm = "%" + partNumber + "%";
+
+                        //Paramaterized to prevent SQL Injection, bind values.
+                        command.Parameters.Add("@partNo", SqlDbType.VarChar, 50).Value = searchWildTerm;
+                        command.Parameters.Add("@pageSize", SqlDbType.Int).Value = pageSize;
+                        command.Parameters.Add("@offsetNum", SqlDbType.Int).Value = offsetNum;
+
+                        await connection.OpenAsync();
+
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                        {
+                            dataTable.Load(reader);
+                        }
+                    }
+                }
             }
-
-            connection.Close();
-
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to query part number archive record data: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
             return dataTable;
         }
 
         //Count all records for PART_NUMBER_QUERY_ARCHIVE.
-        internal int partNumberQueryCountArchive(string partNumber)
+        internal async Task<int> partNumberQueryCountArchive(string partNumber)
         {
             //Set initial value of totalRows.
             int totalRows = 0;
 
-            //Connect to db.
-            MySqlConnection connection = new MySqlConnection(connectionString);
-            connection.Open();
+            try
+            {
+                //Open connection to DB.
+                using (SqlConnection connection = new SqlConnection(sqlConnectionString))
+                {
+                    //Get the stored procedure from the DB.
+                    using (SqlCommand command = new SqlCommand("PART_NUMBER_QUERY_ARCHIVE_COUNT", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
 
-            //Get the stored procedure from the DB.
-            MySqlCommand command = new MySqlCommand("PART_NUMBER_QUERY_ARCHIVE_COUNT", connection);
-            command.CommandType = CommandType.StoredProcedure;
+                        //Add wildcard to broaden search term.
+                        String searchWildTerm = "%" + partNumber + "%";
 
-            //Add wildcard to broaden search term.
-            String searchWildTerm = "%" + partNumber + "%";
+                        //Paramaterized to prevent SQL Injection, bind values.
+                        command.Parameters.Add("@partNo", SqlDbType.VarChar, 50).Value = searchWildTerm;
 
-            //Paramaterized to prevent SQL Injection, bind values.
-            command.Parameters.AddWithValue("partNo", searchWildTerm);
+                        await connection.OpenAsync();
 
-            //Execute query, save result in result object.
-            object result = command.ExecuteScalar();
+                        //Execute query, save result in result object.
+                        object returnedCount = await command.ExecuteScalarAsync();
 
-            //Convert result to Int and save in totalRows.
-            totalRows = Convert.ToInt32(result);
-
-            connection.Close();
-
+                        //Convert to count.
+                        totalRows = Convert.ToInt32(returnedCount);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to retrieve part number archive record count: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
             return totalRows;
         }
 
         // Reads data from DB source, returns dataTable from OPERATOR_NAME_QUERY stored procedure.
         // Reads operatorName from user input in text box.
-        internal DataTable operatorNameQuery(string operatorName, int pageSize, int currentPageIndex)
+        internal async Task<DataTable> operatorNameQuery(string operatorName, int pageSize, int currentPageIndex)
 
         {
             //Create new dataTable to store query results.
             DataTable dataTable = new DataTable();
 
-            //Connect to db.
-            MySqlConnection connection = new MySqlConnection(connectionString);
-            connection.Open();
-
-            //Get stored procedure "OPERATOR_NAME_QUERY" from SQL server.
-            MySqlCommand command = new MySqlCommand("OPERATOR_NAME_QUERY", connection);
-            command.CommandType = CommandType.StoredProcedure;
-
-            //Set offset to be bound using currentPageIndex and pageSize arguments.
-            int offsetNum = ((currentPageIndex - 1) * pageSize);
-
-            //Add wildcard to broaden search term.
-            String searchWildTerm = "%" + operatorName + "%";
-
-            //Paramaterized to prevent SQL Injection.
-            command.Parameters.AddWithValue("opName", searchWildTerm);
-            command.Parameters.AddWithValue("pageSize", pageSize);
-            command.Parameters.AddWithValue("offsetNum", offsetNum);
-
-            //Use adapter object to fill dataTable with query results.
-            using (MySqlDataAdapter adapter = new MySqlDataAdapter(command))
-
+            try
             {
-                adapter.Fill(dataTable);
+                //Open connection to DB.
+                using (SqlConnection connection = new SqlConnection(sqlConnectionString))
+                {
+                    //Get the stored procedure from the DB.
+                    using (SqlCommand command = new SqlCommand("OPERATOR_NAME_QUERY", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+
+                        //Set offset to be bound using currentPageIndex and pageSize arguments.
+                        int offsetNum = ((currentPageIndex - 1) * pageSize);
+
+                        //Add wildcard to broaden search term.
+                        String searchWildTerm = "%" + operatorName + "%";
+
+                        //Paramaterized to prevent SQL Injection, bind values.
+                        command.Parameters.Add("@opName", SqlDbType.VarChar, 10).Value = searchWildTerm;
+                        command.Parameters.Add("@pageSize", SqlDbType.Int).Value = pageSize;
+                        command.Parameters.Add("@offsetNum", SqlDbType.Int).Value = offsetNum;
+
+                        await connection.OpenAsync();
+
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                        {
+                            dataTable.Load(reader);
+                        }
+                    }
+                }
             }
-
-            connection.Close();
-
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to query operator record data: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
             return dataTable;
-
         }
 
         // Count all records for OPERATOR_NAME_QUERY.
-        internal int operatorNameQueryCount(string operatorName)
-
+        internal async Task<int> operatorNameQueryCount(string operatorName)
         {
             //Set initial value of totalRows.
             int totalRows = 0;
 
-            //Connect to db.
-            MySqlConnection connection = new MySqlConnection(connectionString);
-            connection.Open();
+            try
+            {
+                //Open connection to DB.
+                using (SqlConnection connection = new SqlConnection(sqlConnectionString))
+                {
+                    //Get the stored procedure from the DB.
+                    using (SqlCommand command = new SqlCommand("OPERATOR_NAME_QUERY_COUNT", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
 
-            //Get the stored procedure from the DB.
-            MySqlCommand command = new MySqlCommand("OPERATOR_NAME_QUERY_COUNT", connection);
-            command.CommandType = CommandType.StoredProcedure;
+                        //Add wildcard to broaden search term.
+                        String searchWildTerm = "%" + operatorName + "%";
 
-            //Add wildcard to broaden search term.
-            String searchWildTerm = "%" + operatorName + "%";
+                        //Paramaterized to prevent SQL Injection, bind values.
+                        command.Parameters.Add("@opName", SqlDbType.VarChar, 10).Value = searchWildTerm;
 
-            //Paramaterized to prevent SQL Injection, bind values.
-            command.Parameters.AddWithValue("opName", searchWildTerm);
+                        await connection.OpenAsync();
 
-            //Execute query, save result in result object.
-            object result = command.ExecuteScalar();
+                        //Execute query, save result in result object.
+                        object returnedCount = await command.ExecuteScalarAsync();
 
-            //Convert result to Int and save in totalRows.
-            totalRows = Convert.ToInt32(result);
-
-            connection.Close();
-
+                        //Convert to count.
+                        totalRows = Convert.ToInt32(returnedCount);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to retrieve operator record count: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
             return totalRows;
         }
 
         //Execute query to mark recorded as deleted.
-        internal void softDeleteQuery(int part_history_id)
+        internal async Task softDeleteQuery(int part_history_id)
         {
-            //Connect to db.
-            MySqlConnection connection = new MySqlConnection(connectionString);
-            connection.Open();
+            try
+            {
+                //Open connection to DB.
+                using (SqlConnection connection = new SqlConnection(sqlConnectionString))
+                {
+                    //Get the stored procedure from the DB.
+                    using (SqlCommand command = new SqlCommand("MARK_PART_DELETED", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
 
-            //Get stored procedure "MARK_PART_DELETED" from SQL server.
-            MySqlCommand command = new MySqlCommand("MARK_PART_DELETED", connection);
-            command.CommandType = CommandType.StoredProcedure;
+                        //Paramaterized to prevent SQL Injection.
+                        command.Parameters.Add("@p_part_history_id", SqlDbType.Int).Value = part_history_id;
 
-            //Paramaterized to prevent SQL Injection.
-            command.Parameters.AddWithValue("p_part_history_id", part_history_id);
+                        await connection.OpenAsync();
 
-            //Execute the stored procedure to mark record as deleted.
-            command.ExecuteNonQuery();
-
-            connection.Close();
+                        //Execute the stored procedure to mark record as deleted.
+                        await command.ExecuteNonQueryAsync();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to delete record: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         //Execute query to restore previously deleted record.
-        internal void restoreRecordQuery(int part_history_id)
+        internal async Task restoreRecordQuery(int part_history_id)
         {
-            //Connect to db.
-            MySqlConnection connection = new MySqlConnection(connectionString);
-            connection.Open();
+            try
+            {
+                //Open connection to DB.
+                using (SqlConnection connection = new SqlConnection(sqlConnectionString))
+                {
+                    //Get the stored procedure from the DB.
+                    using (SqlCommand command = new SqlCommand("RESTORE_PART", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
 
-            //Get stored procedure "MARK_PART_DELETED" from SQL server.
-            MySqlCommand command = new MySqlCommand("RESTORE_PART", connection);
-            command.CommandType = CommandType.StoredProcedure;
+                        //Paramaterized to prevent SQL Injection.
+                        command.Parameters.Add("@p_part_history_id", SqlDbType.Int).Value = part_history_id;
 
-            //Paramaterized to prevent SQL Injection.
-            command.Parameters.AddWithValue("p_part_history_id", part_history_id);
+                        await connection.OpenAsync();
 
-            //Execute the stored procedure to mark record as deleted.
-            command.ExecuteNonQuery();
-
-            connection.Close();
+                        //Execute the stored procedure to mark record as deleted.
+                        await command.ExecuteNonQueryAsync();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to restore record: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
         //Reads data from DB source, returns dataTable from FABRICATION_DEPARTMENT_QUERY stored procedure.
-        internal DataTable fabricationDepartmentQuery(int pageSize, int currentPageIndex)
+        internal async Task<DataTable> fabricationDepartmentQuery(int pageSize, int currentPageIndex)
         {
             //Create new dataTable to store query results.
             DataTable dataTable = new DataTable();
 
-            //Connect to db.
-            MySqlConnection connection = new MySqlConnection(connectionString);
-            connection.Open();
-
-            //Get stored procedure "NC_MACHINE_WORK_QUERY" from SQL server.
-            MySqlCommand command = new MySqlCommand("FABRICATION_DEPARTMENT_QUERY", connection);
-            command.CommandType = CommandType.StoredProcedure;
-
-            //Set offset to be bound using currentPageIndex and pageSize arguments.
-            int offsetNum = ((currentPageIndex - 1) * pageSize);
-
-            //Paramaterized to prevent SQL Injection, bind values.
-            command.Parameters.AddWithValue("pageSize", pageSize);
-            command.Parameters.AddWithValue("offsetNum", offsetNum);
-
-            //Use adapter object to fill dataTable with query results.
-            using (MySqlDataAdapter adapter = new MySqlDataAdapter(command))
+            try
             {
-                adapter.Fill(dataTable);
+                //Open connection to DB.
+                using (SqlConnection connection = new SqlConnection(sqlConnectionString))
+                {
+                    //Get the stored procedure from the DB.
+                    using (SqlCommand command = new SqlCommand("FABRICATION_DEPARTMENT_QUERY", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+
+                        //Set offset to be bound using currentPageIndex and pageSize arguments.
+                        int offsetNum = ((currentPageIndex - 1) * pageSize);
+
+                        //Paramaterized to prevent SQL Injection, bind values.
+                        command.Parameters.Add("@pageSize", SqlDbType.Int).Value = pageSize;
+                        command.Parameters.Add("@offsetNum", SqlDbType.Int).Value = offsetNum;
+
+                        await connection.OpenAsync();
+
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                        {
+                            dataTable.Load(reader);
+                        }
+                    }
+                }
             }
-
-            connection.Close();
-
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to query fabrication department record data: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
             return dataTable;
         }
 
         //Count all records for FABRICATION_DEPARTMENT_QUERY.
-        internal int fabricationDepartmentQueryCount()
+        internal async Task<int> fabricationDepartmentQueryCount()
         {
             //Set initial value of totalRows.
             int totalRows = 0;
 
-            //Connect to db.
-            MySqlConnection connection = new MySqlConnection(connectionString);
-            connection.Open();
+            try
+            {
+                //Open connection to DB.
+                using (SqlConnection connection = new SqlConnection(sqlConnectionString))
+                {
+                    //Get the stored procedure from the DB.
+                    using (SqlCommand command = new SqlCommand("FABRICATION_DEPARTMENT_QUERY_COUNT", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
 
-            //Get the stored procedure from the DB.
-            MySqlCommand command = new MySqlCommand("FABRICATION_DEPARTMENT_QUERY_COUNT", connection);
-            command.CommandType = CommandType.StoredProcedure;
+                        await connection.OpenAsync();
 
-            //Execute query, save result in result object.
-            object result = command.ExecuteScalar();
+                        //Execute query, save result in result object.
+                        object returnedCount = await command.ExecuteScalarAsync();
 
-            //Convert result to Int and save in totalRows.
-            totalRows = Convert.ToInt32(result);
-
-            connection.Close();
-
+                        //Convert to count.
+                        totalRows = Convert.ToInt32(returnedCount);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to retrieve fabrication department record count: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
             return totalRows;
         }
 
         //Reads data from DB source, returns dataTable from NC_MACHINE_WORK_QUERY stored procedure.
-        internal DataTable machiningDepartmentQuery(int pageSize, int currentPageIndex)
+        internal async Task<DataTable> machiningDepartmentQuery(int pageSize, int currentPageIndex)
         {
             //Create new dataTable to store query results.
             DataTable dataTable = new DataTable();
 
-            //Connect to db.
-            MySqlConnection connection = new MySqlConnection(connectionString);
-            connection.Open();
-
-            //Get stored procedure "NC_MACHINE_WORK_QUERY" from SQL server.
-            MySqlCommand command = new MySqlCommand("NC_MACHINE_WORK_QUERY", connection);
-            command.CommandType = CommandType.StoredProcedure;
-
-            //Set offset to be bound using currentPageIndex and pageSize arguments.
-            int offsetNum = ((currentPageIndex - 1) * pageSize);
-
-            //Paramaterized to prevent SQL Injection, bind values.
-            command.Parameters.AddWithValue("pageSize", pageSize);
-            command.Parameters.AddWithValue("offsetNum", offsetNum);
-
-            //Use adapter object to fill dataTable with query results.
-            using (MySqlDataAdapter adapter = new MySqlDataAdapter(command))
+            try
             {
-                adapter.Fill(dataTable);
+                //Open connection to DB.
+                using (SqlConnection connection = new SqlConnection(sqlConnectionString))
+                {
+                    //Get the stored procedure from the DB.
+                    using (SqlCommand command = new SqlCommand("NC_MACHINE_WORK_QUERY", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+
+                        //Set offset to be bound using currentPageIndex and pageSize arguments.
+                        int offsetNum = ((currentPageIndex - 1) * pageSize);
+
+                        //Paramaterized to prevent SQL Injection, bind values.
+                        command.Parameters.Add("@pageSize", SqlDbType.Int).Value = pageSize;
+                        command.Parameters.Add("@offsetNum", SqlDbType.Int).Value = offsetNum;
+
+                        await connection.OpenAsync();
+
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                        {
+                            dataTable.Load(reader);
+                        }
+                    }
+                }
             }
-
-            connection.Close();
-
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to query machine shop record data: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
             return dataTable;
         }
 
         //Count all records for NC_MACHINE_WORK_QUERY.
-        internal int machiningDepartmentQueryCount()
+        internal async Task<int> machiningDepartmentQueryCount()
         {
             //Set initial value of totalRows.
             int totalRows = 0;
 
-            //Connect to db.
-            MySqlConnection connection = new MySqlConnection(connectionString);
-            connection.Open();
+            try
+            {
+                //Open connection to DB.
+                using (SqlConnection connection = new SqlConnection(sqlConnectionString))
+                {
+                    //Get the stored procedure from the DB.
+                    using (SqlCommand command = new SqlCommand("NC_MACHINE_WORK_QUERY_COUNT", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
 
-            //Get the stored procedure from the DB.
-            MySqlCommand command = new MySqlCommand("NC_MACHINE_WORK_QUERY_COUNT", connection);
-            command.CommandType = CommandType.StoredProcedure;
+                        await connection.OpenAsync();
 
-            //Execute query, save result in result object.
-            object result = command.ExecuteScalar();
+                        //Execute query, save result in result object.
+                        object returnedCount = await command.ExecuteScalarAsync();
 
-            //Convert result to Int and save in totalRows.
-            totalRows = Convert.ToInt32(result);
-
-            connection.Close();
-
+                        //Convert to count.
+                        totalRows = Convert.ToInt32(returnedCount);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to retrieve machine shop record count: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
             return totalRows;
         }
 
         //Get operator names for drop down menu comboBox2 and operatorComboBox
-        internal List<Operators> GetOperators()
+        internal async Task<List<Operators>> GetOperators()
         {
             //Create new List object.
             List<Operators> returnList = new List<Operators>();
 
-            //Connect to db.
-            MySqlConnection connection = new MySqlConnection(connectionString);
-            connection.Open();
-
-            //Get the stored procedure from the DB.
-            MySqlCommand command = new MySqlCommand("GET_OPERATORS", connection);
-            command.CommandType = CommandType.StoredProcedure;
-
-            //Read returned values from query into returnList.
-            using (MySqlDataReader reader = command.ExecuteReader())
+            try
             {
-                while (reader.Read())
+                //Open connection to DB.
+                using (SqlConnection connection = new SqlConnection(sqlConnectionString))
                 {
-                    Operators op = new Operators
+                    //Get the stored procedure from the DB.
+                    using (SqlCommand command = new SqlCommand("GET_OPERATORS", connection))
                     {
-                        OPERATOR_ID = reader.GetInt32(0),
-                        OPERATOR_NAME = reader.GetString(1),
-                    };
-                    returnList.Add(op);
+                        command.CommandType = CommandType.StoredProcedure;
+
+                        await connection.OpenAsync();
+
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                        {
+                            while (await reader.ReadAsync())
+                            {
+                                Operators op = new Operators
+                                {
+                                    OPERATOR_ID = reader.GetInt32(0),
+                                    OPERATOR_NAME = reader.GetString(1),
+                                };
+                                returnList.Add(op);
+                            }
+                        }
+                    }
                 }
             }
-            connection.Close();
-
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to load operator list: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
             return returnList;
         }
 
         //Get customer names for customerComboBox
-        internal List<Customers> GetCustomers()
+        internal async Task<List<Customers>> GetCustomers()
         {
             //Create new List object.
             List<Customers> returnList = new List<Customers>();
 
-            //Connect to db.
-            MySqlConnection connection = new MySqlConnection(connectionString);
-            connection.Open();
-
-            //Get the stored procedure from the DB.
-            MySqlCommand command = new MySqlCommand("GET_CUSTOMERS", connection);
-            command.CommandType = CommandType.StoredProcedure;
-
-            //Read returned values from query into returnList.
-            using (MySqlDataReader reader = command.ExecuteReader())
+            try
             {
-                while (reader.Read())
+                //Open connection to DB.
+                using (SqlConnection connection = new SqlConnection(sqlConnectionString))
                 {
-                    Customers op = new Customers
+                    //Get the stored procedure from the DB.
+                    using (SqlCommand command = new SqlCommand("GET_CUSTOMERS", connection))
                     {
-                        CUSTOMER_ID = reader.GetInt32(0),
-                        CUSTOMER_NAME = reader.GetString(1),
-                    };
-                    returnList.Add(op);
+                        command.CommandType = CommandType.StoredProcedure;
+
+                        await connection.OpenAsync();
+
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                        {
+                            while (await reader.ReadAsync())
+                            {
+                                Customers cust = new Customers
+                                {
+                                    CUSTOMER_ID = reader.GetInt32(0),
+                                    CUSTOMER_NAME = reader.GetString(1),
+                                };
+                                returnList.Add(cust);
+                            }
+                        }
+                    }
                 }
             }
-            connection.Close();
-
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to load customer list: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
             return returnList;
         }
 
-        internal bool CreateRecord(int custID, int opID, string partNumber, DateTime dateDue, string poNumber, string quantity, string checkedOperations, DateTime dateReceived, int toDelete)
+        //Method to create new record.
+        internal async Task<bool> CreateRecord(int custID, int opID, string partNumber, DateTime dateDue, string poNumber, string quantity, string checkedOperations, DateTime dateReceived, int toDelete)
         {
-            MySqlConnection connection = new MySqlConnection(connectionString);
+            int rowsAffected = 0;
 
-            MySqlParameter[] pms = new MySqlParameter[10];
+            try
+            {
+                //Open connection to DB.
+                using (SqlConnection connection = new SqlConnection(sqlConnectionString))
+                {
+                    //Build array of type SqlParameter for storage.
+                    SqlParameter[] pms = new SqlParameter[9];
 
-            //current dummy values and a varible for the operations selceted. 
-            pms[0] = new MySqlParameter("PART_HISTORY_ID", MySqlDbType.Int32);
-            pms[0].Value = DBNull.Value;
+                    //Set array index values to inputs from CreateRecord form.
+                    pms[0] = new SqlParameter("CUSTOMER_ID", SqlDbType.Int);
+                    pms[0].Value = custID;
 
-            //    command.Parameters.Add("@CUSTOMER_ID", MySqlDbType.Int32).Value = 17;
-            pms[1] = new MySqlParameter("CUSTOMER_ID", MySqlDbType.Int32);
-            pms[1].Value = custID;
+                    pms[1] = new SqlParameter("OPERATOR_ID", SqlDbType.Int);
+                    pms[1].Value = opID;
 
-            //   command.Parameters.Add("OPERATOR_ID", MySqlDbType.Int32).Value = 4;
-            pms[2] = new MySqlParameter("OPERATOR_ID", MySqlDbType.Int32);
-            pms[2].Value = opID;
+                    pms[2] = new SqlParameter("PART_NUMBER", SqlDbType.VarChar);
+                    pms[2].Value = partNumber;
 
-            //  command.Parameters.Add("@PART_NUMBER", MySqlDbType.VarChar).Value = "7777";
-            pms[3] = new MySqlParameter("PART_NUMBER", MySqlDbType.VarChar);
-            pms[3].Value = partNumber;
+                    pms[3] = new SqlParameter("DATE_DUE", SqlDbType.DateTime);
+                    pms[3].Value = dateDue;
 
-            //   command.Parameters.Add("@DATE_DUE", MySqlDbType.DateTime).Value = new DateTime(2525, 12, 25);
-            pms[4] = new MySqlParameter("DATE_DUE", MySqlDbType.DateTime);
-            pms[4].Value = dateDue;
+                    pms[4] = new SqlParameter("PURCHASE_ORDER_NUMBER", SqlDbType.VarChar);
+                    pms[4].Value = poNumber;
 
-            //   command.Parameters.Add("@PURCHASE_ORDER_NUMBER", MySqlDbType.VarChar).Value = "7777";
-            pms[5] = new MySqlParameter("PURCHASE_ORDER_NUMBER", MySqlDbType.VarChar);
-            pms[5].Value = poNumber;
+                    pms[5] = new SqlParameter("QTY", SqlDbType.Int);
+                    pms[5].Value = quantity;
 
-            //  command.Parameters.Add("@QTY", MySqlDbType.Int32).Value = 7777;
-            pms[6] = new MySqlParameter("QTY", MySqlDbType.Int32);
-            pms[6].Value = quantity;
+                    pms[6] = new SqlParameter("OPERATIONS", SqlDbType.VarChar);
+                    pms[6].Value = checkedOperations;
 
-            //  command.Parameters.Add("@OPERATIONS", MySqlDbType.VarChar).Value = checkedOperations;
-            pms[7] = new MySqlParameter("OPERATIONS", MySqlDbType.VarChar);
-            pms[7].Value = checkedOperations;
+                    pms[7] = new SqlParameter("DATE_RECEIVED", SqlDbType.DateTime);
+                    pms[7].Value = dateReceived;
 
-            //  command.Parameters.Add("@DATE_RECEIVED", MySqlDbType.DateTime).Value = new DateTime(2049, 6, 13);
-            pms[8] = new MySqlParameter("DATE_RECEIVED", MySqlDbType.DateTime);
-            pms[8].Value = dateReceived;
+                    pms[8] = new SqlParameter("TO_DELETE", SqlDbType.Bit);
+                    pms[8].Value = toDelete;
 
-            // command.Parameters.Add("@TO_DELETE", MySqlDbType.Binary).Value = 0;
-            pms[9] = new MySqlParameter("TO_DELETE", MySqlDbType.Binary);
-            pms[9].Value = toDelete;
+                    //Get the stored procedure from the DB.
+                    using (SqlCommand command = new SqlCommand("CREATE_RECORD", connection))
+                    {
+                        //Build SQL command retreived from stored procedure "CREATE_RECORD".
+                        command.CommandType = CommandType.StoredProcedure;
 
-            MySqlCommand command = new MySqlCommand();
-            command.Connection = connection;
-            command.CommandType = CommandType.StoredProcedure;
-            command.CommandText = "CREATE_RECORD";
-            //command.Parameters.Clear();
-            command.Parameters.AddRange(pms);
-            connection.Open();
-            int rowsAffected = command.ExecuteNonQuery();
-            connection.Close();
+                        await connection.OpenAsync();
+
+                        command.Parameters.AddRange(pms);
+
+                        rowsAffected = await command.ExecuteNonQueryAsync();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to create new record: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
             return rowsAffected > 0;
         }
-        internal bool UpdateRecord(int partID, int custID, int opID, string partNumber, DateTime dateDue, string poNumber, string quantity, string checkedOperations, DateTime dateReceived, int toDelete)
+
+        //Method to update selected record.
+        internal async Task<bool> UpdateRecord(int partID, int custID, int opID, string partNumber, DateTime dateDue, string poNumber, string quantity, string checkedOperations, DateTime dateReceived, int toDelete)
         {
-            MySqlConnection connection = new MySqlConnection(connectionString);
+            int rowsAffected = 0;
+            try
+            {
+                //Open connection to DB.
+                using (SqlConnection connection = new SqlConnection(sqlConnectionString))
+                {
+                    //Build array of type SqlParameter for storage.
+                    SqlParameter[] pms = new SqlParameter[10];
 
-            MySqlParameter[] pms = new MySqlParameter[10];
+                    //Set array index values to inputs from UpdateRecord form.
+                    pms[0] = new SqlParameter("p_PART_HISTORY_ID", SqlDbType.Int);
+                    pms[0].Value = partID;
 
-            //current dummy values and a varible for the operations selceted. 
-            pms[0] = new MySqlParameter("p_PART_HISTORY_ID", MySqlDbType.Int32);
-            pms[0].Value = partID;
+                    pms[1] = new SqlParameter("p_CUSTOMER_ID", SqlDbType.Int);
+                    pms[1].Value = custID;
 
-            //    command.Parameters.Add("@CUSTOMER_ID", MySqlDbType.Int32).Value = 17;
-            pms[1] = new MySqlParameter("p_CUSTOMER_ID", MySqlDbType.Int32);
-            pms[1].Value = custID;
+                    pms[2] = new SqlParameter("p_OPERATOR_ID", SqlDbType.Int);
+                    pms[2].Value = opID;
 
-            //   command.Parameters.Add("OPERATOR_ID", MySqlDbType.Int32).Value = 4;
-            pms[2] = new MySqlParameter("p_OPERATOR_ID", MySqlDbType.Int32);
-            pms[2].Value = opID;
+                    pms[3] = new SqlParameter("p_PART_NUMBER", SqlDbType.VarChar);
+                    pms[3].Value = partNumber;
 
-            //  command.Parameters.Add("@PART_NUMBER", MySqlDbType.VarChar).Value = "7777";
-            pms[3] = new MySqlParameter("p_PART_NUMBER", MySqlDbType.VarChar);
-            pms[3].Value = partNumber;
+                    pms[4] = new SqlParameter("p_DATE_DUE", SqlDbType.DateTime);
+                    pms[4].Value = dateDue;
 
-            //   command.Parameters.Add("@DATE_DUE", MySqlDbType.DateTime).Value = new DateTime(2525, 12, 25);
-            pms[4] = new MySqlParameter("p_DATE_DUE", MySqlDbType.DateTime);
-            pms[4].Value = dateDue;
+                    pms[5] = new SqlParameter("p_PURCHASE_ORDER_NUMBER", SqlDbType.VarChar);
+                    pms[5].Value = poNumber;
 
-            //   command.Parameters.Add("@PURCHASE_ORDER_NUMBER", MySqlDbType.VarChar).Value = "7777";
-            pms[5] = new MySqlParameter("p_PURCHASE_ORDER_NUMBER", MySqlDbType.VarChar);
-            pms[5].Value = poNumber;
+                    pms[6] = new SqlParameter("p_QTY", SqlDbType.Int);
+                    pms[6].Value = quantity;
 
-            //  command.Parameters.Add("@QTY", MySqlDbType.Int32).Value = 7777;
-            pms[6] = new MySqlParameter("p_QTY", MySqlDbType.Int32);
-            pms[6].Value = quantity;
+                    pms[7] = new SqlParameter("p_OPERATIONS", SqlDbType.VarChar);
+                    pms[7].Value = checkedOperations;
 
-            //  command.Parameters.Add("@OPERATIONS", MySqlDbType.VarChar).Value = checkedOperations;
-            pms[7] = new MySqlParameter("p_OPERATIONS", MySqlDbType.VarChar);
-            pms[7].Value = checkedOperations;
+                    pms[8] = new SqlParameter("p_DATE_RECEIVED", SqlDbType.DateTime);
+                    pms[8].Value = dateReceived;
 
-            //  command.Parameters.Add("@DATE_RECEIVED", MySqlDbType.DateTime).Value = new DateTime(2049, 6, 13);
-            pms[8] = new MySqlParameter("p_DATE_RECEIVED", MySqlDbType.DateTime);
-            pms[8].Value = dateReceived;
+                    pms[9] = new SqlParameter("p_TO_DELETE", SqlDbType.Bit);
+                    pms[9].Value = toDelete;
 
-            // command.Parameters.Add("@TO_DELETE", MySqlDbType.Binary).Value = 0;
-            pms[9] = new MySqlParameter("p_TO_DELETE", MySqlDbType.Binary);
-            pms[9].Value = toDelete;
+                    //Get the stored procedure from the DB.
+                    using (SqlCommand command = new SqlCommand("UPDATE_RECORD", connection))
+                    {
+                        //Build SQL command retreived from stored procedure "UPDATE_RECORD".
+                        command.CommandType = CommandType.StoredProcedure;
 
-            MySqlCommand command = new MySqlCommand();
-            command.Connection = connection;
-            command.CommandType = CommandType.StoredProcedure;
-            command.CommandText = "UPDATE_RECORD";
-            //command.Parameters.Clear();
-            command.Parameters.AddRange(pms);
-            connection.Open();
-            int rowsAffected = command.ExecuteNonQuery();
-            connection.Close();
+                        await connection.OpenAsync();
+
+                        command.Parameters.AddRange(pms);
+
+                        rowsAffected = await command.ExecuteNonQueryAsync();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to update selected record: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
             return rowsAffected > 0;
         }
-        //Function to check if a userName exists within the DB.
-        internal bool userNameCheck(string userName)
-        {
-            //int variable to store number of records with matching userName.
-            int userCount = 0;
 
-            //bool variable to serve as flag for existent of userName in DB.
-            bool flag = false;
-
-            //Open connection to DB.
-            MySqlConnection connection = new MySqlConnection(connectionString);
-            connection.Open();
-
-            //Get the stored procedure from the DB.
-            MySqlCommand command = new MySqlCommand("USER_NAME_QUERY_COUNT", connection);
-            command.CommandType = CommandType.StoredProcedure;
-
-            //Paramaterized to prevent SQL Injection, bind values.
-            command.Parameters.AddWithValue("userName", userName);
-
-            //Execute query, save result in result object.
-            object returnedCount = command.ExecuteScalar();
-
-            //Convert to count.
-            userCount = Convert.ToInt32(returnedCount);
-
-            //Conditional to set flag value based on userCount.
-            if (userCount != 1)
-            {
-                flag = false;
-            }
-            else if (userCount == 1)
-            {
-                flag = true;
-            }
-            return flag;
-        }
         //Function to get user information for a given userName.
         internal Users getUserInfo(string userName)
         {
-            //Create new Users object to store returned user information.
-            Users user = new Users();
+            //Create new Users object and start as null. If the user doesn't exist, it stays null.
+            Users user = null;
 
             //Open connection to DB.
-            MySqlConnection connection = new MySqlConnection(connectionString);
-            connection.Open();
-
-            //Get the stored procedure from the DB.
-            MySqlCommand command = new MySqlCommand("USER_NAME_QUERY", connection);
-            command.CommandType = CommandType.StoredProcedure;
-
-            //Paramaterized to prevent SQL Injection, bind values.
-            command.Parameters.AddWithValue("userName", userName);
-
-            //Execute query, read returned values into user object.
-            using (MySqlDataReader reader = command.ExecuteReader())
+            using (SqlConnection connection = new SqlConnection(sqlConnectionString))
             {
-                while (reader.Read())
+                //Get the stored procedure from the DB.
+                using (SqlCommand command = new SqlCommand("USER_NAME_QUERY", connection))
                 {
-                    user.USER_ID = reader.GetInt32(0);
-                    user.USER_NAME = reader.GetString(1);
-                    user.ROLES_ID = reader.GetInt32(2);
-                    user.ROLE_NAME = reader.GetString(3);
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    connection.Open();
+
+                    //Paramaterized to prevent SQL Injection, bind values.
+                    command.Parameters.Add("@username", SqlDbType.VarChar, 48).Value = userName;
+
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            user = new Users();
+                            user.USER_ID = reader.GetInt32(0);
+                            user.USER_NAME = reader.GetString(1);
+                            user.ROLES_ID = reader.GetInt32(2);
+                            user.ROLE_NAME = reader.GetString(3);
+                        }
+                    }
                 }
             }
-            connection.Close();
-
             return user;
+        }
+
+        //Method to run GET_CUSTOMER_QTY_LAST_6_MONTHS query from SQL server to populate chart with queried data.
+        internal async Task<DataTable> LoadCustomerChartData()
+        {
+            //Create new datatable to store query results.
+            DataTable dataTable = new DataTable();
+
+            try
+            {
+                //Open connection to DB.
+                using (SqlConnection connection = new SqlConnection(sqlConnectionString))
+                {
+                    //Get the stored procedure from the DB.
+                    using (SqlCommand command = new SqlCommand("GET_CUSTOMER_QTY_LAST_6_MONTHS", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+
+                        await connection.OpenAsync();
+
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                        {
+                            dataTable.Load(reader);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to load customer dashboard chart data: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            return dataTable;
+        }
+        //Method to run GET_OPERATOR_QTY_LAST_6_MONTHS query from SQL server to populate chart with queried data.
+        internal async Task<DataTable> LoadOperatorChartData()
+        {
+            //Create new datatable to store query results.
+            DataTable dataTable = new DataTable();
+
+            try
+            {
+                //Open connection to DB.
+                using (SqlConnection connection = new SqlConnection(sqlConnectionString))
+                {
+                    //Get the stored procedure from the DB.
+                    using (SqlCommand command = new SqlCommand("GET_OPERATOR_QTY_LAST_6_MONTHS", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+
+                        await connection.OpenAsync();
+
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                        {
+                            dataTable.Load(reader);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to load operator dashboard chart data: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            return dataTable;
+        }
+        //Method to run NEXT_SIX_MONTHS_BY_DEPARTMENT query from SQL server to populate chart with queried data.
+        internal async Task<DataTable> LoadDepartmentChartData()
+        {
+            //Create new datatable to store query results.
+            DataTable dataTable = new DataTable();
+
+            try
+            {
+                //Open connection to DB.
+                using (SqlConnection connection = new SqlConnection(sqlConnectionString))
+                {
+                    //Get the stored procedure from the DB.
+                    using (SqlCommand command = new SqlCommand("NEXT_SIX_MONTHS_BY_DEPARTMENT", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+
+                        await connection.OpenAsync();
+
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                        {
+                            dataTable.Load(reader);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to load department dashboard chart data: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            return dataTable;
+        }
+        //Method to run NEXT_SIX_MONTHS_JOBS_BY_DEPARTMENT query from SQL server to populate datagridview with queried data.
+        internal async Task<DataTable> LoadDepartmentGridViewData()
+        {
+            //Create new datatable to store query results.
+            DataTable dataTable = new DataTable();
+
+            try
+            {
+                //Open connection to DB.
+                using (SqlConnection connection = new SqlConnection(sqlConnectionString))
+                {
+                    //Get the stored procedure from the DB.
+                    using (SqlCommand command = new SqlCommand("NEXT_SIX_MONTHS_JOBS_BY_DEPARTMENT", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+
+                        await connection.OpenAsync();
+
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                        {
+                            dataTable.Load(reader);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to load department grid view data: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            return dataTable;
+        }
+
+        //Method to run sp_GetQuarterlyProduction query from SQL server to populate chart with queried data.
+        internal async Task<DataTable> LoadQuarterHistory()
+        {
+            DataTable dataTable = new DataTable();
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(sqlConnectionString))
+                {
+                    using (SqlCommand command = new SqlCommand("sp_GetQuarterlyProduction", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+
+                        await connection.OpenAsync();
+
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                        {
+                            dataTable.Load(reader);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to load last and predicted fiscal year volume dashboard data: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            return dataTable;
         }
     }
 }
+
 
 
 

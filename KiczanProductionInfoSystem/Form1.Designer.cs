@@ -28,249 +28,264 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
-            this.button1 = new System.Windows.Forms.Button();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.errorProvider1 = new System.Windows.Forms.ErrorProvider(this.components);
-            this.label2 = new System.Windows.Forms.Label();
-            this.comboBox2 = new System.Windows.Forms.ComboBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
-            this.button4 = new System.Windows.Forms.Button();
-            this.button5 = new System.Windows.Forms.Button();
-            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.updateRecordToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.deleteRecordArchiveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.restoreRecordMainTableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
-            this.contextMenuStrip1.SuspendLayout();
-            this.SuspendLayout();
+            components = new System.ComponentModel.Container();
+            dataGridView1 = new System.Windows.Forms.DataGridView();
+            comboBox1 = new System.Windows.Forms.ComboBox();
+            button1 = new System.Windows.Forms.Button();
+            textBox1 = new System.Windows.Forms.TextBox();
+            label1 = new System.Windows.Forms.Label();
+            errorProvider1 = new System.Windows.Forms.ErrorProvider(components);
+            label2 = new System.Windows.Forms.Label();
+            comboBox2 = new System.Windows.Forms.ComboBox();
+            label3 = new System.Windows.Forms.Label();
+            label4 = new System.Windows.Forms.Label();
+            button2 = new System.Windows.Forms.Button();
+            button3 = new System.Windows.Forms.Button();
+            label5 = new System.Windows.Forms.Label();
+            label6 = new System.Windows.Forms.Label();
+            button4 = new System.Windows.Forms.Button();
+            button5 = new System.Windows.Forms.Button();
+            contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(components);
+            updateRecordToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            deleteRecordArchiveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            restoreRecordMainTableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            button6 = new System.Windows.Forms.Button();
+            ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)errorProvider1).BeginInit();
+            contextMenuStrip1.SuspendLayout();
+            SuspendLayout();
             // 
             // dataGridView1
             // 
-            this.dataGridView1.AllowUserToAddRows = false;
-            this.dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
-            this.dataGridView1.BackgroundColor = System.Drawing.SystemColors.Control;
-            this.dataGridView1.ColumnHeadersHeight = 46;
-            this.dataGridView1.Location = new System.Drawing.Point(25, 182);
-            this.dataGridView1.Margin = new System.Windows.Forms.Padding(6);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.RowHeadersWidth = 25;
-            this.dataGridView1.Size = new System.Drawing.Size(2165, 740);
-            this.dataGridView1.TabIndex = 0;
-            this.dataGridView1.CellMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGridView1_CellMouseClick);
+            dataGridView1.AllowUserToAddRows = false;
+            dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+            dataGridView1.BackgroundColor = System.Drawing.SystemColors.Control;
+            dataGridView1.ColumnHeadersHeight = 46;
+            dataGridView1.Location = new System.Drawing.Point(98, 233);
+            dataGridView1.Margin = new System.Windows.Forms.Padding(6, 8, 6, 8);
+            dataGridView1.Name = "dataGridView1";
+            dataGridView1.RowHeadersWidth = 25;
+            dataGridView1.Size = new System.Drawing.Size(2031, 947);
+            dataGridView1.TabIndex = 0;
+            dataGridView1.CellMouseClick += dataGridView1_CellMouseClick;
             // 
             // comboBox1
             // 
-            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Items.AddRange(new object[] {
-            "Search by Due Date Range",
-            "Search by Part Number",
-            "Search by Operator Name",
-            "Search by Fabrication Department",
-            "Search by Machining Department",
-            "Search by Part Number in Archive"});
-            this.comboBox1.Location = new System.Drawing.Point(25, 38);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(431, 33);
-            this.comboBox1.TabIndex = 13;
-            this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
+            comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            comboBox1.FormattingEnabled = true;
+            comboBox1.Items.AddRange(new object[] { "Search by Due Date Range", "Search by Part Number", "Search by Operator Name", "Search by Fabrication Department", "Search by Machining Department", "Search by Part Number in Archive" });
+            comboBox1.Location = new System.Drawing.Point(27, 49);
+            comboBox1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            comboBox1.Name = "comboBox1";
+            comboBox1.Size = new System.Drawing.Size(467, 40);
+            comboBox1.TabIndex = 13;
+            comboBox1.SelectedIndexChanged += comboBox1_SelectedIndexChanged;
             // 
             // button1
             // 
-            this.button1.BackColor = System.Drawing.Color.Green;
-            this.button1.ForeColor = System.Drawing.Color.White;
-            this.button1.Location = new System.Drawing.Point(1605, 22);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(192, 51);
-            this.button1.TabIndex = 14;
-            this.button1.Text = "Search";
-            this.button1.UseVisualStyleBackColor = false;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            button1.BackColor = System.Drawing.Color.Green;
+            button1.ForeColor = System.Drawing.Color.White;
+            button1.Location = new System.Drawing.Point(1576, 28);
+            button1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            button1.Name = "button1";
+            button1.Size = new System.Drawing.Size(208, 65);
+            button1.TabIndex = 14;
+            button1.Text = "Search";
+            button1.UseVisualStyleBackColor = false;
+            button1.Click += button1_Click;
             // 
             // textBox1
             // 
-            this.textBox1.Location = new System.Drawing.Point(711, 40);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(254, 31);
-            this.textBox1.TabIndex = 15;
+            textBox1.Location = new System.Drawing.Point(770, 51);
+            textBox1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            textBox1.Name = "textBox1";
+            textBox1.Size = new System.Drawing.Size(275, 39);
+            textBox1.TabIndex = 15;
+            textBox1.Enter += textBox1_Enter;
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(706, 9);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(141, 25);
-            this.label1.TabIndex = 16;
-            this.label1.Text = "Search Value";
+            label1.AutoSize = true;
+            label1.Location = new System.Drawing.Point(765, 12);
+            label1.Name = "label1";
+            label1.Size = new System.Drawing.Size(150, 32);
+            label1.TabIndex = 16;
+            label1.Text = "Search Value";
             // 
             // errorProvider1
             // 
-            this.errorProvider1.ContainerControl = this;
+            errorProvider1.ContainerControl = this;
             // 
             // label2
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(29, 83);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(0, 25);
-            this.label2.TabIndex = 17;
+            label2.AutoSize = true;
+            label2.Location = new System.Drawing.Point(31, 106);
+            label2.Name = "label2";
+            label2.Size = new System.Drawing.Size(0, 32);
+            label2.TabIndex = 17;
             // 
             // comboBox2
             // 
-            this.comboBox2.FormattingEnabled = true;
-            this.comboBox2.Location = new System.Drawing.Point(462, 38);
-            this.comboBox2.Name = "comboBox2";
-            this.comboBox2.Size = new System.Drawing.Size(225, 33);
-            this.comboBox2.TabIndex = 18;
-            this.comboBox2.SelectedIndexChanged += new System.EventHandler(this.comboBox2_SelectedIndexChanged);
+            comboBox2.FormattingEnabled = true;
+            comboBox2.Location = new System.Drawing.Point(501, 49);
+            comboBox2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            comboBox2.Name = "comboBox2";
+            comboBox2.Size = new System.Drawing.Size(243, 40);
+            comboBox2.TabIndex = 18;
+            comboBox2.SelectedIndexChanged += comboBox2_SelectedIndexChanged;
             // 
             // label3
             // 
-            this.label3.Location = new System.Drawing.Point(1007, 9);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(372, 155);
-            this.label3.TabIndex = 19;
-            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            label3.Location = new System.Drawing.Point(1091, 12);
+            label3.Name = "label3";
+            label3.Size = new System.Drawing.Size(403, 198);
+            label3.TabIndex = 19;
+            label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // label4
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(63, 120);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(0, 25);
-            this.label4.TabIndex = 20;
+            label4.AutoSize = true;
+            label4.Location = new System.Drawing.Point(68, 154);
+            label4.Name = "label4";
+            label4.Size = new System.Drawing.Size(0, 32);
+            label4.TabIndex = 20;
             // 
             // button2
             // 
-            this.button2.BackColor = System.Drawing.Color.Blue;
-            this.button2.ForeColor = System.Drawing.Color.White;
-            this.button2.Location = new System.Drawing.Point(1803, 22);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(192, 51);
-            this.button2.TabIndex = 21;
-            this.button2.Text = "Create Record";
-            this.button2.UseVisualStyleBackColor = false;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            button2.BackColor = System.Drawing.Color.Blue;
+            button2.ForeColor = System.Drawing.Color.White;
+            button2.Location = new System.Drawing.Point(1791, 28);
+            button2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            button2.Name = "button2";
+            button2.Size = new System.Drawing.Size(208, 65);
+            button2.TabIndex = 21;
+            button2.Text = "Create Record";
+            button2.UseVisualStyleBackColor = false;
+            button2.Click += button2_Click;
             // 
             // button3
             // 
-            this.button3.BackColor = System.Drawing.Color.Purple;
-            this.button3.ForeColor = System.Drawing.Color.White;
-            this.button3.Location = new System.Drawing.Point(2001, 21);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(192, 50);
-            this.button3.TabIndex = 22;
-            this.button3.Text = "Export";
-            this.button3.UseVisualStyleBackColor = false;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
-            //TO DO: Add event handler for button3
+            button3.BackColor = System.Drawing.Color.Purple;
+            button3.ForeColor = System.Drawing.Color.White;
+            button3.Location = new System.Drawing.Point(2005, 27);
+            button3.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            button3.Name = "button3";
+            button3.Size = new System.Drawing.Size(208, 64);
+            button3.TabIndex = 22;
+            button3.Text = "Export";
+            button3.UseVisualStyleBackColor = false;
+            button3.Click += button3_Click;
             // 
             // label5
             // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(1798, 139);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(0, 25);
-            this.label5.TabIndex = 23;
+            label5.AutoSize = true;
+            label5.Location = new System.Drawing.Point(1731, 178);
+            label5.Name = "label5";
+            label5.Size = new System.Drawing.Size(0, 32);
+            label5.TabIndex = 23;
             // 
             // label6
             // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(1996, 139);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(0, 25);
-            this.label6.TabIndex = 24;
+            label6.AutoSize = true;
+            label6.Location = new System.Drawing.Point(1946, 178);
+            label6.Name = "label6";
+            label6.Size = new System.Drawing.Size(0, 32);
+            label6.TabIndex = 24;
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(2057, 948);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(133, 46);
-            this.button4.TabIndex = 25;
-            this.button4.Text = "Next";
-            this.button4.UseVisualStyleBackColor = true;
-            this.button4.Click += new System.EventHandler(this.button4_Click);
+            button4.Location = new System.Drawing.Point(1985, 1190);
+            button4.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            button4.Name = "button4";
+            button4.Size = new System.Drawing.Size(144, 59);
+            button4.TabIndex = 25;
+            button4.Text = "Next";
+            button4.UseVisualStyleBackColor = true;
+            button4.Click += button4_Click;
             // 
             // button5
             // 
-            this.button5.Location = new System.Drawing.Point(1919, 948);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(132, 46);
-            this.button5.TabIndex = 26;
-            this.button5.Text = "Previous";
-            this.button5.UseVisualStyleBackColor = true;
-            this.button5.Click += new System.EventHandler(this.button5_Click);
+            button5.Location = new System.Drawing.Point(1835, 1190);
+            button5.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            button5.Name = "button5";
+            button5.Size = new System.Drawing.Size(143, 59);
+            button5.TabIndex = 26;
+            button5.Text = "Previous";
+            button5.UseVisualStyleBackColor = true;
+            button5.Click += button5_Click;
             // 
             // contextMenuStrip1
             // 
-            this.contextMenuStrip1.ImageScalingSize = new System.Drawing.Size(32, 32);
-            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.updateRecordToolStripMenuItem,
-            this.deleteRecordArchiveToolStripMenuItem,
-            this.restoreRecordMainTableToolStripMenuItem});
-            this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(385, 118);
+            contextMenuStrip1.ImageScalingSize = new System.Drawing.Size(32, 32);
+            contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { updateRecordToolStripMenuItem, deleteRecordArchiveToolStripMenuItem, restoreRecordMainTableToolStripMenuItem });
+            contextMenuStrip1.Name = "contextMenuStrip1";
+            contextMenuStrip1.Size = new System.Drawing.Size(385, 118);
             // 
             // updateRecordToolStripMenuItem
             // 
-            this.updateRecordToolStripMenuItem.Name = "updateRecordToolStripMenuItem";
-            this.updateRecordToolStripMenuItem.Size = new System.Drawing.Size(384, 38);
-            this.updateRecordToolStripMenuItem.Text = "Update Record";
-            this.updateRecordToolStripMenuItem.Click += new System.EventHandler(this.updateRecordToolStripMenuItem_Click);
+            updateRecordToolStripMenuItem.Name = "updateRecordToolStripMenuItem";
+            updateRecordToolStripMenuItem.Size = new System.Drawing.Size(384, 38);
+            updateRecordToolStripMenuItem.Text = "Update Record";
+            updateRecordToolStripMenuItem.Click += updateRecordToolStripMenuItem_Click;
             // 
             // deleteRecordArchiveToolStripMenuItem
             // 
-            this.deleteRecordArchiveToolStripMenuItem.Name = "deleteRecordArchiveToolStripMenuItem";
-            this.deleteRecordArchiveToolStripMenuItem.Size = new System.Drawing.Size(384, 38);
-            this.deleteRecordArchiveToolStripMenuItem.Text = "Delete Record (Archive)";
-            this.deleteRecordArchiveToolStripMenuItem.Click += new System.EventHandler(this.deleteRecordToolStripMenuItem_Click);
+            deleteRecordArchiveToolStripMenuItem.Name = "deleteRecordArchiveToolStripMenuItem";
+            deleteRecordArchiveToolStripMenuItem.Size = new System.Drawing.Size(384, 38);
+            deleteRecordArchiveToolStripMenuItem.Text = "Delete Record (Archive)";
+            deleteRecordArchiveToolStripMenuItem.Click += deleteRecordToolStripMenuItem_Click;
             // 
             // restoreRecordMainTableToolStripMenuItem
             // 
-            this.restoreRecordMainTableToolStripMenuItem.Name = "restoreRecordMainTableToolStripMenuItem";
-            this.restoreRecordMainTableToolStripMenuItem.Size = new System.Drawing.Size(384, 38);
-            this.restoreRecordMainTableToolStripMenuItem.Text = "Restore Record (Main Table)";
-            this.restoreRecordMainTableToolStripMenuItem.Click += new System.EventHandler(this.restoreRecordMainTableToolStripMenuItem_Click);
+            restoreRecordMainTableToolStripMenuItem.Name = "restoreRecordMainTableToolStripMenuItem";
+            restoreRecordMainTableToolStripMenuItem.Size = new System.Drawing.Size(384, 38);
+            restoreRecordMainTableToolStripMenuItem.Text = "Restore Record (Main Table)";
+            restoreRecordMainTableToolStripMenuItem.Click += restoreRecordMainTableToolStripMenuItem_Click;
+            // 
+            // button6
+            // 
+            button6.BackColor = System.Drawing.Color.Orange;
+            button6.ForeColor = System.Drawing.Color.White;
+            button6.Location = new System.Drawing.Point(1576, 101);
+            button6.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            button6.Name = "button6";
+            button6.Size = new System.Drawing.Size(208, 65);
+            button6.TabIndex = 27;
+            button6.Text = "Dashboard";
+            button6.UseVisualStyleBackColor = false;
+            button6.Click += button6_Click;
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.SystemColors.ActiveCaption;
-            this.ClientSize = new System.Drawing.Size(2205, 1006);
-            this.Controls.Add(this.button5);
-            this.Controls.Add(this.button4);
-            this.Controls.Add(this.label6);
-            this.Controls.Add(this.label5);
-            this.Controls.Add(this.button3);
-            this.Controls.Add(this.button2);
-            this.Controls.Add(this.label4);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.comboBox2);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.textBox1);
-            this.Controls.Add(this.button1);
-            this.Controls.Add(this.comboBox1);
-            this.Controls.Add(this.dataGridView1);
-            this.Margin = new System.Windows.Forms.Padding(4);
-            this.Name = "Form1";
-            this.Text = "Form1";
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).EndInit();
-            this.contextMenuStrip1.ResumeLayout(false);
-            this.ResumeLayout(false);
-            this.PerformLayout();
+            AutoScaleDimensions = new System.Drawing.SizeF(13F, 32F);
+            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            BackColor = System.Drawing.Color.FromArgb(198, 207, 219);
+            ClientSize = new System.Drawing.Size(1197, 704);
+            Controls.Add(button6);
+            Controls.Add(button5);
+            Controls.Add(button4);
+            Controls.Add(label6);
+            Controls.Add(label5);
+            Controls.Add(button3);
+            Controls.Add(button2);
+            Controls.Add(label4);
+            Controls.Add(label3);
+            Controls.Add(comboBox2);
+            Controls.Add(label2);
+            Controls.Add(label1);
+            Controls.Add(textBox1);
+            Controls.Add(button1);
+            Controls.Add(comboBox1);
+            Controls.Add(dataGridView1);
+            Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            Name = "Form1";
+            Text = "Form1";
+            ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)errorProvider1).EndInit();
+            contextMenuStrip1.ResumeLayout(false);
+            ResumeLayout(false);
+            PerformLayout();
+
         }
 
         #endregion
@@ -294,6 +309,7 @@
         private System.Windows.Forms.ToolStripMenuItem updateRecordToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem deleteRecordArchiveToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem restoreRecordMainTableToolStripMenuItem;
+        private System.Windows.Forms.Button button6;
     }
 }
 

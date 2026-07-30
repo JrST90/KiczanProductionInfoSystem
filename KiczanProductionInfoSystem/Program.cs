@@ -1,6 +1,6 @@
 ﻿using System;
+using System.IO;
 using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace KiczanProductionInfoSystem
 {
@@ -17,22 +17,40 @@ namespace KiczanProductionInfoSystem
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
         
-
-            //Create new DAO Object for user authentication.
-            DAO newDAO = new DAO();
-
-            //Get the current user's username from the system.
-            string userName = Environment.UserName;
-
-            //Check if current user's username is in the DB.
-            if (!newDAO.userNameCheck(userName))
+            try
             {
-                MessageBox.Show("Unauthorized User. Application will now close.");
-                Application.Exit();
+                string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "connection.txt");
+
+                if (!File.Exists(filePath))
+                {
+                    MessageBox.Show("Could not find connection.txt in the application directory.", "Connection Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                string connectionString = File.ReadAllText(filePath).Trim();
+                DAO.InitializeConnection(connectionString);
+
+                DAO newDAO = new DAO();
+
+                //Get the current OS username.
+                string userName = Environment.UserName;
+               
+                //Initialize a Users object to the returned object from getUserInfo().
+                Users currentUser = newDAO.getUserInfo(userName);
+              
+                //Catch unauthorized users who either do not exist in the DB, or those who have not been assigned a role.
+                if(currentUser == null || currentUser.USER_ID == 0 || currentUser.ROLES_ID == 0)
+                {
+                    MessageBox.Show("Unauthorized User. Application will now close.", "Access Denied", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                Application.Run(new Form1(currentUser));
             }
-            else
+            catch (Exception ex)
             {
-                Application.Run(new Form1());
+                MessageBox.Show($"Initialization failed.\n\nDetails: {ex.Message}", "Application Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
             }
         }
     }
