@@ -65,7 +65,22 @@ namespace KiczanProductionInfoSystem
                 button2.Enabled = false;
                 button2.Visible = false;
             }
+
+            //Set up the DataError event for "ROW_VERSION" dynamically.
+            dataGridView1.DataError += DataGridView1_DataError;
         }
+
+        //Handles the DataGridView error caused by "ROW_VERSION" byte[] datatype.
+        private void DataGridView1_DataError(object sender, DataGridViewDataErrorEventArgs e)
+        {
+            //Ignore formatting errors from "ROW_VERSION" byte[] datatype that is hidden from the user.
+            if (dataGridView1.Columns[e.ColumnIndex].Name == "ROW_VERSION")
+            {
+                e.ThrowException = false;
+                e.Cancel = true;
+            }
+        }
+
 
         //Events to occur on button click for selection from comboBox1.
         private async void button1_Click(object sender, EventArgs e)
@@ -122,6 +137,12 @@ namespace KiczanProductionInfoSystem
 
                         //Bind dataGridView1 to dataBaseSource.
                         dataGridView1.DataSource = dataBaseSource;
+
+                        //Hide the "ROW_VERSION" column.
+                        if (dataGridView1.Columns.Contains("ROW_VERSION"))
+                        {
+                            dataGridView1.Columns["ROW_VERSION"].Visible = false;
+                        }
 
                         //Get the total rows returned by dateDueRangeQueryCount with passed argument dateRange and set to variable totalRows.
                         totalRows = await newDAO.dateDueRangeQueryCount(dateRange);
@@ -294,6 +315,12 @@ namespace KiczanProductionInfoSystem
                         //Bind dateGridView1 to dataBaseSource.
                         dataGridView1.DataSource = dataBaseSource;
 
+                        //Hide the "ROW_VERSION" column.
+                        if (dataGridView1.Columns.Contains("ROW_VERSION"))
+                        {
+                            dataGridView1.Columns["ROW_VERSION"].Visible = false;
+                        }
+
                         //Get the total rows returned by partNumberQueryCount with passed argument partNumber and set to variable totalRows.
                         totalRows = await newDAO.partNumberQueryCount(partNumber);
 
@@ -332,6 +359,12 @@ namespace KiczanProductionInfoSystem
 
                         //Bind dateGridView1 to dataBaseSource.
                         dataGridView1.DataSource = dataBaseSource;
+
+                        //Hide the "ROW_VERSION" column.
+                        if (dataGridView1.Columns.Contains("ROW_VERSION"))
+                        {
+                            dataGridView1.Columns["ROW_VERSION"].Visible = false;
+                        }
 
                         //Get the total rows returned by partNumberQueryCount with passed argument partNumber and set to variable totalRows.
                         totalRows = await newDAO.partNumberQueryCount(partNumber);
@@ -455,6 +488,12 @@ namespace KiczanProductionInfoSystem
                     //Bind dateGridView to dataBaseSource.
                     dataGridView1.DataSource = dataBaseSource;
 
+                    //Hide the "ROW_VERSION" column.
+                    if (dataGridView1.Columns.Contains("ROW_VERSION"))
+                    {
+                        dataGridView1.Columns["ROW_VERSION"].Visible = false;
+                    }
+
                     //Get the total rows returned by operatorQueryCount with the passed argument of comboBox2's selected operator name and set to variable totalRows.
                     totalRows = await newDAO.operatorNameQueryCount(comboBox2.Text);
 
@@ -525,6 +564,12 @@ namespace KiczanProductionInfoSystem
                     //Bind dateGridView to dataBaseSource.
                     dataGridView1.DataSource = dataBaseSource;
 
+                    //Hide the "ROW_VERSION" column.
+                    if (dataGridView1.Columns.Contains("ROW_VERSION"))
+                    {
+                        dataGridView1.Columns["ROW_VERSION"].Visible = false;
+                    }
+
                     //Get the total rows returned by fabricationDepartmentQueryCount.
                     totalRows = await newDAO.fabricationDepartmentQueryCount();
 
@@ -591,6 +636,12 @@ namespace KiczanProductionInfoSystem
 
                     //Bind dateGridView to dataBaseSource.
                     dataGridView1.DataSource = dataBaseSource;
+
+                    //Hide the "ROW_VERSION" column.
+                    if (dataGridView1.Columns.Contains("ROW_VERSION"))
+                    {
+                        dataGridView1.Columns["ROW_VERSION"].Visible = false;
+                    }
 
                     //Get the total rows returned by fabricationDepartmentQueryCount.
                     totalRows = await newDAO.machiningDepartmentQueryCount();
@@ -664,6 +715,12 @@ namespace KiczanProductionInfoSystem
                         //Bind dateGridView1 to dataBaseSource.
                         dataGridView1.DataSource = dataBaseSource;
 
+                        //Hide the "ROW_VERSION" column.
+                        if (dataGridView1.Columns.Contains("ROW_VERSION"))
+                        {
+                            dataGridView1.Columns["ROW_VERSION"].Visible = false;
+                        }
+
                         //Get the total rows returned by partNumberQueryCount with passed argument partNumber and set to variable totalRows.
                         totalRows = await newDAO.partNumberQueryCountArchive(partNumber);
 
@@ -702,6 +759,12 @@ namespace KiczanProductionInfoSystem
 
                         //Bind dataGridView1 to dataBaseSource
                         dataGridView1.DataSource = dataBaseSource;
+
+                        //Hide the "ROW_VERSION" column.
+                        if (dataGridView1.Columns.Contains("ROW_VERSION"))
+                        {
+                            dataGridView1.Columns["ROW_VERSION"].Visible = false;
+                        }
 
                         //Get the total rows returned by partNumberQueryCount with passed argument partNumber and set to variable totalRows.
                         totalRows = await newDAO.partNumberQueryCountArchive(partNumber);
