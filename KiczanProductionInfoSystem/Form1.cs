@@ -25,6 +25,7 @@ namespace KiczanProductionInfoSystem
         //set initial values for dateRange and partNumber to store user input for comparison.
         string partNumber = "";
         string dateRange = "";
+        string opName = "";
 
         //Create new DAO Object.
         private DAO newDAO = new DAO();
@@ -448,6 +449,8 @@ namespace KiczanProductionInfoSystem
 
                 //Search By Operator Name, gets value from comboBox2.
                 case 2:
+                    //Store user input from comboBox2 into opName variable.
+                    opName = comboBox2.Text;
 
                     //User Role check for CRUD access
                     if (_currentUser.ROLE_NAME == "Fabrication Manager" || _currentUser.ROLE_NAME == "Machining Manager")
@@ -478,48 +481,98 @@ namespace KiczanProductionInfoSystem
                         restoreRecordMainTableToolStripMenuItem.Enabled = false;
                         restoreRecordMainTableToolStripMenuItem.Visible = false;
                     }
-                   
-                    //Set currentPageIndex for query.
-                    currentPageIndex = 1;
 
-                    //Bind dataBaseSource to operatorQuery results passing the arguments of the operator name from comboBox2, pageSize, and currentPageIndex.
-                    dataBaseSource.DataSource = await newDAO.operatorNameQuery(comboBox2.Text, pageSize, currentPageIndex);
-
-                    //Bind dateGridView to dataBaseSource.
-                    dataGridView1.DataSource = dataBaseSource;
-
-                    //Hide the "ROW_VERSION" column.
-                    if (dataGridView1.Columns.Contains("ROW_VERSION"))
+                    if (await newDAO.operatorNameQueryCount(opName) > 0)
                     {
-                        dataGridView1.Columns["ROW_VERSION"].Visible = false;
+                        //Set currentPageIndex for query.
+                        currentPageIndex = 1;
+
+                        //Bind dataBaseSource to operatorQuery results passing the arguments of the operator name from comboBox2, pageSize, and currentPageIndex.
+                        dataBaseSource.DataSource = await newDAO.operatorNameQuery(opName, pageSize, currentPageIndex);
+
+                        //Bind dateGridView to dataBaseSource.
+                        dataGridView1.DataSource = dataBaseSource;
+
+                        //Hide the "ROW_VERSION" column.
+                        if (dataGridView1.Columns.Contains("ROW_VERSION"))
+                        {
+                            dataGridView1.Columns["ROW_VERSION"].Visible = false;
+                        }
+
+                        //Get the total rows returned by operatorQueryCount with the passed argument of comboBox2's selected operator name and set to variable totalRows.
+                        totalRows = await newDAO.operatorNameQueryCount(opName);
+
+                        //Divide the totalRows variable by the pageSize variable and set value to totalPages variable.
+                        totalPages = (int)Math.Ceiling((double)totalRows / pageSize);
+
+                        //Set label2's text value to the value of totalRows.
+                        label2.Text = "Number of Records: " + totalRows;
+
+                        //Set label5's text value to the value of totalPages.
+                        label5.Text = "Total Pages: " + totalPages;
+
+                        //Set label6's text value to the value of currentPageIndex.
+                        label6.Text = "Current Page: " + currentPageIndex;
+
+                        //Clear errorProvider1.
+                        errorProvider1.Clear();
+
+                        //Clear label3's text value of error state.
+                        label3.Text = "";
+
+                        //Set label4's value to alert the user of a succsessful query.
+                        label4.Text = "QUERY SUCCESS";
+
+                        //Set label4's color to green.
+                        label4.ForeColor = Color.Green;
                     }
+                    else if (await newDAO.operatorNameQueryCount(opName) == 0)
+                    {
+                        //Reset the currentPageIndex variable value.
+                        currentPageIndex = 1;
 
-                    //Get the total rows returned by operatorQueryCount with the passed argument of comboBox2's selected operator name and set to variable totalRows.
-                    totalRows = await newDAO.operatorNameQueryCount(comboBox2.Text);
+                        //Bind dataBaseSource to partNumberQuery results, passing the arguments partNumber, pageSize, and currentPageIndex.
+                        dataBaseSource.DataSource = await newDAO.operatorNameQuery(opName, pageSize, currentPageIndex);
 
-                    //Divide the totalRows variable by the pageSize variable and set value to totalPages variable.
-                    totalPages = (int)Math.Ceiling((double)totalRows / pageSize);
+                        //Bind dateGridView1 to dataBaseSource.
+                        dataGridView1.DataSource = dataBaseSource;
 
-                    //Set label2's text value to the value of totalRows.
-                    label2.Text = "Number of Records: " + totalRows;
+                        //Hide the "ROW_VERSION" column.
+                        if (dataGridView1.Columns.Contains("ROW_VERSION"))
+                        {
+                            dataGridView1.Columns["ROW_VERSION"].Visible = false;
+                        }
 
-                    //Set label5's text value to the value of totalPages.
-                    label5.Text = "Total Pages: " + totalPages;
+                        //Get the total rows returned by partNumberQueryCount with passed argument partNumber and set to variable totalRows.
+                        totalRows = await newDAO.operatorNameQueryCount(opName);
 
-                    //Set label6's text value to the value of currentPageIndex.
-                    label6.Text = "Current Page: " + currentPageIndex;
+                        //Save the number of pages to ensure an output of 0.
+                        totalPages = (int)Math.Ceiling((double)totalRows / pageSize);
 
-                    //Clear errorProvider1.
-                    errorProvider1.Clear();
+                        //Set the error message for errorProvider1.
+                        errorProvider1.SetError(textBox1, "No Records Found.");
 
-                    //Clear label3's text value of error state.
-                    label3.Text = "";
+                        //Clear label3's text value.
+                        label3.Text = "";
 
-                    //Set label4's value to alert the user of a succsessful query.
-                    label4.Text = "QUERY SUCCESS";
+                        //Set label3's text value to the error message.
+                        label3.Text = "No Records Found.";
 
-                    //Set label4's color to green.
-                    label4.ForeColor = Color.Green;
+                        //Set label2's text value to the value of totalRows.
+                        label2.Text = "Number of Records: " + totalRows;
+
+                        //Set label5's text value to the value of totalPages.
+                        label5.Text = "Total Pages: " + totalPages;
+
+                        //Clear label6's value.
+                        label6.Text = "";
+
+                        //Set label4's value to alert the user of a succsessful query.
+                        label4.Text = "QUERY SUCCESS";
+
+                        //Set label4's color to green.
+                        label4.ForeColor = Color.Green;
+                    }
                 break;
 
                 //Search by Fabrication Department.
@@ -1077,6 +1130,9 @@ namespace KiczanProductionInfoSystem
 
             //Clear the datagridView1 rows.
             dataGridView1.Rows.Clear();
+
+            //Clear errorProvider1.
+            errorProvider1.Clear();
 
             //Reset currentPageIndex.
             currentPageIndex = 1;
