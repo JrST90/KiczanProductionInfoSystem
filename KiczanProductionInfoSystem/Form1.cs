@@ -1795,6 +1795,9 @@ namespace KiczanProductionInfoSystem
             //Initialize variable to hold purchase order number as a string.
             string retrievedPurchaseOrderNumber;
 
+            //Initialize variable to hold row version as byte[]
+            byte[] retrievedRowVersion = null;
+
             //Retrieve the value of the first column of the selected row (PART_HISTORY_ID).
             object cellValueByIndexZero = selectedRow.Cells[0].Value;
 
@@ -1821,6 +1824,9 @@ namespace KiczanProductionInfoSystem
 
             //Retrieve the value of the eighth column of the selected row (PURCHASE_ORDER_NUMBER).
             object cellValueByIndexEight = selectedRow.Cells[8].Value;
+
+            //Retrieve the value of the ninth (hidden) column of the selected row (ROW_VERSION).
+            object cellValueByIndexNine = selectedRow.Cells[9].Value;
 
             //Validate, convert PART_HISTORY_ID to string if not null.
             if (cellValueByIndexZero != null)
@@ -1912,11 +1918,17 @@ namespace KiczanProductionInfoSystem
                 retrievedPurchaseOrderNumber = string.Empty;
             }
 
+            //Validate and cast the ROW_VERSION directly to a byte array.
+            if (cellValueByIndexNine != null && cellValueByIndexNine != DBNull.Value)
+            {
+                retrievedRowVersion = (byte[])cellValueByIndexNine;
+            }
+
             //Convert the string value to an int for processing.
             convertedPartHistoryID = int.Parse(retrievedPartHistoryID);
 
             //Create new UpdateRecord form object, pass retrieved values to UpdateRecord form.
-            UpdateRecord updateRecord = new UpdateRecord(convertedPartHistoryID, retrievedCustomerName, retrievedOperatorName, retrievedPartNumber, retrievedPurchaseOrderNumber, retrievedQuantity, retrievedDateReceived, retrievedDateDue, retrievedOperations);
+            UpdateRecord updateRecord = new UpdateRecord(convertedPartHistoryID, retrievedCustomerName, retrievedOperatorName, retrievedPartNumber, retrievedPurchaseOrderNumber, retrievedQuantity, retrievedDateReceived, retrievedDateDue, retrievedOperations, retrievedRowVersion);
 
             //Show the Update Record UI.
             updateRecord.Show();

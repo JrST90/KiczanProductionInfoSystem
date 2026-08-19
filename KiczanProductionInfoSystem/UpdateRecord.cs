@@ -24,7 +24,8 @@ namespace KiczanProductionInfoSystem
         private string _targetCustomerName;
         private string _targetOperatorName;
         private int partHistoryID;
-        internal UpdateRecord(int convertedPartHistoryID, string retrievedCustomerName, string retrievedOperatorName, string retrievedPartNumber, string retrievedPurchaseOrderNumber, string retrievedQuantity, string retrievedDateReceived, string retrievedDateDue, string retrievedOperations)
+        private byte[] rowVersion;
+        internal UpdateRecord(int convertedPartHistoryID, string retrievedCustomerName, string retrievedOperatorName, string retrievedPartNumber, string retrievedPurchaseOrderNumber, string retrievedQuantity, string retrievedDateReceived, string retrievedDateDue, string retrievedOperations, byte[] retrievedRowVersion)
         {
             InitializeComponent();
 
@@ -44,6 +45,7 @@ namespace KiczanProductionInfoSystem
             textBoxQuantity.Text = retrievedQuantity;
             textBoxDateReceived.Text = retrievedDateReceived;
             textboxDueDate.Text = retrievedDateDue;
+            rowVersion = retrievedRowVersion;
 
             //Get checked box values from selected record and display on UpdateRecord form.
             if(retrievedOperations.Contains("Laser"))
@@ -236,7 +238,7 @@ namespace KiczanProductionInfoSystem
                 DateTime parsedDateReceived = DateTime.ParseExact(dateReceived, "MM/dd/yyyy", CultureInfo.InvariantCulture);
                 DateTime parsedDueDate = DateTime.ParseExact(dateDue, "MM/dd/yyyy", CultureInfo.InvariantCulture);
        
-                await newDAO.UpdateRecord(partHistoryID, custID, opID, partNumber, parsedDueDate, poNumber, quantity, checkedOperations, parsedDateReceived, 0);
+                await newDAO.UpdateRecord(partHistoryID, custID, opID, partNumber, parsedDueDate, poNumber, quantity, checkedOperations, parsedDateReceived, 0, rowVersion);
 
                 labelRecordStatus.Text = "Record Status: Record Successfully Updated!";
             }
