@@ -134,6 +134,7 @@ namespace KiczanProductionInfoSystem
              pieChart1.Series.Clear();
              pieChart1.ChartAreas.Clear();
              pieChart1.Titles.Clear();
+             pieChart1.Legends.Clear();
 
              //Set chart properties.
              ChartArea pieChartArea = new ChartArea("pieChartArea");
@@ -148,13 +149,13 @@ namespace KiczanProductionInfoSystem
                  ChartType = SeriesChartType.Pie,
                  XValueMember = "OPERATOR_NAME",
                  YValueMembers = "TotalQuantity",
+                 XValueType = ChartValueType.String,
                  IsValueShownAsLabel = true,
                  Font = new Font(new FontFamily("Arial"), 10, FontStyle.Bold),
                  ToolTip = "Quantity: #VALY"
              };
 
              series.Label = "#PERCENT{P1}";
-             series.LegendText = "#VALX";
 
              pieChartArea.Area3DStyle.Enable3D = true;
              pieChartArea.Area3DStyle.Inclination = 45;
@@ -191,10 +192,12 @@ namespace KiczanProductionInfoSystem
              for (int i = 0; i < pieChart1.Series["Quantity"].Points.Count; i++)
              {
                   var slice = pieChart1.Series["Quantity"].Points[i];
+                  slice.LegendText = slice.AxisLabel;
                   slice.Color = dashboardColors[i % dashboardColors.Length];
                   slice.BorderColor = Color.White;
                   slice.BorderWidth = 2;
              }
+             pieChart1.Update();
         }
         //Method to populate department pie chart data.
         private async void PopulateDepartmentChartData()
@@ -203,6 +206,7 @@ namespace KiczanProductionInfoSystem
             pieChart2.Series.Clear();
             pieChart2.ChartAreas.Clear();
             pieChart2.Titles.Clear();
+            pieChart2.Legends.Clear();
 
             //Set chart properties.
             ChartArea pieChartArea = new ChartArea("pieChartArea");
@@ -217,13 +221,13 @@ namespace KiczanProductionInfoSystem
                 ChartType = SeriesChartType.Pie,
                 XValueMember = "Department",
                 YValueMembers = "TotalJobs",
+                XValueType = ChartValueType.String,
                 IsValueShownAsLabel = true,
                 Font = new Font(new FontFamily("Arial"), 10, FontStyle.Bold),
                 ToolTip = "Total Jobs: #VALY"
             };
 
             series.Label = "#PERCENT{P1}";
-            series.LegendText = "#VALX";
 
             pieChartArea.Area3DStyle.Enable3D = true;
             pieChartArea.Area3DStyle.Inclination = 45;
@@ -260,10 +264,12 @@ namespace KiczanProductionInfoSystem
             for (int i = 0; i < pieChart2.Series["Quantity"].Points.Count; i++)
             {
                 var slice = pieChart2.Series["Quantity"].Points[i];
+                slice.LegendText = slice.AxisLabel;
                 slice.Color = dashboardColors[i % dashboardColors.Length];
                 slice.BorderColor = Color.White;
                 slice.BorderWidth = 2;
             }
+            pieChart2.Update();
         }
         private async void PopulateVolumeChartData()
         {

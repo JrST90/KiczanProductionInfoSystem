@@ -709,7 +709,7 @@ namespace KiczanProductionInfoSystem
         }
 
         //Method to update selected record.
-        internal async Task<bool> UpdateRecord(int partID, int custID, int opID, string partNumber, DateTime dateDue, string poNumber, string quantity, string checkedOperations, DateTime dateReceived, int toDelete)
+        internal async Task<bool> UpdateRecord(int partID, int custID, int opID, string partNumber, DateTime dateDue, string poNumber, string quantity, string checkedOperations, DateTime dateReceived, int toDelete, byte[] rowVersion)
         {
             int rowsAffected = 0;
             try
@@ -718,7 +718,7 @@ namespace KiczanProductionInfoSystem
                 using (SqlConnection connection = new SqlConnection(sqlConnectionString))
                 {
                     //Build array of type SqlParameter for storage.
-                    SqlParameter[] pms = new SqlParameter[10];
+                    SqlParameter[] pms = new SqlParameter[11];
 
                     //Set array index values to inputs from UpdateRecord form.
                     pms[0] = new SqlParameter("p_PART_HISTORY_ID", SqlDbType.Int);
@@ -733,7 +733,7 @@ namespace KiczanProductionInfoSystem
                     pms[3] = new SqlParameter("p_PART_NUMBER", SqlDbType.VarChar);
                     pms[3].Value = partNumber;
 
-                    pms[4] = new SqlParameter("p_DATE_DUE", SqlDbType.DateTime);
+                    pms[4] = new SqlParameter("p_DATE_DUE", SqlDbType.Date);
                     pms[4].Value = dateDue;
 
                     pms[5] = new SqlParameter("p_PURCHASE_ORDER_NUMBER", SqlDbType.VarChar);
@@ -745,11 +745,14 @@ namespace KiczanProductionInfoSystem
                     pms[7] = new SqlParameter("p_OPERATIONS", SqlDbType.VarChar);
                     pms[7].Value = checkedOperations;
 
-                    pms[8] = new SqlParameter("p_DATE_RECEIVED", SqlDbType.DateTime);
+                    pms[8] = new SqlParameter("p_DATE_RECEIVED", SqlDbType.Date);
                     pms[8].Value = dateReceived;
 
                     pms[9] = new SqlParameter("p_TO_DELETE", SqlDbType.Bit);
                     pms[9].Value = toDelete;
+
+                    pms[10] = new SqlParameter("p_ROW_VERSION", SqlDbType.Timestamp);
+                    pms[10].Value = rowVersion;
 
                     //Get the stored procedure from the DB.
                     using (SqlCommand command = new SqlCommand("UPDATE_RECORD", connection))
@@ -764,6 +767,11 @@ namespace KiczanProductionInfoSystem
                         rowsAffected = await command.ExecuteNonQueryAsync();
                     }
                 }
+            }
+            catch(SqlException ex) when (ex.Number == 50000 && ex.Message.Contains("Concurrency violation"))
+            {
+                MessageBox.Show("Concurrency violation: This record was modified by another user. Your changes were not saved.", "Data Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
             }
             catch (Exception ex)
             {
