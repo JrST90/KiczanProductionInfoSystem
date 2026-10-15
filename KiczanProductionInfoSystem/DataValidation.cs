@@ -14,7 +14,7 @@ namespace KiczanProductionInfoSystem
             endDate = DateTime.MinValue;
 
             //Regular expression to check format with included hyphen.
-            string pattern = @"^\d{2}\/\d{2}\/\d{4}\-\d{2}\/\d{2}\/\d{4}$";
+            string pattern = @"^\d{2}/\d{2}/\d{4}-\d{2}/\d{2}/\d{4}$";
            
             if(string.IsNullOrWhiteSpace(input) || !Regex.IsMatch(input, pattern))
             {
@@ -45,32 +45,38 @@ namespace KiczanProductionInfoSystem
         }
         
         //Validate part number input.
-        internal bool validatePartNumber(string input)
+        internal bool validatePartNumber(string input, out string errorType)
         {
-            //Regular expressions to check for invalid input.
-            string patternOne = @"([\s])";
-            string patternTwo = @"([!@#$%^&*=])";
-            string patternThree = @"([a-zA-Z0-9])";
-            Regex rgOne = new Regex(patternOne);
-            Regex rgTwo = new Regex(patternTwo);
-            Regex rgThree = new Regex(patternThree);
-            bool flag;
+            errorType = string.Empty;
 
-            //Check for whitespace and symbols, return false if exists.
-            if (rgOne.IsMatch(input) || rgTwo.IsMatch(input))
+            if(string.IsNullOrWhiteSpace(input))
             {
-                flag = false;
+                errorType = "EMPTY_ERROR";
+                return false;
             }
-            //If whitespace and symbols do not exist, check for letters, numbers, and hyphen, return true if they exist.
-            else if (rgThree.IsMatch(input))
+
+            //Regular expressions to check for invalid input.
+            string whiteSpacePattern = @"\s";
+            string symbolPattern = @"[!@#$%^&*+=]";
+            string validCharsPattern = @"^[a-zA-Z0-9]+$";
+
+            //Validation steps with error markers.
+            if(Regex.IsMatch(input, whiteSpacePattern))
             {
-                flag = true;
+                errorType = "WHITESPACE_ERROR";
+                return false;
             }
-            else
+            if(Regex.IsMatch(input, symbolPattern))
             {
-                flag = false;
+                errorType = "SYMBOL_ERROR";
+                return false;
             }
-            return flag;
+            if(Regex.IsMatch(input, validCharsPattern))
+            {
+                errorType = "INVALID_CHAR_ERROR";
+                return false;
+            }
+            return true;
         }
 
         //Validate quantity input.

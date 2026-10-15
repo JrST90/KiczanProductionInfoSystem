@@ -54,7 +54,7 @@ namespace KiczanProductionInfoSystem
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Failed to query due date range record data: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                throw new DatabaseQueryException($"Failed to query due date range record data:", ex);
             }
             return dataTable;
         }
@@ -91,7 +91,7 @@ namespace KiczanProductionInfoSystem
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Failed to retrieve due date range record count: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                throw new DatabaseQueryException($"Failed to retrieve due date range record count:", ex);
             }
             return totalRows;
         }
