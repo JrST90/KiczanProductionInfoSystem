@@ -6,70 +6,42 @@ namespace KiczanProductionInfoSystem
 {
     internal class DataValidation
     {
-        //Validate date range input.
-        internal bool validateDateRange(string input)
+        //Validate date range input. Enforces format and chronological order.
+        internal bool validateDateRange(string input, out string errorType, out DateTime startDate, out DateTime endDate)
         {
+            errorType = string.Empty;
+            startDate = DateTime.MinValue;
+            endDate = DateTime.MinValue;
+
             //Regular expression to check format with included hyphen.
-            string pattern = @"\d{2}\/\d{2}\/\d{4}\-\d{2}\/\d{2}\/\d{4}";
-            Regex rg = new Regex(pattern);
-            bool matchesPattern = false;
-            bool isValidOne = false;
-            bool isValidTwo = false;
-            bool dateValid = false;
-
-            if (rg.IsMatch(input))
+            string pattern = @"^\d{2}\/\d{2}\/\d{4}\-\d{2}\/\d{2}\/\d{4}$";
+           
+            if(string.IsNullOrWhiteSpace(input) || !Regex.IsMatch(input, pattern))
             {
-                matchesPattern = true;
-            }
-            else
-            {
-                matchesPattern = false;
+                errorType = "FORMAT_ERROR";
+                return false;
             }
 
-            //Check to make sure provided dates are logically sound.
-            if (matchesPattern)
-            {
-                string format = "MM/dd/yyyy";
-                string[] dateArray = input.Split('-');
-                DateTime dtOne;
-                DateTime dtTwo;
-                isValidOne = DateTime.TryParseExact(dateArray[0], format, CultureInfo.InvariantCulture, DateTimeStyles.None, out dtOne);
-                isValidTwo = DateTime.TryParseExact(dateArray[1], format, CultureInfo.InvariantCulture, DateTimeStyles.None, out dtTwo);
-            }
-
-            if(isValidOne && isValidTwo)
-            {
-                dateValid = true;
-            }
-            else
-            {
-                dateValid = false;
-            }
-            return dateValid;
-        }
-
-        //Validate date range, ensuring beginning date occurs before end date.
-        internal bool validateDateRangeBegBeforeEnd(string input)
-        {
-            bool dateValid = false;
+            //Split and verify dates.
             string format = "MM/dd/yyyy";
             string[] dateArray = input.Split('-');
-            DateTime dtOne;
-            DateTime dtTwo;
 
-            DateTime.TryParseExact(dateArray[0], format, CultureInfo.InvariantCulture, DateTimeStyles.None, out dtOne);
-            DateTime.TryParseExact(dateArray[1], format, CultureInfo.InvariantCulture, DateTimeStyles.None, out dtTwo);
+            bool isStartDateValid = DateTime.TryParseExact(dateArray[0], format, CultureInfo.InvariantCulture, DateTimeStyles.None, out startDate);
+            bool isEndDateValid = DateTime.TryParseExact(dateArray[1], format, CultureInfo.InvariantCulture, DateTimeStyles.None, out endDate);
 
-            if(dtOne < dtTwo)
+            if(!isStartDateValid || !isEndDateValid)
             {
-                dateValid = true;
-            }
-            else
-            {
-                dateValid = false;
+                errorType = "FORMAT_ERROR";
+                return false;
             }
 
-            return dateValid;
+            //Check chronological order.
+            if(startDate > endDate)
+            {
+                errorType = "ORDER_ERROR";
+                return false;
+            }
+            return true;
         }
         
         //Validate part number input.

@@ -18,14 +18,10 @@ namespace KiczanProductionInfoSystem
 
         //Reads data from DB source, returns dataTable from DATE_DUE_RANGE_QUERY stored procedure. 
         //Reads beginning date and end date from user input from text box on UI.
-        internal async Task<DataTable> dateDueRangeQuery(string dateRange, int pageSize, int currentPageIndex)
+        internal async Task<DataTable> dateDueRangeQuery(DateTime startDate, DateTime endDate, int pageSize, int currentPageIndex)
         {
             //Create new dataTable to store query results.
             DataTable dataTable = new DataTable();
-
-            //Create array to store date values from string input.
-            //Split date range at occurence of '-' character. EX: 01/01/2024-02/01/2024
-            string[] dateArray = dateRange.Split('-');
 
             try
             {
@@ -40,15 +36,9 @@ namespace KiczanProductionInfoSystem
                         //Set offset to be bound using currentPageIndex and pageSize arguments.
                         int offsetNum = ((currentPageIndex - 1) * pageSize);
 
-                        //Create new DateTime objects and use the Parse() function on dates
-                        //from user input date range.
-                        //stored in dateArray[0], and dateArray[1].
-                        DateTime bd = DateTime.Parse(dateArray[0]);
-                        DateTime ed = DateTime.Parse(dateArray[1]);
-
                         //Paramaterized to prevent SQL Injection, bind values.
-                        command.Parameters.Add("@dateB", SqlDbType.DateTime).Value = bd;
-                        command.Parameters.Add("@dateE", SqlDbType.DateTime).Value = ed;
+                        command.Parameters.Add("@dateB", SqlDbType.DateTime).Value = startDate;
+                        command.Parameters.Add("@dateE", SqlDbType.DateTime).Value = endDate;
                         command.Parameters.Add("@pageSize", SqlDbType.Int).Value = pageSize;
                         command.Parameters.Add("@offsetNum", SqlDbType.Int).Value = offsetNum;
 
@@ -70,14 +60,10 @@ namespace KiczanProductionInfoSystem
         }
 
         //Count all records for DATE_DUE_RANGE_QUERY.
-        internal async Task<int> dateDueRangeQueryCount(string dateRange)
+        internal async Task<int> dateDueRangeQueryCount(DateTime startDate, DateTime endDate)
         {
             //Set initial value of totalRows.
             int totalRows = 0;
-
-            //Create array to store date values from string input.
-            //Split date range at occurence of '-' character. EX: 01/01/2024-02/01/2024
-            string[] dateArray = dateRange.Split('-');
 
             try
             {
@@ -89,14 +75,9 @@ namespace KiczanProductionInfoSystem
                     {
                         command.CommandType = CommandType.StoredProcedure;
 
-                        //Create new DateTime objects and use the Parse() function on dates
-                        //from user input date range.
-                        DateTime bd = DateTime.Parse(dateArray[0]);
-                        DateTime ed = DateTime.Parse(dateArray[1]);
-
                         //Paramaterized to prevent SQL Injection, bind values.
-                        command.Parameters.Add("@dateB", SqlDbType.DateTime).Value = bd;
-                        command.Parameters.Add("@dateE", SqlDbType.DateTime).Value = ed;
+                        command.Parameters.Add("@dateB", SqlDbType.DateTime).Value = startDate;
+                        command.Parameters.Add("@dateE", SqlDbType.DateTime).Value = endDate;
 
                         await connection.OpenAsync();
 
@@ -967,6 +948,11 @@ namespace KiczanProductionInfoSystem
             }
             return dataTable;
         }
+    }
+    public class DatabaseQueryException : Exception
+    {
+        public DatabaseQueryException(string message, Exception innerException) : base(message, innerException) 
+        { }
     }
 }
 

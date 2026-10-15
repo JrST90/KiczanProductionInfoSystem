@@ -128,13 +128,13 @@ namespace KiczanProductionInfoSystem
                     }
                     
                     //if dateRange is of the right format and the beginning date is before the end date, execute the search query.
-                    if (newDV.validateDateRange(dateRange) == true && newDV.validateDateRangeBegBeforeEnd(dateRange) == true)
+                    if (newDV.validateDateRange(dateRange, out string errorType, out DateTime cleanStartDate, out DateTime cleanEndDate))
                     {
                         //Set currentPageIndex for query.
                         currentPageIndex = 1;
 
                         //Bind dataBaseSource to dateDueRangeQuery results, passing the arguments dateRange, pageSize, and currentPageIndex.
-                        dataBaseSource.DataSource = await newDAO.dateDueRangeQuery(dateRange, pageSize, currentPageIndex);
+                        dataBaseSource.DataSource = await newDAO.dateDueRangeQuery(cleanStartDate, cleanEndDate, pageSize, currentPageIndex);
 
                         //Bind dataGridView1 to dataBaseSource.
                         dataGridView1.DataSource = dataBaseSource;
@@ -146,7 +146,7 @@ namespace KiczanProductionInfoSystem
                         }
 
                         //Get the total rows returned by dateDueRangeQueryCount with passed argument dateRange and set to variable totalRows.
-                        totalRows = await newDAO.dateDueRangeQueryCount(dateRange);
+                        totalRows = await newDAO.dateDueRangeQueryCount(cleanStartDate, cleanEndDate);
 
                         //Divide the totalRows variable by the pageSize variable and set value to totalPages variable.
                         totalPages = (int)Math.Ceiling((double)totalRows / pageSize);
@@ -172,100 +172,27 @@ namespace KiczanProductionInfoSystem
                         //Set label4's color to green.
                         label4.ForeColor = Color.Green;
                     }
-                    //If the dateRange is not of the right format, do not execute the query.
-                    else if (newDV.validateDateRange(dateRange) == false)
+                    else
                     {
-                        //Reset dateRange variable value.
                         dateRange = "";
-
-                        //Reset the currentPageIndex variable value.
                         currentPageIndex = 1;
-
-                        //Clear dataBaseSource.
                         dataBaseSource.DataSource = null;
-
-                        //Clear dataGridView1.
                         dataGridView1.DataSource = null;
-
-                        //Clear the rows in dataGridView1.
-                        dataGridView1.Rows.Clear();
-
-                        //Save the number of rows to ensure an output of 0.
-                        totalRows = dataGridView1.Rows.Count;
-
-                        //Save the number of pages to ensure an output of 0.
-                        totalPages = (int)Math.Ceiling((double)totalRows / pageSize);
-
-                        //Set the error message for errorProvider1.
-                        errorProvider1.SetError(textBox1, "Due Date Range must be of the format: mm/dd/yyyy-mm/dd/yyyy");
-
-                        //Clear label3's text value.
-                        label3.Text = "";
-
-                        //Set label3's text value to the error message.
-                        label3.Text = "Due Date Range must be of the \nformat: \nmm/dd/yyyy-mm/dd/yyyy";
-
-                        //Set label2's text value to the value of totalRows.
-                        label2.Text = "Number of Records: " + totalRows;
-
-                        //Set label5's text value to the value of totalPages.
-                        label5.Text = "Total Pages: " + totalPages;
-
-                        //Clear label6's value.
-                        label6.Text = "";
-
-                        //Set label4's text value to alert the user of an unsuccsessful query.
                         label4.Text = "QUERY FAILURE";
-
-                        //Set label4's color to red.
                         label4.ForeColor = Color.Red;
-                    }
-                    else if (newDV.validateDateRangeBegBeforeEnd(dateRange) == false)
-                    {
-                        //Reset dateRange variable value.
-                        dateRange = "";
 
-                        //Reset the currentPageIndex variable value.
-                        currentPageIndex = 1;
-
-                        //Clear dataBaseSource.
-                        dataBaseSource.DataSource = null;
-
-                        //Clear dataGridView1.
-                        dataGridView1.DataSource = null;
-
-                        //Clear the rows in dataGridView1.
-                        dataGridView1.Rows.Clear();
-
-                        //Save the number of rows to ensure an output of 0.
-                        totalRows = dataGridView1.Rows.Count;
-
-                        //Save the number of pages to ensure an output of 0.
-                        totalPages = (int)Math.Ceiling((double)totalRows / pageSize);
-
-                        //Set the error message for errorProvider1.
-                        errorProvider1.SetError(textBox1, "Beginning Date occurs after ending date. \nPlease enter as \n(Beginning Date)mm/dd/yyyy-\n(Ending Date)mm/dd/yyyy");
-
-                        //Clear label3's text value.
-                        label3.Text = "";
-
-                        //Set label3's text value to the error message.
-                        label3.Text = "Beginning Date occurs after ending date. \nPlease enter as \n(Beginning Date)mm/dd/yyyy-\n(Ending Date)mm/dd/yyyy";
-
-                        //Set label2's text value to the value of totalRows.
-                        label2.Text = "Number of Records: " + totalRows;
-
-                        //Set label5's text value to the value of totalPages.
-                        label5.Text = "Total Pages: " + totalPages;
-
-                        //Clear label6's value.
-                        label6.Text = "";
-
-                        //Set label4's text value to alert the user of an unsuccsessful query.
-                        label4.Text = "QUERY FAILURE";
-
-                        //Set label4's color to red.
-                        label4.ForeColor = Color.Red;
+                        if(errorType == "FORMAT_ERROR")
+                        {
+                            string msg = "Due Date Range must be of the \nformat: \nmm/dd/yyyy-mm/dd/yyyy";
+                            errorProvider1.SetError(textBox1, msg);
+                            label3.Text = msg;
+                        }
+                        else if(errorType == "ORDER_ERROR")
+                        {
+                            string msg = "Beginning Date occurs after ending date. \nPlease enter as \n(Beginning Date)mm/dd/yyyy-\n(Ending Date)mm/dd/yyyy";
+                            errorProvider1.SetError(textBox1, msg);
+                            label3.Text = msg;
+                        }
                     }
                 break;
 
@@ -1159,112 +1086,101 @@ namespace KiczanProductionInfoSystem
                         //If the dateRange variable is still the same value as textBox1.Text and the next button is pressed.
                         if (dateRange == textBox1.Text)
                         {
-                            //Incremement page counter index.
-                            currentPageIndex++;
+                            if(newDV.validateDateRange(dateRange, out _, out DateTime cleanStartDate, out DateTime cleanEndDate))
+                            {
+                                currentPageIndex++;
+                                label6.Text = "Current Page: " + currentPageIndex;
 
-                            //Update page.
-                            label6.Text = "Current Page: " + currentPageIndex;
-
-                            //Query to update page.
-                            dataBaseSource.DataSource = await newDAO.dateDueRangeQuery(dateRange, pageSize, currentPageIndex);
-
-                            //Bind results to dataGridView1.
-                            dataGridView1.DataSource = dataBaseSource;
+                                try
+                                {
+                                    dataBaseSource.DataSource = await newDAO.dateDueRangeQuery(cleanStartDate, cleanEndDate, pageSize, currentPageIndex);
+                                    dataGridView1.DataSource = dataBaseSource;
+                                }
+                                catch(DatabaseQueryException dbEx)
+                                {
+                                    MessageBox.Show($"{dbEx.Message}\nDetails: {dbEx.InnerException?.Message}", "Datebase Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    label4.Text = "SYSTEM ERROR";
+                                    label4.ForeColor = Color.Red;
+                                }
+                            }
                         }
-                        //If the date range input into textBox1 has changed, does not meet format validation constraint, and the next button is pressed.
-                        else if (newDV.validateDateRange(textBox1.Text) == false)
+                        //If the date range input into textBox1 has changed. Apply Auto-Reset pattern.
+                        else
                         {
-                            //Reset the value of the dateRange variable.
-                            dateRange = "";
+                            //Validate new input.
+                            if(newDV.validateDateRange(textBox1.Text, out string errorType, out DateTime newStartDate, out DateTime newEndDate))
+                            {
+                                //Sync with new text box input.
+                                dateRange = textBox1.Text;
 
-                            //Reset currentPageIndex.
-                            currentPageIndex = 1;
+                                //Reset page counter.
+                                currentPageIndex = 1;
 
-                            //Clear dataBaseSource.
-                            dataBaseSource.DataSource = null;
+                                label6.Text = "Current Page: " + currentPageIndex;
 
-                            //Clear dataGridView1.
-                            dataGridView1.DataSource = null;
+                                try
+                                {
+                                    //Execute fresh query.
+                                    dataBaseSource.DataSource = await newDAO.dateDueRangeQuery(newStartDate, newEndDate, pageSize, currentPageIndex);
+                                    dataGridView1.DataSource = dataBaseSource;
 
-                            //Clear the rows in dataGridView1.
-                            dataGridView1.Rows.Clear();
+                                    //Recalculate row counts and total pages.
+                                    totalRows = await newDAO.dateDueRangeQueryCount(newStartDate, newEndDate);
+                                    totalPages = (int)Math.Ceiling((double)totalRows / pageSize);
 
-                            //Update totalRows variable to 0.
-                            totalRows = dataGridView1.Rows.Count;
+                                    //Update UI.
+                                    label2.Text = "Number of Records: " + totalRows;
+                                    label5.Text = "Total Pages: " + totalPages;
+                                    label4.Text = "QUERY SUCCESS";
+                                    label4.ForeColor = Color.Green;
 
-                            //Update totalPages to 0.
-                            totalPages = (int)Math.Ceiling((double)totalRows / pageSize);
+                                    errorProvider1.Clear();
+                                    label3.Text = "";
+                                }
+                                catch(DatabaseQueryException dbEx)
+                                {
+                                    MessageBox.Show($"{dbEx.Message}\nDetails: {dbEx.InnerException?.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    label4.Text = "SYSTEM ERROR";
+                                    label4.ForeColor = Color.Red;
+                                }
+                            }
+                            //The input changed and is invalid.
+                            else
+                            {
+                                //Wipe state and clear datagrid.
+                                dateRange = "";
+                                currentPageIndex = 1;
+                                dataBaseSource.DataSource = null;
+                                dataGridView1.DataSource = null;
+                                
+                                if(dataGridView1.Rows.Count > 0)
+                                {
+                                    dataGridView1.Rows.Clear();
+                                }
 
-                            //Set errorProvider1 message.
-                            errorProvider1.SetError(textBox1, "Due Date Range must be of the format: mm/dd/yyyy-mm/dd/yyyy");
+                                totalRows = 0;
+                                totalPages = 0;
 
-                            //Clear label3's text value.
-                            label3.Text = "";
+                                label2.Text = "Number of Records: " + totalRows;
+                                label5.Text = "Total Pages: " + totalPages;
+                                label6.Text = "";
+                                label4.Text = "QUERY FAILURE";
+                                label4.ForeColor = Color.Red;
 
-                            //Set label3's text value to error state.
-                            label3.Text = "Due Date Range must be of the \nformat: \nmm/dd/yyyy-mm/dd/yyyy";
-
-                            //Update label2's text value.
-                            label2.Text = "Number of Records: " + totalRows;
-
-                            //Update label5's text value.
-                            label5.Text = "Total Pages: " + totalPages;
-
-                            //Clear label6's text value.
-                            label6.Text = "";
-
-                            //Alert user to query failure.
-                            label4.Text = "QUERY FAILURE";
-
-                            //Set label4's text color to red.
-                            label4.ForeColor = Color.Red;
-                        }
-                        else if (newDV.validateDateRangeBegBeforeEnd(textBox1.Text) == false)
-                        {
-                            //Reset the value of the dateRange variable.
-                            dateRange = "";
-
-                            //Reset currentPageIndex.
-                            currentPageIndex = 1;
-
-                            //Clear dataBaseSource.
-                            dataBaseSource.DataSource = null;
-
-                            //Clear dataGridView1.
-                            dataGridView1.DataSource = null;
-
-                            //Clear the rows in dataGridView1.
-                            dataGridView1.Rows.Clear();
-
-                            //Update totalRows variable to 0.
-                            totalRows = dataGridView1.Rows.Count;
-
-                            //Update totalPages to 0.
-                            totalPages = (int)Math.Ceiling((double)totalRows / pageSize);
-
-                            //Set errorProvider1 message.
-                            errorProvider1.SetError(textBox1, "Beginning Date occurs after ending date. \nPlease enter as \n(Beginning Date)mm/dd/yyyy-\n(Ending Date)mm/dd/yyyy");
-
-                            //Clear label3's text value.
-                            label3.Text = "";
-
-                            //Set label3's text value to error state.
-                            label3.Text = "Beginning Date occurs after ending date. \nPlease enter as \n(Beginning Date)mm/dd/yyyy-\n(Ending Date)mm/dd/yyyy";
-
-                            //Update label2's text value.
-                            label2.Text = "Number of Records: " + totalRows;
-
-                            //Update label5's text value.
-                            label5.Text = "Total Pages: " + totalPages;
-
-                            //Clear label6's text value.
-                            label6.Text = "";
-
-                            //Alert user to query failure.
-                            label4.Text = "QUERY FAILURE";
-
-                            //Set label4's text color to red.
-                            label4.ForeColor = Color.Red;
+                                //Target specific UI error.
+                                if(errorType == "FORMAT_ERROR")
+                                {
+                                    string msg = "Due Date Range must be of the \nformat: \nmm/dd/yyyy-mm/dd/yyyy";
+                                    errorProvider1.SetError(textBox1, msg);
+                                    label3.Text = msg;
+                                }
+                                else if(errorType == "ORDER_ERROR")
+                                {
+                                    string msg = "Beginning Date occurs after ending date. \nPlease enter as \n(Beginning Date)mm/dd/yyyy-\n(Ending Date)mm/dd/yyyy";
+                                    errorProvider1.SetError(textBox1, msg);
+                                    label3.Text = msg;
+                                }
+                            }
                         }
                     break;
 
@@ -1457,115 +1373,106 @@ namespace KiczanProductionInfoSystem
                 switch (searchType)
                 {
                     case 0:
+                        //If the dateRange variable is still the same value as textBox1.Text and the next button is pressed.
                         if (dateRange == textBox1.Text)
                         {
-                            //Decrement page counter index.
-                            currentPageIndex--;
+                            if (newDV.validateDateRange(dateRange, out _, out DateTime cleanStartDate, out DateTime cleanEndDate))
+                            {
+                                currentPageIndex--;
+                                label6.Text = "Current Page: " + currentPageIndex;
 
-                            //Update page.
-                            label6.Text = "Current Page: " + currentPageIndex;
-
-                            //Query to update page.
-                            dataBaseSource.DataSource = await newDAO.dateDueRangeQuery(textBox1.Text, pageSize, currentPageIndex);
-
-                            //Bind results to dataGridView1.
-                            dataGridView1.DataSource = dataBaseSource;
+                                try
+                                {
+                                    dataBaseSource.DataSource = await newDAO.dateDueRangeQuery(cleanStartDate, cleanEndDate, pageSize, currentPageIndex);
+                                    dataGridView1.DataSource = dataBaseSource;
+                                }
+                                catch (DatabaseQueryException dbEx)
+                                {
+                                    MessageBox.Show($"{dbEx.Message}\nDetails: {dbEx.InnerException?.Message}", "Datebase Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    label4.Text = "SYSTEM ERROR";
+                                    label4.ForeColor = Color.Red;
+                                }
+                            }
                         }
-                        else if (newDV.validateDateRange(textBox1.Text) == false)
+                        //If the date range input into textBox1 has changed. Apply Auto-Reset pattern.
+                        else
                         {
-                            //Reset the value of the dateRange variable.
-                            dateRange = "";
+                            //Validate new input.
+                            if (newDV.validateDateRange(textBox1.Text, out string errorType, out DateTime newStartDate, out DateTime newEndDate))
+                            {
+                                //Sync with new text box input.
+                                dateRange = textBox1.Text;
 
-                            //Reset currentPageIndex.
-                            currentPageIndex = 1;
+                                //Reset page counter.
+                                currentPageIndex = 1;
 
-                            //Clear dataBaseSource.
-                            dataBaseSource.DataSource = null;
+                                label6.Text = "Current Page: " + currentPageIndex;
 
-                            //Clear dataGridView1 .
-                            dataGridView1.DataSource = null;
+                                try
+                                {
+                                    //Execute fresh query.
+                                    dataBaseSource.DataSource = await newDAO.dateDueRangeQuery(newStartDate, newEndDate, pageSize, currentPageIndex);
+                                    dataGridView1.DataSource = dataBaseSource;
 
-                            //Clear the rows in dataGridView1.
-                            dataGridView1.Rows.Clear();
+                                    //Recalculate row counts and total pages.
+                                    totalRows = await newDAO.dateDueRangeQueryCount(newStartDate, newEndDate);
+                                    totalPages = (int)Math.Ceiling((double)totalRows / pageSize);
 
-                            //Update totalRows variable to 0.
-                            totalRows = dataGridView1.Rows.Count;
+                                    //Update UI.
+                                    label2.Text = "Number of Records: " + totalRows;
+                                    label5.Text = "Total Pages: " + totalPages;
+                                    label4.Text = "QUERY SUCCESS";
+                                    label4.ForeColor = Color.Green;
 
-                            //Update totalPages to 0.
-                            totalPages = (int)Math.Ceiling((double)totalRows / pageSize);
+                                    errorProvider1.Clear();
+                                    label3.Text = "";
+                                }
+                                catch (DatabaseQueryException dbEx)
+                                {
+                                    MessageBox.Show($"{dbEx.Message}\nDetails: {dbEx.InnerException?.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    label4.Text = "SYSTEM ERROR";
+                                    label4.ForeColor = Color.Red;
+                                }
+                            }
+                            //The input changed and is invalid.
+                            else
+                            {
+                                //Wipe state and clear datagrid.
+                                dateRange = "";
+                                currentPageIndex = 1;
+                                dataBaseSource.DataSource = null;
+                                dataGridView1.DataSource = null;
 
-                            //Set errorProvider1 message.
-                            errorProvider1.SetError(textBox1, "Due Date Range must be of the format: mm/dd/yyyy-mm/dd/yyyy");
+                                if (dataGridView1.Rows.Count > 0)
+                                {
+                                    dataGridView1.Rows.Clear();
+                                }
 
-                            //Clear label3's text value.
-                            label3.Text = "";
+                                totalRows = 0;
+                                totalPages = 0;
 
-                            //Set label3's text value to error state.
-                            label3.Text = "Due Date Range must be of the \nformat: \nmm/dd/yyyy-mm/dd/yyyy";
+                                label2.Text = "Number of Records: " + totalRows;
+                                label5.Text = "Total Pages: " + totalPages;
+                                label6.Text = "";
+                                label4.Text = "QUERY FAILURE";
+                                label4.ForeColor = Color.Red;
 
-                            //Update label2's text value.
-                            label2.Text = "Number of Records: " + totalRows;
-
-                            //Update label5's text value.
-                            label5.Text = "Total Pages: " + totalPages;
-
-                            //Clear label6's text value.
-                            label6.Text = "";
-
-                            //Alert user to query failure.
-                            label4.Text = "QUERY FAILURE";
-
-                            //Set label4's text color to red.
-                            label4.ForeColor = Color.Red;
+                                //Target specific UI error.
+                                if (errorType == "FORMAT_ERROR")
+                                {
+                                    string msg = "Due Date Range must be of the \nformat: \nmm/dd/yyyy-mm/dd/yyyy";
+                                    errorProvider1.SetError(textBox1, msg);
+                                    label3.Text = msg;
+                                }
+                                else if (errorType == "ORDER_ERROR")
+                                {
+                                    string msg = "Beginning Date occurs after ending date. \nPlease enter as \n(Beginning Date)mm/dd/yyyy-\n(Ending Date)mm/dd/yyyy";
+                                    errorProvider1.SetError(textBox1, msg);
+                                    label3.Text = msg;
+                                }
+                            }
                         }
-                        else if (newDV.validateDateRangeBegBeforeEnd(textBox1.Text) == false)
-                        {
-                            //Reset the value of the dateRange variable.
-                            dateRange = "";
-
-                            //Reset currentPageIndex.
-                            currentPageIndex = 1;
-
-                            //Clear dataBaseSource.
-                            dataBaseSource.DataSource = null;
-
-                            //Clear dataGridView1. 
-                            dataGridView1.DataSource = null;
-
-                            //Clear the rows in dataGridView1.
-                            dataGridView1.Rows.Clear();
-
-                            //Update totalRows variable to 0.
-                            totalRows = dataGridView1.Rows.Count;
-
-                            //Update totalPages to 0.
-                            totalPages = (int)Math.Ceiling((double)totalRows / pageSize);
-
-                            //Set errorProvider1 message.
-                            errorProvider1.SetError(textBox1, "Beginning Date occurs after ending date. \nPlease enter as \n(Beginning Date)mm/dd/yyyy-\n(Ending Date)mm/dd/yyyy");
-
-                            //Clear label3's text value.
-                            label3.Text = "";
-
-                            //Set label3's text value to error state.
-                            label3.Text = "Beginning Date occurs after ending date. \nPlease enter as \n(Beginning Date)mm/dd/yyyy-\n(Ending Date)mm/dd/yyyy";
-
-                            //Update label2's text value.
-                            label2.Text = "Number of Records: " + totalRows;
-
-                            //Update label5's text value.
-                            label5.Text = "Total Pages: " + totalPages;
-
-                            //Clear label6's text value.
-                            label6.Text = "";
-
-                            //Alert user to query failure.
-                            label4.Text = "QUERY FAILURE";
-
-                            //Set label4's text color to red.
-                            label4.ForeColor = Color.Red;
-                        }
-                    break;
+                        break;
 
                     case 1:
                         //If the partNumber variable is still the same value as textBox1.Text and the previous button is pressed.
