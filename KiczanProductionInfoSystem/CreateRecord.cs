@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace KiczanProductionInfoSystem
 {
@@ -63,6 +64,8 @@ namespace KiczanProductionInfoSystem
             //validation flag
             bool isValid = true;
 
+            string errorType = "";
+
             // Clear all error labels first
             labelPartNumberError.Text = "";
             labelQuantityError.Text = "";
@@ -100,12 +103,29 @@ namespace KiczanProductionInfoSystem
             }
 
             //part number validation
-            if (!newDV.validatePartNumber(partNumber))
+            if (!newDV.validatePartNumber(partNumber, out errorType))
             {
-                string message = "Record not Complete!\nPart Number must not be empty and may only\ncontain letters, numbers, or hyphen.";
-                labelPartNumberError.Text = message;
-                errorProviderPartNumber.SetError(textBoxPartNumber, message);
-                isValid = false;
+                if (errorType == "EMPTY_ERROR")
+                {
+                    string msg = "Part Number cannot be empty.\nPlease enter a part number.";
+                    labelPartNumberError.Text = msg;
+                    errorProviderPartNumber.SetError(textBoxPartNumber, msg);
+                    isValid = false;
+                }
+                else if (errorType == "WHITESPACE_ERROR")
+                {
+                    string msg = "Part Number cannot contain spaces.";
+                    labelPartNumberError.Text = msg;
+                    errorProviderPartNumber.SetError(textBoxPartNumber, msg);
+                    isValid = false;
+                }
+                else if (errorType == "SYMBOL_ERROR" || errorType == "INVALID_CHAR_ERROR")
+                {
+                    string msg = "Part Number can contain only letters,\nnumbers, and hyphens (-).";
+                    labelPartNumberError.Text = msg;
+                    errorProviderPartNumber.SetError(textBoxPartNumber, msg);
+                    isValid = false;
+                }
             }
 
             //quantity validation
@@ -172,8 +192,16 @@ namespace KiczanProductionInfoSystem
                 DateTime parsedDateReceived = DateTime.ParseExact(dateReceived, "MM/dd/yyyy", CultureInfo.InvariantCulture);
                 DateTime parsedDueDate = DateTime.ParseExact(dateDue, "MM/dd/yyyy", CultureInfo.InvariantCulture);
 
-                await newDAO.CreateRecord(custID, opID, partNumber, parsedDueDate, poNumber, quantity, checkedOperations, parsedDateReceived, 0);
-
+                try
+                {
+                    await newDAO.CreateRecord(custID, opID, partNumber, parsedDueDate, poNumber, quantity, checkedOperations, parsedDateReceived, 0);
+                }
+                catch (DatabaseQueryException dbEx)
+                {
+                    MessageBox.Show($"{dbEx.Message}\nDetails: {dbEx.InnerException?.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    labelRecordStatus.Text = "SYSTEM ERROR";
+                    labelRecordStatus.ForeColor = Color.Red;
+                }
                 labelRecordStatus.Text = "Record Status: Record Successfully Created!";
             }
             else
@@ -257,9 +285,9 @@ namespace KiczanProductionInfoSystem
                 //Set the initial value of customerComboBox to empty.
                 customerComboBox.SelectedIndex = -1;
             }
-            catch(Exception ex)
+            catch (DatabaseQueryException dbEx)
             {
-                MessageBox.Show($"Failed to load initialization lists: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"{dbEx.Message}\nDetails: {dbEx.InnerException?.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
             {

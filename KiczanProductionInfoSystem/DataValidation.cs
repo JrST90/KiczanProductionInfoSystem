@@ -71,7 +71,7 @@ namespace KiczanProductionInfoSystem
                 errorType = "SYMBOL_ERROR";
                 return false;
             }
-            if(Regex.IsMatch(input, validCharsPattern))
+            if(!Regex.IsMatch(input, validCharsPattern))
             {
                 errorType = "INVALID_CHAR_ERROR";
                 return false;

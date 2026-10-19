@@ -218,7 +218,7 @@ namespace KiczanProductionInfoSystem
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Failed to query part number archive record data: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                throw new DatabaseQueryException($"Failed to query part number archive record data:", ex);
             }
             return dataTable;
         }
@@ -257,7 +257,7 @@ namespace KiczanProductionInfoSystem
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Failed to retrieve part number archive record count: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                throw new DatabaseQueryException($"Failed to retrieve part number archive record count:", ex);
             }
             return totalRows;
         }
@@ -302,7 +302,7 @@ namespace KiczanProductionInfoSystem
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Failed to query operator record data: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                throw new DatabaseQueryException($"Failed to query operator record data:", ex);
             }
             return dataTable;
         }
@@ -341,7 +341,7 @@ namespace KiczanProductionInfoSystem
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Failed to retrieve operator record count: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                throw new DatabaseQueryException($"Failed to retrieve operator record count:", ex);
             }
             return totalRows;
         }
@@ -371,7 +371,7 @@ namespace KiczanProductionInfoSystem
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Failed to delete record: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                throw new DatabaseQueryException($"Failed to delete record:", ex);
             }
         }
 
@@ -400,7 +400,7 @@ namespace KiczanProductionInfoSystem
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Failed to restore record: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                throw new DatabaseQueryException($"Failed to restore record:", ex);
             }
         }
         //Reads data from DB source, returns dataTable from FABRICATION_DEPARTMENT_QUERY stored procedure.
@@ -437,7 +437,7 @@ namespace KiczanProductionInfoSystem
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Failed to query fabrication department record data: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                throw new DatabaseQueryException($"Failed to query fabrication department record data:", ex);
             }
             return dataTable;
         }
@@ -470,7 +470,7 @@ namespace KiczanProductionInfoSystem
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Failed to retrieve fabrication department record count: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                throw new DatabaseQueryException($"Failed to retrieve fabrication department record count:", ex);
             }
             return totalRows;
         }
@@ -509,7 +509,7 @@ namespace KiczanProductionInfoSystem
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Failed to query machine shop record data: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                throw new DatabaseQueryException($"Failed to query machine shop record data:", ex);
             }
             return dataTable;
         }
@@ -542,7 +542,7 @@ namespace KiczanProductionInfoSystem
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Failed to retrieve machine shop record count: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                throw new DatabaseQueryException($"Failed to retrieve machine shop record count:", ex);
             }
             return totalRows;
         }
@@ -582,7 +582,7 @@ namespace KiczanProductionInfoSystem
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Failed to load operator list: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                throw new DatabaseQueryException($"Failed to load operator list:", ex);
             }
             return returnList;
         }
@@ -622,7 +622,7 @@ namespace KiczanProductionInfoSystem
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Failed to load customer list: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                throw new DatabaseQueryException($"Failed to load customer list:", ex);
             }
             return returnList;
         }
@@ -684,7 +684,7 @@ namespace KiczanProductionInfoSystem
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Failed to create new record: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                throw new DatabaseQueryException($"Failed to create new record:", ex);
             }
             return rowsAffected > 0;
         }
@@ -756,7 +756,7 @@ namespace KiczanProductionInfoSystem
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Failed to update selected record: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                throw new DatabaseQueryException($"Failed to update selected record:", ex);
             }
             return rowsAffected > 0;
         }
@@ -823,7 +823,7 @@ namespace KiczanProductionInfoSystem
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Failed to load customer dashboard chart data: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                throw new DatabaseQueryException($"Failed to load customer dashboard chart data:", ex);
             }
             return dataTable;
         }
@@ -854,7 +854,7 @@ namespace KiczanProductionInfoSystem
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Failed to load operator dashboard chart data: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                throw new DatabaseQueryException($"Failed to load operator dashboard chart data:", ex);
             }
             return dataTable;
         }
@@ -885,7 +885,7 @@ namespace KiczanProductionInfoSystem
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Failed to load department dashboard chart data: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                throw new DatabaseQueryException($"Failed to load department dashboard chart data:", ex);
             }
             return dataTable;
         }
@@ -916,7 +916,7 @@ namespace KiczanProductionInfoSystem
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Failed to load department grid view data: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                throw new DatabaseQueryException($"Failed to load department grid view data:", ex);
             }
             return dataTable;
         }
@@ -944,7 +944,7 @@ namespace KiczanProductionInfoSystem
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Failed to load last and predicted fiscal year volume dashboard data: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                throw new DatabaseQueryException($"Failed to load last and predicted fiscal year volume dashboard data:", ex);
             }
             return dataTable;
         }

@@ -129,6 +129,8 @@ namespace KiczanProductionInfoSystem
             //validation flag
             bool isValid = true;
 
+            string errorType = "";
+
             // Clear all error labels first
             labelPartNumberError.Text = "";
             labelQuantityError.Text = "";
@@ -168,12 +170,29 @@ namespace KiczanProductionInfoSystem
             }
 
             //Part number validation
-            if (!newDV.validatePartNumber(partNumber))
+            if (!newDV.validatePartNumber(partNumber, out errorType))
             {
-                string message = "Record not complete!\nPart Number must not be empty and may only\ncontain letters, numbers, or hyphen.";
-                labelPartNumberError.Text = message;
-                errorProviderPartNumber.SetError(textBoxPartNumber, message);
-                isValid = false;
+                if (errorType == "EMPTY_ERROR")
+                {
+                    string msg = "Part Number cannot be empty.\nPlease enter a part number.";
+                    labelPartNumberError.Text = msg;
+                    errorProviderPartNumber.SetError(textBoxPartNumber, msg);
+                    isValid = false;
+                }
+                else if (errorType == "WHITESPACE_ERROR")
+                {
+                    string msg = "Part Number cannot contain spaces.";
+                    labelPartNumberError.Text = msg;
+                    errorProviderPartNumber.SetError(textBoxPartNumber, msg);
+                    isValid = false;
+                }
+                else if (errorType == "SYMBOL_ERROR" || errorType == "INVALID_CHAR_ERROR")
+                {
+                    string msg = "Part Number can contain only letters,\nnumbers, and hyphens (-).";
+                    labelPartNumberError.Text = msg;
+                    errorProviderPartNumber.SetError(textBoxPartNumber, msg);
+                    isValid = false;
+                }
             }
 
             //Quantity validation
@@ -237,9 +256,17 @@ namespace KiczanProductionInfoSystem
             {
                 DateTime parsedDateReceived = DateTime.ParseExact(dateReceived, "MM/dd/yyyy", CultureInfo.InvariantCulture);
                 DateTime parsedDueDate = DateTime.ParseExact(dateDue, "MM/dd/yyyy", CultureInfo.InvariantCulture);
-       
-                await newDAO.UpdateRecord(partHistoryID, custID, opID, partNumber, parsedDueDate, poNumber, quantity, checkedOperations, parsedDateReceived, 0, rowVersion);
 
+                try
+                {
+                    await newDAO.UpdateRecord(partHistoryID, custID, opID, partNumber, parsedDueDate, poNumber, quantity, checkedOperations, parsedDateReceived, 0, rowVersion);
+                }
+                catch (DatabaseQueryException dbEx)
+                {
+                    MessageBox.Show($"{dbEx.Message}\nDetails: {dbEx.InnerException?.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    labelRecordStatus.Text = "SYSTEM ERROR";
+                    labelRecordStatus.ForeColor = Color.Red;
+                }
                 labelRecordStatus.Text = "Record Status: Record Successfully Updated!";
             }
             else
@@ -324,15 +351,14 @@ namespace KiczanProductionInfoSystem
                 {
                     customerComboBox.SelectedIndex = customerIndex;
                 }
-
                 if (operatorIndex != -1)
                 {
                     operatorComboBox.SelectedIndex = operatorIndex;
                 }
             }
-            catch (Exception ex)
+            catch (DatabaseQueryException dbEx)
             {
-                MessageBox.Show($"Failed to load record details: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"{dbEx.Message}\nDetails: {dbEx.InnerException?.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
             {
