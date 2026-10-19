@@ -260,6 +260,8 @@ namespace KiczanProductionInfoSystem
                 try
                 {
                     await newDAO.UpdateRecord(partHistoryID, custID, opID, partNumber, parsedDueDate, poNumber, quantity, checkedOperations, parsedDateReceived, 0, rowVersion);
+
+                    labelRecordStatus.Text = "Record Status: Record Successfully Updated!";
                 }
                 catch (DatabaseQueryException dbEx)
                 {
@@ -267,7 +269,6 @@ namespace KiczanProductionInfoSystem
                     labelRecordStatus.Text = "SYSTEM ERROR";
                     labelRecordStatus.ForeColor = Color.Red;
                 }
-                labelRecordStatus.Text = "Record Status: Record Successfully Updated!";
             }
             else
             {
