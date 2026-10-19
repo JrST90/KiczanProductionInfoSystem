@@ -135,7 +135,7 @@ namespace KiczanProductionInfoSystem
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Failed to query part number record data: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                throw new DatabaseQueryException($"Failed to query part number record data:", ex);
             }
             return dataTable;
         }
@@ -174,7 +174,7 @@ namespace KiczanProductionInfoSystem
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Failed to retrieve part number record count: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                throw new DatabaseQueryException($"Failed to retrieve part number record count:", ex);
             }
             return totalRows;
         }
