@@ -413,7 +413,6 @@ namespace KiczanProductionInfoSystem
                                 label4.Text = "QUERY SUCCESS";
                                 label4.ForeColor = Color.Green;
                                 label5.Text = "Total Pages: " + totalPages;
-                                label6.Text = "Current Page: " + currentPageIndex;
 
                                 if (totalRows > 0)
                                 {
@@ -442,7 +441,7 @@ namespace KiczanProductionInfoSystem
                             totalRows = 0;
                             totalPages = 0;
                             currentPageIndex = 1;
-                            partNumber = "";
+                            opName = "";
 
                             label2.Text = "Number of Records: " + totalRows;
                             label4.Text = "QUERY FAILURE";
@@ -1101,11 +1100,6 @@ namespace KiczanProductionInfoSystem
                                 dataBaseSource.DataSource = null;
                                 dataGridView1.DataSource = null;
 
-                                if (dataGridView1.Rows.Count > 0)
-                                {
-                                    dataGridView1.Rows.Clear();
-                                }
-
                                 totalRows = 0;
                                 totalPages = 0;
 
@@ -1214,11 +1208,6 @@ namespace KiczanProductionInfoSystem
                                     currentPageIndex = 1;
                                     dataBaseSource.DataSource = null;
                                     dataGridView1.DataSource = null;
-
-                                    if (dataGridView1.Rows.Count > 0)
-                                    {
-                                        dataGridView1.Rows.Clear();
-                                    }
 
                                     label2.Text = "Number of Records: " + totalRows;
                                     label4.Text = "QUERY FAILURE";
@@ -1408,11 +1397,6 @@ namespace KiczanProductionInfoSystem
                                     dataBaseSource.DataSource = null;
                                     dataGridView1.DataSource = null;
 
-                                    if (dataGridView1.Rows.Count > 0)
-                                    {
-                                        dataGridView1.Rows.Clear();
-                                    }
-
                                     label2.Text = "Number of Records: " + totalRows;
                                     label4.Text = "QUERY FAILURE";
                                     label4.ForeColor = Color.Red;
@@ -1535,11 +1519,6 @@ namespace KiczanProductionInfoSystem
                                 dataBaseSource.DataSource = null;
                                 dataGridView1.DataSource = null;
 
-                                if (dataGridView1.Rows.Count > 0)
-                                {
-                                    dataGridView1.Rows.Clear();
-                                }
-
                                 totalRows = 0;
                                 totalPages = 0;
 
@@ -1648,11 +1627,6 @@ namespace KiczanProductionInfoSystem
                                     currentPageIndex = 1;
                                     dataBaseSource.DataSource = null;
                                     dataGridView1.DataSource = null;
-
-                                    if (dataGridView1.Rows.Count > 0)
-                                    {
-                                        dataGridView1.Rows.Clear();
-                                    }
 
                                     label2.Text = "Number of Records: " + totalRows;
                                     label4.Text = "QUERY FAILURE";
@@ -1841,11 +1815,6 @@ namespace KiczanProductionInfoSystem
                                     currentPageIndex = 1;
                                     dataBaseSource.DataSource = null;
                                     dataGridView1.DataSource = null;
-
-                                    if (dataGridView1.Rows.Count > 0)
-                                    {
-                                        dataGridView1.Rows.Clear();
-                                    }
 
                                     label2.Text = "Number of Records: " + totalRows;
                                     label4.Text = "QUERY FAILURE";
