@@ -252,8 +252,10 @@ namespace KiczanProductionInfoSystem
                     try
                     {
                         //If the partNumber is of the right format and the number of matching records is greater than 0, execute the search query.
-                        if (newDV.validatePartNumber(partNumber, out errorType) && await newDAO.partNumberQueryCount(partNumber) > 0)
+                        if (newDV.validatePartNumber(partNumber, out errorType))
                         {
+                            //Cache row count locally.
+                            totalRows = await newDAO.partNumberQueryCount(partNumber);
                             //Set currentPageIndex for query.
                             currentPageIndex = 1;
 
@@ -271,89 +273,28 @@ namespace KiczanProductionInfoSystem
                                     dataGridView1.Columns["ROW_VERSION"].Visible = false;
                                 }
 
-                                //Get the total rows returned by partNumberQueryCount with passed argument partNumber and set to variable totalRows.
-                                totalRows = await newDAO.partNumberQueryCount(partNumber);
-
-                                //Divide the totalRows variable by the pageSize variable and set value to totalPages variable.
+                                //Calculate total pages based on the cached totalRows.
                                 totalPages = (int)Math.Ceiling((double)totalRows / pageSize);
 
-                                //Set label2's text value to the value of totalRows.
+                                //Set UI element text values.
                                 label2.Text = "Number of Records: " + totalRows;
-
-                                //Set label5's text value to the value of totalPages.
+                                label4.Text = "QUERY SUCCESS";
+                                label4.ForeColor = Color.Green;
                                 label5.Text = "Total Pages: " + totalPages;
 
-                                //Set label6's text value to the value of currentPageIndex.
-                                label6.Text = "Current Page: " + currentPageIndex;
-
-                                //Clear errorProvider1.
-                                errorProvider1.Clear();
-
-                                //Clear label3's text value of error state.
-                                label3.Text = "";
-
-                                //Set label4's value to alert the user of a succsessful query.
-                                label4.Text = "QUERY SUCCESS";
-
-                                //Set label4's color to green.
-                                label4.ForeColor = Color.Green;
-                            }
-                            catch (DatabaseQueryException dbEx)
-                            {
-                                MessageBox.Show($"{dbEx.Message}\nDetails: {dbEx.InnerException?.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                label4.Text = "SYSTEM ERROR";
-                                label4.ForeColor = Color.Red;
-                            }
-                        }
-                        //If the partNumber is of the right format and the number of matching records is 0, execute the search query.
-                        else if (newDV.validatePartNumber(partNumber, out errorType) == true && await newDAO.partNumberQueryCount(partNumber) == 0)
-                        {
-                            //Reset the currentPageIndex variable value.
-                            currentPageIndex = 1;
-
-                            try
-                            {
-                                //Bind dataBaseSource to partNumberQuery results, passing the arguments partNumber, pageSize, and currentPageIndex.
-                                dataBaseSource.DataSource = await newDAO.partNumberQuery(partNumber, pageSize, currentPageIndex);
-
-                                //Bind dateGridView1 to dataBaseSource.
-                                dataGridView1.DataSource = dataBaseSource;
-
-                                //Hide the "ROW_VERSION" column.
-                                if (dataGridView1.Columns.Contains("ROW_VERSION"))
+                                if (totalRows > 0)
                                 {
-                                    dataGridView1.Columns["ROW_VERSION"].Visible = false;
+                                    label6.Text = "Current Page: " + currentPageIndex;
+                                    errorProvider1.Clear();
+                                    label3.Text = "";
                                 }
-
-                                //Get the total rows returned by partNumberQueryCount with passed argument partNumber and set to variable totalRows.
-                                totalRows = await newDAO.partNumberQueryCount(partNumber);
-
-                                //Save the number of pages to ensure an output of 0.
-                                totalPages = (int)Math.Ceiling((double)totalRows / pageSize);
-
-                                //Set the error message for errorProvider1.
-                                errorProvider1.SetError(textBox1, "No Records Found.");
-
-                                //Clear label3's text value.
-                                label3.Text = "";
-
-                                //Set label3's text value to the error message.
-                                label3.Text = "No Records Found.";
-
-                                //Set label2's text value to the value of totalRows.
-                                label2.Text = "Number of Records: " + totalRows;
-
-                                //Set label5's text value to the value of totalPages.
-                                label5.Text = "Total Pages: " + totalPages;
-
-                                //Clear label6's value.
-                                label6.Text = "";
-
-                                //Set label4's value to alert the user of a succsessful query.
-                                label4.Text = "QUERY SUCCESS";
-
-                                //Set label4's color to green.
-                                label4.ForeColor = Color.Green;
+                                else
+                                {
+                                    label6.Text = "";
+                                    string noRecordsMsg = "No Records Found.";
+                                    errorProvider1.SetError(textBox1, noRecordsMsg);
+                                    label3.Text = noRecordsMsg;
+                                }
                             }
                             catch (DatabaseQueryException dbEx)
                             {
@@ -367,17 +308,17 @@ namespace KiczanProductionInfoSystem
                         {
                             totalRows = 0;
                             totalPages = 0;
+                            currentPageIndex = 1;
+                            partNumber = "";
 
                             label2.Text = "Number of Records: " + totalRows;
+                            label4.Text = "QUERY FAILURE";
+                            label4.ForeColor = Color.Red;
                             label5.Text = "Total Pages: " + totalPages;
                             label6.Text = "";
 
-                            partNumber = "";
-                            currentPageIndex = 1;
                             dataBaseSource.DataSource = null;
                             dataGridView1.DataSource = null;
-                            label4.Text = "QUERY FAILURE";
-                            label4.ForeColor = Color.Red;
 
                             if (errorType == "EMPTY_ERROR")
                             {
@@ -443,8 +384,10 @@ namespace KiczanProductionInfoSystem
                     }
                     try
                     {
-                        if (await newDAO.operatorNameQueryCount(opName) > 0)
+                        if (!string.IsNullOrEmpty(opName))
                         {
+                            //Cache row count locally.
+                            totalRows = await newDAO.operatorNameQueryCount(opName);
                             //Set currentPageIndex for query.
                             currentPageIndex = 1;
 
@@ -462,32 +405,29 @@ namespace KiczanProductionInfoSystem
                                     dataGridView1.Columns["ROW_VERSION"].Visible = false;
                                 }
 
-                                //Get the total rows returned by operatorQueryCount with the passed argument of comboBox2's selected operator name and set to variable totalRows.
-                                totalRows = await newDAO.operatorNameQueryCount(opName);
-
-                                //Divide the totalRows variable by the pageSize variable and set value to totalPages variable.
+                                //Calculate the total pages based on the cached total rows.
                                 totalPages = (int)Math.Ceiling((double)totalRows / pageSize);
 
-                                //Set label2's text value to the value of totalRows.
+                                //Set UI element text values.
                                 label2.Text = "Number of Records: " + totalRows;
-
-                                //Set label5's text value to the value of totalPages.
+                                label4.Text = "QUERY SUCCESS";
+                                label4.ForeColor = Color.Green;
                                 label5.Text = "Total Pages: " + totalPages;
-
-                                //Set label6's text value to the value of currentPageIndex.
                                 label6.Text = "Current Page: " + currentPageIndex;
 
-                                //Clear errorProvider1.
-                                errorProvider1.Clear();
-
-                                //Clear label3's text value of error state.
-                                label3.Text = "";
-
-                                //Set label4's value to alert the user of a succsessful query.
-                                label4.Text = "QUERY SUCCESS";
-
-                                //Set label4's color to green.
-                                label4.ForeColor = Color.Green;
+                                if (totalRows > 0)
+                                {
+                                    label6.Text = "Current Page: " + currentPageIndex;
+                                    errorProvider1.Clear();
+                                    label3.Text = "";
+                                }
+                                else
+                                {
+                                    label6.Text = "";
+                                    string noRecordsMsg = "No Records Found.";
+                                    errorProvider1.SetError(textBox1, noRecordsMsg);
+                                    label3.Text = noRecordsMsg;
+                                }
                             }
                             catch (DatabaseQueryException dbEx)
                             {
@@ -496,61 +436,26 @@ namespace KiczanProductionInfoSystem
                                 label4.ForeColor = Color.Red;
                             }
                         }
-                        else if (await newDAO.operatorNameQueryCount(opName) == 0)
+                        //Alert the user that an operator name must be selected.
+                        else
                         {
-                            //Reset the currentPageIndex variable value.
+                            totalRows = 0;
+                            totalPages = 0;
                             currentPageIndex = 1;
+                            partNumber = "";
 
-                            try
-                            {
-                                //Bind dataBaseSource to partNumberQuery results, passing the arguments partNumber, pageSize, and currentPageIndex.
-                                dataBaseSource.DataSource = await newDAO.operatorNameQuery(opName, pageSize, currentPageIndex);
+                            label2.Text = "Number of Records: " + totalRows;
+                            label4.Text = "QUERY FAILURE";
+                            label4.ForeColor = Color.Red;
+                            label5.Text = "Total Pages: " + totalPages;
+                            label6.Text = "";
 
-                                //Bind dateGridView1 to dataBaseSource.
-                                dataGridView1.DataSource = dataBaseSource;
+                            dataBaseSource.DataSource = null;
+                            dataGridView1.DataSource = null;
 
-                                //Hide the "ROW_VERSION" column.
-                                if (dataGridView1.Columns.Contains("ROW_VERSION"))
-                                {
-                                    dataGridView1.Columns["ROW_VERSION"].Visible = false;
-                                }
-
-                                //Get the total rows returned by partNumberQueryCount with passed argument partNumber and set to variable totalRows.
-                                totalRows = await newDAO.operatorNameQueryCount(opName);
-
-                                //Save the number of pages to ensure an output of 0.
-                                totalPages = (int)Math.Ceiling((double)totalRows / pageSize);
-
-                                //Set the error message for errorProvider1.
-                                errorProvider1.SetError(textBox1, "No Records Found.");
-
-                                //Clear label3's text value.
-                                label3.Text = "";
-
-                                //Set label3's text value to the error message.
-                                label3.Text = "No Records Found.";
-
-                                //Set label2's text value to the value of totalRows.
-                                label2.Text = "Number of Records: " + totalRows;
-
-                                //Set label5's text value to the value of totalPages.
-                                label5.Text = "Total Pages: " + totalPages;
-
-                                //Clear label6's value.
-                                label6.Text = "";
-
-                                //Set label4's value to alert the user of a succsessful query.
-                                label4.Text = "QUERY SUCCESS";
-
-                                //Set label4's color to green.
-                                label4.ForeColor = Color.Green;
-                            }
-                            catch (DatabaseQueryException dbEx)
-                            {
-                                MessageBox.Show($"{dbEx.Message}\nDetails: {dbEx.InnerException?.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                label4.Text = "SYSTEM ERROR";
-                                label4.ForeColor = Color.Red;
-                            }
+                            string msg = "Please select an Operator Name.";
+                            errorProvider1.SetError(textBox1, msg);
+                            label3.Text = msg;
                         }
                     }
                     catch (DatabaseQueryException dbEx)
@@ -762,8 +667,10 @@ namespace KiczanProductionInfoSystem
                     try
                     {
                         //If the partNumber is of the right format, execute the search query.
-                        if (newDV.validatePartNumber(partNumber, out errorType) && await newDAO.partNumberQueryCountArchive(partNumber) > 0)
+                        if (newDV.validatePartNumber(partNumber, out errorType))
                         {
+                            //Cache row count locally.
+                            totalRows = await newDAO.partNumberQueryCountArchive(partNumber);
                             //Set currentPageIndex for query.
                             currentPageIndex = 1;
 
@@ -781,89 +688,28 @@ namespace KiczanProductionInfoSystem
                                     dataGridView1.Columns["ROW_VERSION"].Visible = false;
                                 }
 
-                                //Get the total rows returned by partNumberQueryCount with passed argument partNumber and set to variable totalRows.
-                                totalRows = await newDAO.partNumberQueryCountArchive(partNumber);
-
-                                //Divide the totalRows variable by the pageSize variable and set value to totalPages variable.
+                                //Calculate total pages based on the cached total rows.
                                 totalPages = (int)Math.Ceiling((double)totalRows / pageSize);
 
-                                //Set label2's text value to the value of totalRows.
+                                //Set UI element text values.
                                 label2.Text = "Number of Records: " + totalRows;
-
-                                //Set label5's text value to the value of totalPages.
+                                label4.Text = "QUERY SUCCESS";
+                                label4.ForeColor = Color.Green;
                                 label5.Text = "Total Pages: " + totalPages;
 
-                                //Set label6's text value to the value of currentPageIndex.
-                                label6.Text = "Current Page: " + currentPageIndex;
-
-                                //Clear errorProvider1.
-                                errorProvider1.Clear();
-
-                                //Clear label3's text value of error state.
-                                label3.Text = "";
-
-                                //Set label4's value to alert the user of a succsessful query.
-                                label4.Text = "QUERY SUCCESS";
-
-                                //Set label4's color to green.
-                                label4.ForeColor = Color.Green;
-                            }
-                            catch (DatabaseQueryException dbEx)
-                            {
-                                MessageBox.Show($"{dbEx.Message}\nDetails: {dbEx.InnerException?.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                label4.Text = "SYSTEM ERROR";
-                                label4.ForeColor = Color.Red;
-                            }
-                        }
-                        //If the partNumber is of the right format and the number of matching records is 0, execute the search query.
-                        else if (newDV.validatePartNumber(partNumber, out errorType) == true && await newDAO.partNumberQueryCountArchive(partNumber) == 0)
-                        {
-                            //Reset the currentPageIndex variable value.
-                            currentPageIndex = 1;
-
-                            try
-                            {
-                                //Bind dataBaseSource to partNumberQuery results, passing the arguments partNumber, pageSize, and currentPageIndex.
-                                dataBaseSource.DataSource = await newDAO.partNumberQueryArchive(partNumber, pageSize, currentPageIndex);
-
-                                //Bind dateGridView1 to dataBaseSource.
-                                dataGridView1.DataSource = dataBaseSource;
-
-                                //Hide the "ROW_VERSION" column.
-                                if (dataGridView1.Columns.Contains("ROW_VERSION"))
+                                if(totalRows > 0)
                                 {
-                                    dataGridView1.Columns["ROW_VERSION"].Visible = false;
+                                    label6.Text = "Current Page: " + currentPageIndex;
+                                    errorProvider1.Clear();
+                                    label3.Text = "";
                                 }
-
-                                //Get the total rows returned by partNumberQueryCount with passed argument partNumber and set to variable totalRows.
-                                totalRows = await newDAO.partNumberQueryCountArchive(partNumber);
-
-                                //Save the number of pages to ensure an output of 0.
-                                totalPages = (int)Math.Ceiling((double)totalRows / pageSize);
-
-                                //Set the error message for errorProvider1.
-                                errorProvider1.SetError(textBox1, "No Records Found.");
-
-                                //Clear label3's text value.
-                                label3.Text = "";
-
-                                //Set label3's text value to the error message.
-                                label3.Text = "No Records Found.";
-
-                                //Set label2's text value to the value of totalRows.
-                                label2.Text = "Number of Records: " + totalRows;
-
-                                //Set label5's text value to the value of totalPages.
-                                label5.Text = "Total Pages: " + totalPages;
-
-                                //Clear label6's value.
-                                label6.Text = "";
-
-                                //Set label4's value to alert the user of a succsessful query.
-                                label4.Text = "QUERY SUCCESS";
-
-                                //Set label4's color to green.
-                                label4.ForeColor = Color.Green;
+                                else
+                                {
+                                    label6.Text = "";
+                                    string noRecordMsg = "No Records Found.";
+                                    errorProvider1.SetError(textBox1, noRecordMsg);
+                                    label3.Text = noRecordMsg;
+                                }
                             }
                             catch (DatabaseQueryException dbEx)
                             {
@@ -872,22 +718,21 @@ namespace KiczanProductionInfoSystem
                                 label4.ForeColor = Color.Red;
                             }
                         }
-                        //Alert the user that the input partNumber is not of the right format.
                         else
                         {
                             totalRows = 0;
                             totalPages = 0;
+                            currentPageIndex = 1;
+                            partNumber = "";
 
                             label2.Text = "Number of Records: " + totalRows;
+                            label4.Text = "QUERY FAILURE";
+                            label4.ForeColor = Color.Red;
                             label5.Text = "Total Pages: " + totalPages;
                             label6.Text = "";
 
-                            partNumber = "";
-                            currentPageIndex = 1;
                             dataBaseSource.DataSource = null;
-                            dataGridView1.DataSource = null;
-                            label4.Text = "QUERY FAILURE";
-                            label4.ForeColor = Color.Red;
+                            dataGridView1.DataSource = null;                            
 
                             if (errorType == "EMPTY_ERROR")
                             {
@@ -1234,12 +1079,11 @@ namespace KiczanProductionInfoSystem
 
                                     //Update UI.
                                     label2.Text = "Number of Records: " + totalRows;
-                                    label5.Text = "Total Pages: " + totalPages;
+                                    label3.Text = "";
                                     label4.Text = "QUERY SUCCESS";
                                     label4.ForeColor = Color.Green;
-
+                                    label5.Text = "Total Pages: " + totalPages;
                                     errorProvider1.Clear();
-                                    label3.Text = "";
                                 }
                                 catch (DatabaseQueryException dbEx)
                                 {
@@ -1266,10 +1110,10 @@ namespace KiczanProductionInfoSystem
                                 totalPages = 0;
 
                                 label2.Text = "Number of Records: " + totalRows;
-                                label5.Text = "Total Pages: " + totalPages;
-                                label6.Text = "";
                                 label4.Text = "QUERY FAILURE";
                                 label4.ForeColor = Color.Red;
+                                label5.Text = "Total Pages: " + totalPages;
+                                label6.Text = "";
 
                                 //Target specific UI error.
                                 if (errorType == "FORMAT_ERROR")
@@ -1316,15 +1160,13 @@ namespace KiczanProductionInfoSystem
                             try
                             {
                                 //Validate new input.
-                                if (newDV.validatePartNumber(textBox1.Text, out errorType) && await newDAO.partNumberQueryCount(textBox1.Text) > 0)
+                                if (newDV.validatePartNumber(textBox1.Text, out errorType))
                                 {
                                     //Sync with new text box input.
                                     partNumber = textBox1.Text;
-
-                                    //Reset page counter.
+                                    //Cache row count locally, reset page counter..
+                                    totalRows = await newDAO.partNumberQueryCount(partNumber);
                                     currentPageIndex = 1;
-
-                                    label6.Text = "Current Page: " + currentPageIndex;
 
                                     try
                                     {
@@ -1332,55 +1174,28 @@ namespace KiczanProductionInfoSystem
                                         dataBaseSource.DataSource = await newDAO.partNumberQuery(partNumber, pageSize, currentPageIndex);
                                         dataGridView1.DataSource = dataBaseSource;
 
-                                        //Recalculate row counts and total pages.
-                                        totalRows = await newDAO.partNumberQueryCount(partNumber);
-
+                                        //Calculate total pages based on the cached total rows.
                                         totalPages = (int)Math.Ceiling((double)totalRows / pageSize);
 
                                         //Update UI.
                                         label2.Text = "Number of Records: " + totalRows;
-                                        label5.Text = "Total Pages: " + totalPages;
                                         label4.Text = "QUERY SUCCESS";
                                         label4.ForeColor = Color.Green;
-
-                                        errorProvider1.Clear();
-                                        label3.Text = "";
-                                    }
-                                    catch (DatabaseQueryException dbEx)
-                                    {
-                                        MessageBox.Show($"{dbEx.Message}\nDetails: {dbEx.InnerException?.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                        label4.Text = "SYSTEM ERROR";
-                                        label4.ForeColor = Color.Red;
-                                    }
-                                }
-                                else if (newDV.validatePartNumber(textBox1.Text, out errorType) && await newDAO.partNumberQueryCount(textBox1.Text) == 0)
-                                {
-                                    //Sync with new text box input.
-                                    partNumber = textBox1.Text;
-
-                                    //Reset page counter.
-                                    currentPageIndex = 1;
-
-                                    label6.Text = "Current Page: " + currentPageIndex;
-
-                                    try
-                                    {
-                                        //Execute fresh query.
-                                        dataBaseSource.DataSource = await newDAO.partNumberQuery(partNumber, pageSize, currentPageIndex);
-                                        dataGridView1.DataSource = dataBaseSource;
-
-                                        //Recalculate row counts and total pages.
-                                        totalRows = await newDAO.partNumberQueryCount(partNumber);
-
-                                        totalPages = (int)Math.Ceiling((double)totalRows / pageSize);
-
-                                        //Update UI.
-                                        label2.Text = "Number of Records: " + totalRows;
                                         label5.Text = "Total Pages: " + totalPages;
-                                        label4.Text = "QUERY SUCCESS";
-                                        label4.ForeColor = Color.Green;
-                                        errorProvider1.SetError(textBox1, "No Records Found.");
-                                        label3.Text = "No Records Found.";
+
+                                        if(totalRows > 0)
+                                        {
+                                            label6.Text = "Current Page: " + currentPageIndex;
+                                            errorProvider1.Clear();
+                                            label3.Text = "";
+                                        }
+                                        else
+                                        {
+                                            label6.Text = "";
+                                            string noRecordsMsg = "No Records Found";
+                                            errorProvider1.SetError(textBox1 , noRecordsMsg);
+                                            label3 .Text = noRecordsMsg;
+                                        }
                                     }
                                     catch (DatabaseQueryException dbEx)
                                     {
@@ -1394,6 +1209,8 @@ namespace KiczanProductionInfoSystem
                                 {
                                     //Wipe state and clear datagrid.
                                     partNumber = "";
+                                    totalRows = 0;
+                                    totalPages = 0;
                                     currentPageIndex = 1;
                                     dataBaseSource.DataSource = null;
                                     dataGridView1.DataSource = null;
@@ -1403,15 +1220,12 @@ namespace KiczanProductionInfoSystem
                                         dataGridView1.Rows.Clear();
                                     }
 
-                                    totalRows = 0;
-                                    totalPages = 0;
-
                                     label2.Text = "Number of Records: " + totalRows;
-                                    label5.Text = "Total Pages: " + totalPages;
-                                    label6.Text = "";
                                     label4.Text = "QUERY FAILURE";
                                     label4.ForeColor = Color.Red;
-
+                                    label5.Text = "Total Pages: " + totalPages;
+                                    label6.Text = "";
+                                    
                                     //Target specific UI error.
                                     if (errorType == "EMPTY_ERROR")
                                     {
@@ -1539,15 +1353,13 @@ namespace KiczanProductionInfoSystem
                             try
                             {
                                 //Validate new input.
-                                if (newDV.validatePartNumber(textBox1.Text, out errorType) && await newDAO.partNumberQueryCountArchive(textBox1.Text) > 0)
+                                if (newDV.validatePartNumber(textBox1.Text, out errorType))
                                 {
                                     //Sync with new text box input.
                                     partNumber = textBox1.Text;
-
-                                    //Reset page counter.
+                                    //Cache row count locally, reset page counter..
+                                    totalRows = await newDAO.partNumberQueryCountArchive(partNumber);
                                     currentPageIndex = 1;
-
-                                    label6.Text = "Current Page: " + currentPageIndex;
 
                                     try
                                     {
@@ -1555,19 +1367,28 @@ namespace KiczanProductionInfoSystem
                                         dataBaseSource.DataSource = await newDAO.partNumberQueryArchive(partNumber, pageSize, currentPageIndex);
                                         dataGridView1.DataSource = dataBaseSource;
 
-                                        //Recalculate row counts and total pages.
-                                        totalRows = await newDAO.partNumberQueryCountArchive(partNumber);
-
+                                        //Calculate total pages based on the cached total rows.
                                         totalPages = (int)Math.Ceiling((double)totalRows / pageSize);
 
                                         //Update UI.
                                         label2.Text = "Number of Records: " + totalRows;
-                                        label5.Text = "Total Pages: " + totalPages;
                                         label4.Text = "QUERY SUCCESS";
                                         label4.ForeColor = Color.Green;
+                                        label5.Text = "Total Pages: " + totalPages;
 
-                                        errorProvider1.Clear();
-                                        label3.Text = "";
+                                        if (totalRows > 0)
+                                        {
+                                            label6.Text = "Current Page: " + currentPageIndex;
+                                            errorProvider1.Clear();
+                                            label3.Text = "";
+                                        }
+                                        else
+                                        {
+                                            label6.Text = "";
+                                            string noRecordsMsg = "No Records Found";
+                                            errorProvider1.SetError(textBox1, noRecordsMsg);
+                                            label3.Text = noRecordsMsg;
+                                        }
                                     }
                                     catch (DatabaseQueryException dbEx)
                                     {
@@ -1576,48 +1397,13 @@ namespace KiczanProductionInfoSystem
                                         label4.ForeColor = Color.Red;
                                     }
                                 }
-                                else if (newDV.validatePartNumber(textBox1.Text, out errorType) && await newDAO.partNumberQueryCountArchive(textBox1.Text) == 0)
-                                {
-                                    //Sync with new text box input.
-                                    partNumber = textBox1.Text;
-
-                                    //Reset page counter.
-                                    currentPageIndex = 1;
-
-                                    label6.Text = "Current Page: " + currentPageIndex;
-
-                                    try
-                                    {
-                                        //Execute fresh query.
-                                        dataBaseSource.DataSource = await newDAO.partNumberQueryArchive(partNumber, pageSize, currentPageIndex);
-                                        dataGridView1.DataSource = dataBaseSource;
-
-                                        //Recalculate row counts and total pages.
-                                        totalRows = await newDAO.partNumberQueryCountArchive(partNumber);
-
-                                        totalPages = (int)Math.Ceiling((double)totalRows / pageSize);
-
-                                        //Update UI.
-                                        label2.Text = "Number of Records: " + totalRows;
-                                        label5.Text = "Total Pages: " + totalPages;
-                                        label4.Text = "QUERY SUCCESS";
-                                        label4.ForeColor = Color.Green;
-                                        errorProvider1.SetError(textBox1, "No Records Found.");
-                                        label3.Text = "No Records Found.";
-                                    }
-                                    catch (DatabaseQueryException dbEx)
-                                    {
-                                        MessageBox.Show($"{dbEx.Message}\nDetails: {dbEx.InnerException?.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                        label4.Text = "SYSTEM ERROR";
-                                        label4.ForeColor = Color.Red;
-                                    }
-                                }
-
                                 //The input changed and is invalid.
                                 else
                                 {
                                     //Wipe state and clear datagrid.
                                     partNumber = "";
+                                    totalRows = 0;
+                                    totalPages = 0;
                                     currentPageIndex = 1;
                                     dataBaseSource.DataSource = null;
                                     dataGridView1.DataSource = null;
@@ -1627,15 +1413,12 @@ namespace KiczanProductionInfoSystem
                                         dataGridView1.Rows.Clear();
                                     }
 
-                                    totalRows = 0;
-                                    totalPages = 0;
-
                                     label2.Text = "Number of Records: " + totalRows;
-                                    label5.Text = "Total Pages: " + totalPages;
-                                    label6.Text = "";
                                     label4.Text = "QUERY FAILURE";
                                     label4.ForeColor = Color.Red;
-
+                                    label5.Text = "Total Pages: " + totalPages;
+                                    label6.Text = "";
+                                    
                                     //Target specific UI error.
                                     if (errorType == "EMPTY_ERROR")
                                     {
@@ -1811,15 +1594,13 @@ namespace KiczanProductionInfoSystem
                             try
                             {
                                 //Validate new input.
-                                if (newDV.validatePartNumber(textBox1.Text, out errorType) && await newDAO.partNumberQueryCount(textBox1.Text) > 0)
+                                if (newDV.validatePartNumber(textBox1.Text, out errorType))
                                 {
                                     //Sync with new text box input.
                                     partNumber = textBox1.Text;
-
-                                    //Reset page counter.
+                                    //Cache row count locally, reset page counter..
+                                    totalRows = await newDAO.partNumberQueryCount(partNumber);
                                     currentPageIndex = 1;
-
-                                    label6.Text = "Current Page: " + currentPageIndex;
 
                                     try
                                     {
@@ -1827,55 +1608,28 @@ namespace KiczanProductionInfoSystem
                                         dataBaseSource.DataSource = await newDAO.partNumberQuery(partNumber, pageSize, currentPageIndex);
                                         dataGridView1.DataSource = dataBaseSource;
 
-                                        //Recalculate row counts and total pages.
-                                        totalRows = await newDAO.partNumberQueryCount(partNumber);
-
+                                        //Calculate total pages based on the cached total rows.
                                         totalPages = (int)Math.Ceiling((double)totalRows / pageSize);
 
                                         //Update UI.
                                         label2.Text = "Number of Records: " + totalRows;
-                                        label5.Text = "Total Pages: " + totalPages;
                                         label4.Text = "QUERY SUCCESS";
                                         label4.ForeColor = Color.Green;
-
-                                        errorProvider1.Clear();
-                                        label3.Text = "";
-                                    }
-                                    catch (DatabaseQueryException dbEx)
-                                    {
-                                        MessageBox.Show($"{dbEx.Message}\nDetails: {dbEx.InnerException?.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                        label4.Text = "SYSTEM ERROR";
-                                        label4.ForeColor = Color.Red;
-                                    }
-                                }
-                                else if (newDV.validatePartNumber(textBox1.Text, out errorType) && await newDAO.partNumberQueryCount(textBox1.Text) == 0)
-                                {
-                                    //Sync with new text box input.
-                                    partNumber = textBox1.Text;
-
-                                    //Reset page counter.
-                                    currentPageIndex = 1;
-
-                                    label6.Text = "Current Page: " + currentPageIndex;
-
-                                    try
-                                    {
-                                        //Execute fresh query.
-                                        dataBaseSource.DataSource = await newDAO.partNumberQuery(partNumber, pageSize, currentPageIndex);
-                                        dataGridView1.DataSource = dataBaseSource;
-
-                                        //Recalculate row counts and total pages.
-                                        totalRows = await newDAO.partNumberQueryCount(partNumber);
-
-                                        totalPages = (int)Math.Ceiling((double)totalRows / pageSize);
-
-                                        //Update UI.
-                                        label2.Text = "Number of Records: " + totalRows;
                                         label5.Text = "Total Pages: " + totalPages;
-                                        label4.Text = "QUERY SUCCESS";
-                                        label4.ForeColor = Color.Green;
-                                        errorProvider1.SetError(textBox1, "No Records Found.");
-                                        label3.Text = "No Records Found.";
+
+                                        if (totalRows > 0)
+                                        {
+                                            label6.Text = "Current Page: " + currentPageIndex;
+                                            errorProvider1.Clear();
+                                            label3.Text = "";
+                                        }
+                                        else
+                                        {
+                                            label6.Text = "";
+                                            string noRecordsMsg = "No Records Found";
+                                            errorProvider1.SetError(textBox1, noRecordsMsg);
+                                            label3.Text = noRecordsMsg;
+                                        }
                                     }
                                     catch (DatabaseQueryException dbEx)
                                     {
@@ -1889,6 +1643,8 @@ namespace KiczanProductionInfoSystem
                                 {
                                     //Wipe state and clear datagrid.
                                     partNumber = "";
+                                    totalRows = 0;
+                                    totalPages = 0;
                                     currentPageIndex = 1;
                                     dataBaseSource.DataSource = null;
                                     dataGridView1.DataSource = null;
@@ -1898,15 +1654,12 @@ namespace KiczanProductionInfoSystem
                                         dataGridView1.Rows.Clear();
                                     }
 
-                                    totalRows = 0;
-                                    totalPages = 0;
-
                                     label2.Text = "Number of Records: " + totalRows;
-                                    label5.Text = "Total Pages: " + totalPages;
-                                    label6.Text = "";
                                     label4.Text = "QUERY FAILURE";
                                     label4.ForeColor = Color.Red;
-
+                                    label5.Text = "Total Pages: " + totalPages;
+                                    label6.Text = "";
+                                    
                                     //Target specific UI error.
                                     if (errorType == "EMPTY_ERROR")
                                     {
@@ -2034,15 +1787,13 @@ namespace KiczanProductionInfoSystem
                             try
                             {
                                 //Validate new input.
-                                if (newDV.validatePartNumber(textBox1.Text, out errorType) && await newDAO.partNumberQueryCountArchive(textBox1.Text) > 0)
+                                if (newDV.validatePartNumber(textBox1.Text, out errorType))
                                 {
                                     //Sync with new text box input.
                                     partNumber = textBox1.Text;
-
-                                    //Reset page counter.
+                                    //Cache row count locally, reset page counter..
+                                    totalRows = await newDAO.partNumberQueryCountArchive(partNumber);
                                     currentPageIndex = 1;
-
-                                    label6.Text = "Current Page: " + currentPageIndex;
 
                                     try
                                     {
@@ -2050,55 +1801,28 @@ namespace KiczanProductionInfoSystem
                                         dataBaseSource.DataSource = await newDAO.partNumberQueryArchive(partNumber, pageSize, currentPageIndex);
                                         dataGridView1.DataSource = dataBaseSource;
 
-                                        //Recalculate row counts and total pages.
-                                        totalRows = await newDAO.partNumberQueryCountArchive(partNumber);
-
+                                        //Calculate total pages based on the cached total rows.
                                         totalPages = (int)Math.Ceiling((double)totalRows / pageSize);
 
                                         //Update UI.
                                         label2.Text = "Number of Records: " + totalRows;
-                                        label5.Text = "Total Pages: " + totalPages;
                                         label4.Text = "QUERY SUCCESS";
                                         label4.ForeColor = Color.Green;
-
-                                        errorProvider1.Clear();
-                                        label3.Text = "";
-                                    }
-                                    catch (DatabaseQueryException dbEx)
-                                    {
-                                        MessageBox.Show($"{dbEx.Message}\nDetails: {dbEx.InnerException?.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                        label4.Text = "SYSTEM ERROR";
-                                        label4.ForeColor = Color.Red;
-                                    }
-                                }
-                                else if (newDV.validatePartNumber(textBox1.Text, out errorType) && await newDAO.partNumberQueryCountArchive(textBox1.Text) == 0)
-                                {
-                                    //Sync with new text box input.
-                                    partNumber = textBox1.Text;
-
-                                    //Reset page counter.
-                                    currentPageIndex = 1;
-
-                                    label6.Text = "Current Page: " + currentPageIndex;
-
-                                    try
-                                    {
-                                        //Execute fresh query.
-                                        dataBaseSource.DataSource = await newDAO.partNumberQueryArchive(partNumber, pageSize, currentPageIndex);
-                                        dataGridView1.DataSource = dataBaseSource;
-
-                                        //Recalculate row counts and total pages.
-                                        totalRows = await newDAO.partNumberQueryCountArchive(partNumber);
-
-                                        totalPages = (int)Math.Ceiling((double)totalRows / pageSize);
-
-                                        //Update UI.
-                                        label2.Text = "Number of Records: " + totalRows;
                                         label5.Text = "Total Pages: " + totalPages;
-                                        label4.Text = "QUERY SUCCESS";
-                                        label4.ForeColor = Color.Green;
-                                        errorProvider1.SetError(textBox1, "No Records Found.");
-                                        label3.Text = "No Records Found.";
+
+                                        if (totalRows > 0)
+                                        {
+                                            label6.Text = "Current Page: " + currentPageIndex;
+                                            errorProvider1.Clear();
+                                            label3.Text = "";
+                                        }
+                                        else
+                                        {
+                                            label6.Text = "";
+                                            string noRecordsMsg = "No Records Found";
+                                            errorProvider1.SetError(textBox1, noRecordsMsg);
+                                            label3.Text = noRecordsMsg;
+                                        }
                                     }
                                     catch (DatabaseQueryException dbEx)
                                     {
@@ -2112,6 +1836,8 @@ namespace KiczanProductionInfoSystem
                                 {
                                     //Wipe state and clear datagrid.
                                     partNumber = "";
+                                    totalRows = 0;
+                                    totalPages = 0;
                                     currentPageIndex = 1;
                                     dataBaseSource.DataSource = null;
                                     dataGridView1.DataSource = null;
@@ -2121,14 +1847,11 @@ namespace KiczanProductionInfoSystem
                                         dataGridView1.Rows.Clear();
                                     }
 
-                                    totalRows = 0;
-                                    totalPages = 0;
-
                                     label2.Text = "Number of Records: " + totalRows;
-                                    label5.Text = "Total Pages: " + totalPages;
-                                    label6.Text = "";
                                     label4.Text = "QUERY FAILURE";
                                     label4.ForeColor = Color.Red;
+                                    label5.Text = "Total Pages: " + totalPages;
+                                    label6.Text = "";
 
                                     //Target specific UI error.
                                     if (errorType == "EMPTY_ERROR")
