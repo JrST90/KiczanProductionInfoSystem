@@ -6,99 +6,77 @@ namespace KiczanProductionInfoSystem
 {
     internal class DataValidation
     {
-        //Validate date range input.
-        internal bool validateDateRange(string input)
+        //Validate date range input. Enforces format and chronological order.
+        internal bool validateDateRange(string input, out string errorType, out DateTime startDate, out DateTime endDate)
         {
+            errorType = string.Empty;
+            startDate = DateTime.MinValue;
+            endDate = DateTime.MinValue;
+
             //Regular expression to check format with included hyphen.
-            string pattern = @"\d{2}\/\d{2}\/\d{4}\-\d{2}\/\d{2}\/\d{4}";
-            Regex rg = new Regex(pattern);
-            bool matchesPattern = false;
-            bool isValidOne = false;
-            bool isValidTwo = false;
-            bool dateValid = false;
-
-            if (rg.IsMatch(input))
+            string pattern = @"^\d{2}/\d{2}/\d{4}-\d{2}/\d{2}/\d{4}$";
+           
+            if(string.IsNullOrWhiteSpace(input) || !Regex.IsMatch(input, pattern))
             {
-                matchesPattern = true;
-            }
-            else
-            {
-                matchesPattern = false;
+                errorType = "FORMAT_ERROR";
+                return false;
             }
 
-            //Check to make sure provided dates are logically sound.
-            if (matchesPattern)
-            {
-                string format = "MM/dd/yyyy";
-                string[] dateArray = input.Split('-');
-                DateTime dtOne;
-                DateTime dtTwo;
-                isValidOne = DateTime.TryParseExact(dateArray[0], format, CultureInfo.InvariantCulture, DateTimeStyles.None, out dtOne);
-                isValidTwo = DateTime.TryParseExact(dateArray[1], format, CultureInfo.InvariantCulture, DateTimeStyles.None, out dtTwo);
-            }
-
-            if(isValidOne && isValidTwo)
-            {
-                dateValid = true;
-            }
-            else
-            {
-                dateValid = false;
-            }
-            return dateValid;
-        }
-
-        //Validate date range, ensuring beginning date occurs before end date.
-        internal bool validateDateRangeBegBeforeEnd(string input)
-        {
-            bool dateValid = false;
+            //Split and verify dates.
             string format = "MM/dd/yyyy";
             string[] dateArray = input.Split('-');
-            DateTime dtOne;
-            DateTime dtTwo;
 
-            DateTime.TryParseExact(dateArray[0], format, CultureInfo.InvariantCulture, DateTimeStyles.None, out dtOne);
-            DateTime.TryParseExact(dateArray[1], format, CultureInfo.InvariantCulture, DateTimeStyles.None, out dtTwo);
+            bool isStartDateValid = DateTime.TryParseExact(dateArray[0], format, CultureInfo.InvariantCulture, DateTimeStyles.None, out startDate);
+            bool isEndDateValid = DateTime.TryParseExact(dateArray[1], format, CultureInfo.InvariantCulture, DateTimeStyles.None, out endDate);
 
-            if(dtOne < dtTwo)
+            if(!isStartDateValid || !isEndDateValid)
             {
-                dateValid = true;
-            }
-            else
-            {
-                dateValid = false;
+                errorType = "FORMAT_ERROR";
+                return false;
             }
 
-            return dateValid;
+            //Check chronological order.
+            if(startDate > endDate)
+            {
+                errorType = "ORDER_ERROR";
+                return false;
+            }
+            return true;
         }
         
         //Validate part number input.
-        internal bool validatePartNumber(string input)
+        internal bool validatePartNumber(string input, out string errorType)
         {
-            //Regular expressions to check for invalid input.
-            string patternOne = @"([\s])";
-            string patternTwo = @"([!@#$%^&*=])";
-            string patternThree = @"([a-zA-Z0-9])";
-            Regex rgOne = new Regex(patternOne);
-            Regex rgTwo = new Regex(patternTwo);
-            Regex rgThree = new Regex(patternThree);
-            bool flag;
+            errorType = string.Empty;
 
-            //Check for whitespace and symbols, return false if exists.
-            if (rgOne.IsMatch(input) || rgTwo.IsMatch(input))
+            if(string.IsNullOrWhiteSpace(input))
             {
-                flag = false;
+                errorType = "EMPTY_ERROR";
+                return false;
             }
-            //If whitespace and symbols do not exist, check for letters, numbers, and hyphen, return true if they exist.
-            else if (rgThree.IsMatch(input))
+
+            //Regular expressions to check for invalid input.
+            string whiteSpacePattern = @"\s";
+            string symbolPattern = @"[!@#$%^&*+=]";
+            string validCharsPattern = @"^[a-zA-Z0-9]+$";
+
+            //Validation steps with error markers.
+            if(Regex.IsMatch(input, whiteSpacePattern))
             {
-                flag = true;
+                errorType = "WHITESPACE_ERROR";
+                return false;
             }
-            else
+            if(Regex.IsMatch(input, symbolPattern))
             {
-                flag = false;
+                errorType = "SYMBOL_ERROR";
+                return false;
             }
-            return flag;
+            if(!Regex.IsMatch(input, validCharsPattern))
+            {
+                errorType = "INVALID_CHAR_ERROR";
+                return false;
+            }
+            return true;
         }
 
         //Validate quantity input.
