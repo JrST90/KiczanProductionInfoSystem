@@ -3,40 +3,39 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Security;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace KiczanProductionInfoSystem
 {
     internal partial class Form1 : Form
     {
-        //Set pageSize and currentPageIndex.
-        private const int pageSize = 20;
-        private int currentPageIndex = 1;
-
-        //Set initial values for totalpages and totalRows.
-        private int totalPages = 0;
-        private int totalRows = 0;
-
-        //Create and initialize a new BindingSource object.
+        //Properties and Field for existing instances.
+        private readonly Users _currentUser;
+        private DataValidation newDV = new DataValidation();
+        private DAO newDAO = new DAO();
         private BindingSource dataBaseSource = new BindingSource();
-
-        //List to hold operator names returned from function.
         private List<Operators> operators = new List<Operators>();
 
-        //set initial values for dateRange and partNumber to store user input for comparison.
+        //Pagination configuration.
+        private const int pageSize = 20;
+        private int currentPageIndex = 1;
+        private int totalPages = 0;
+        private int totalRows = 0;
+        
+        //State tracking strings.
         string partNumber = "";
         string dateRange = "";
         string opName = "";
 
-        //Create new DAO Object.
-        private DAO newDAO = new DAO();
+        //State tracking backups for Auto-Reset.
+        private SearchType _activeSearchType;
+        private string _activePartNumber = "";
+        private string _activeDateRangeString = "";
+        private string _activeOperatorName = "";
+        private DateTime _activeStartDate;
+        private DateTime _activeEndDate;
 
-        //Create new DataValidation Object for input validation.
-        private DataValidation newDV = new DataValidation();
-
-        //Create new Users object for authorization.
-        private readonly Users _currentUser;
-        
         internal Form1(Users currentUser)
         {
             InitializeComponent();
@@ -87,678 +86,41 @@ namespace KiczanProductionInfoSystem
         //Events to occur on button click for selection from comboBox1.
         private async void button1_Click(object sender, EventArgs e)
         {
-            string errorType = string.Empty;
+            await ExecuteSelectedSearchAsync();
+        }
 
-            //Get index value from comboBox1 after user selection.
-            int searchTypeIndex = comboBox1.SelectedIndex;
+        //Helper function to determine which query to execute based on user selection.
+        private async Task ExecuteSelectedSearchAsync()
+        {
+            SearchType selectedSearch = (SearchType)comboBox1.SelectedIndex;
 
-            //Button click event is dependent on selected index from comboBox1.
-            switch (searchTypeIndex)
+            bool isArchiveCase = (selectedSearch == SearchType.PartNumberArchive);
+            UpdateUserMenuPermissions(isArchiveCase);
+
+            switch(selectedSearch)
             {
-                //Search By Due Date Range, gets value from textBox1.
-                case 0:
-                    //Store user input from textBox1 into dateRange variable.
-                    dateRange = textBox1.Text;
-
-                    //User Role check for CRUD access
-                    if (_currentUser.ROLE_NAME == "Fabrication Manager" || _currentUser.ROLE_NAME == "Machining Manager")
-                    { 
-                        //Enable update and delete record options in menu strip.
-                        updateRecordToolStripMenuItem.Enabled = true;
-                        updateRecordToolStripMenuItem.Visible = true;
-
-                        //Enable delete record option in menu strip.
-                        deleteRecordArchiveToolStripMenuItem.Enabled = true;
-                        deleteRecordArchiveToolStripMenuItem.Visible = true;
-
-                        //Disable restore record option in menu strip.
-                        restoreRecordMainTableToolStripMenuItem.Enabled = false;
-                        restoreRecordMainTableToolStripMenuItem.Visible = false;
-                    }
-                    else
-                    {
-                        //Disable update record options in menu strip.
-                        updateRecordToolStripMenuItem.Enabled = false;
-                        updateRecordToolStripMenuItem.Visible = false;
-
-                        //Disable delete record option in menu strip.
-                        deleteRecordArchiveToolStripMenuItem.Enabled = false;
-                        deleteRecordArchiveToolStripMenuItem.Visible = false;
-
-                        //Disable restore record option in menu strip.
-                        restoreRecordMainTableToolStripMenuItem.Enabled = false;
-                        restoreRecordMainTableToolStripMenuItem.Visible = false;
-                    }
-                    
-                    //if dateRange is of the right format and the beginning date is before the end date, execute the search query.
-                    if (newDV.validateDateRange(dateRange, out errorType, out DateTime cleanStartDate, out DateTime cleanEndDate))
-                    {
-                        //Set currentPageIndex for query.
-                        currentPageIndex = 1;
-
-                        try
-                        {
-                            //Bind dataBaseSource to dateDueRangeQuery results, passing the arguments dateRange, pageSize, and currentPageIndex.
-                            dataBaseSource.DataSource = await newDAO.dateDueRangeQuery(cleanStartDate, cleanEndDate, pageSize, currentPageIndex);
-
-                            //Bind dataGridView1 to dataBaseSource.
-                            dataGridView1.DataSource = dataBaseSource;
-
-                            //Hide the "ROW_VERSION" column.
-                            if (dataGridView1.Columns.Contains("ROW_VERSION"))
-                            {
-                                dataGridView1.Columns["ROW_VERSION"].Visible = false;
-                            }
-
-                            //Get the total rows returned by dateDueRangeQueryCount with passed argument dateRange and set to variable totalRows.
-                            totalRows = await newDAO.dateDueRangeQueryCount(cleanStartDate, cleanEndDate);
-
-                            //Divide the totalRows variable by the pageSize variable and set value to totalPages variable.
-                            totalPages = (int)Math.Ceiling((double)totalRows / pageSize);
-
-                            //Set label2's text value to the value of totalRows.
-                            label2.Text = "Number of Records: " + totalRows;
-
-                            //Set label5's text value to the value of totalPages.
-                            label5.Text = "Total Pages: " + totalPages;
-
-                            //Set label6's text value to the value of currentPageIndex.
-                            label6.Text = "Current Page: " + currentPageIndex;
-
-                            //Clear errorProvider1.
-                            errorProvider1.Clear();
-
-                            //Clear label3's text value of error state.
-                            label3.Text = "";
-
-                            //Set label4's value to alert the user of a succsessful query.
-                            label4.Text = "QUERY SUCCESS";
-
-                            //Set label4's color to green.
-                            label4.ForeColor = Color.Green;
-                        }
-                        catch(DatabaseQueryException dbEx)
-                        {
-                            MessageBox.Show($"{dbEx.Message}\nDetails: {dbEx.InnerException?.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            label4.Text = "SYSTEM ERROR";
-                            label4.ForeColor = Color.Red;
-                        }
-                    }
-                    else
-                    {
-                        totalRows = 0;
-                        totalPages = 0;
-
-                        label2.Text = "Number of Records: " + totalRows;
-                        label5.Text = "Total Pages: " + totalPages;
-                        label6.Text = "";
-
-                        dateRange = "";
-                        currentPageIndex = 1;
-                        dataBaseSource.DataSource = null;
-                        dataGridView1.DataSource = null;
-                        label4.Text = "QUERY FAILURE";
-                        label4.ForeColor = Color.Red;
-
-                        if(errorType == "FORMAT_ERROR")
-                        {
-                            string msg = "Due Date Range must be of the \nformat: \nmm/dd/yyyy-mm/dd/yyyy";
-                            errorProvider1.SetError(textBox1, msg);
-                            label3.Text = msg;
-                        }
-                        else if(errorType == "ORDER_ERROR")
-                        {
-                            string msg = "Beginning Date occurs after ending date. \nPlease enter as \n(Beginning Date)mm/dd/yyyy-\n(Ending Date)mm/dd/yyyy";
-                            errorProvider1.SetError(textBox1, msg);
-                            label3.Text = msg;
-                        }
-                    }
+                case SearchType.DueDateRange:
+                    await HandleDueDateRangeSearchAsync();
                 break;
 
-                //Search By Part Number, gets value from textBox1.
-                case 1:
-                    //Store user input from textBox1 into partNumber variable.
-                    partNumber = textBox1.Text;
-
-                    //User Role check for CRUD access
-                    if (_currentUser.ROLE_NAME == "Fabrication Manager" || _currentUser.ROLE_NAME == "Machining Manager")
-                    {
-                        //Enable update and delete record options in menu strip.
-                        updateRecordToolStripMenuItem.Enabled = true;
-                        updateRecordToolStripMenuItem.Visible = true;
-
-                        //Enable delete record option in menu strip.
-                        deleteRecordArchiveToolStripMenuItem.Enabled = true;
-                        deleteRecordArchiveToolStripMenuItem.Visible = true;
-
-                        //Disable restore record option in menu strip.
-                        restoreRecordMainTableToolStripMenuItem.Enabled = false;
-                        restoreRecordMainTableToolStripMenuItem.Visible = false;
-                    }
-                    else
-                    {
-                        //Disable update record options in menu strip.
-                        updateRecordToolStripMenuItem.Enabled = false;
-                        updateRecordToolStripMenuItem.Visible = false;
-
-                        //Disable delete record option in menu strip.
-                        deleteRecordArchiveToolStripMenuItem.Enabled = false;
-                        deleteRecordArchiveToolStripMenuItem.Visible = false;
-
-                        //Disable restore record option in menu strip.
-                        restoreRecordMainTableToolStripMenuItem.Enabled = false;
-                        restoreRecordMainTableToolStripMenuItem.Visible = false;
-                    }
-                    try
-                    {
-                        //If the partNumber is of the right format and the number of matching records is greater than 0, execute the search query.
-                        if (newDV.validatePartNumber(partNumber, out errorType))
-                        {
-                            //Cache row count locally.
-                            totalRows = await newDAO.partNumberQueryCount(partNumber);
-                            //Set currentPageIndex for query.
-                            currentPageIndex = 1;
-
-                            try
-                            {
-                                //Bind dataBaseSource to partNumberQuery results, passing the arguments partNumber, pageSize, and currentPageIndex.
-                                dataBaseSource.DataSource = await newDAO.partNumberQuery(partNumber, pageSize, currentPageIndex);
-
-                                //Bind dateGridView1 to dataBaseSource.
-                                dataGridView1.DataSource = dataBaseSource;
-
-                                //Hide the "ROW_VERSION" column.
-                                if (dataGridView1.Columns.Contains("ROW_VERSION"))
-                                {
-                                    dataGridView1.Columns["ROW_VERSION"].Visible = false;
-                                }
-
-                                //Calculate total pages based on the cached totalRows.
-                                totalPages = (int)Math.Ceiling((double)totalRows / pageSize);
-
-                                //Set UI element text values.
-                                label2.Text = "Number of Records: " + totalRows;
-                                label4.Text = "QUERY SUCCESS";
-                                label4.ForeColor = Color.Green;
-                                label5.Text = "Total Pages: " + totalPages;
-
-                                if (totalRows > 0)
-                                {
-                                    label6.Text = "Current Page: " + currentPageIndex;
-                                    errorProvider1.Clear();
-                                    label3.Text = "";
-                                }
-                                else
-                                {
-                                    label6.Text = "";
-                                    string noRecordsMsg = "No Records Found.";
-                                    errorProvider1.SetError(textBox1, noRecordsMsg);
-                                    label3.Text = noRecordsMsg;
-                                }
-                            }
-                            catch (DatabaseQueryException dbEx)
-                            {
-                                MessageBox.Show($"{dbEx.Message}\nDetails: {dbEx.InnerException?.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                label4.Text = "SYSTEM ERROR";
-                                label4.ForeColor = Color.Red;
-                            }
-                        }
-                        //Alert the user that the input partNumber is not of the right format.
-                        else
-                        {
-                            totalRows = 0;
-                            totalPages = 0;
-                            currentPageIndex = 1;
-                            partNumber = "";
-
-                            label2.Text = "Number of Records: " + totalRows;
-                            label4.Text = "QUERY FAILURE";
-                            label4.ForeColor = Color.Red;
-                            label5.Text = "Total Pages: " + totalPages;
-                            label6.Text = "";
-
-                            dataBaseSource.DataSource = null;
-                            dataGridView1.DataSource = null;
-
-                            if (errorType == "EMPTY_ERROR")
-                            {
-                                string msg = "Part Number cannot be empty.\nPlease enter a part number.";
-                                errorProvider1.SetError(textBox1, msg);
-                                label3.Text = msg;
-                            }
-                            else if (errorType == "WHITESPACE_ERROR")
-                            {
-                                string msg = "Part Number cannot contain spaces.";
-                                errorProvider1.SetError(textBox1, msg);
-                                label3.Text = msg;
-                            }
-                            else if (errorType == "SYMBOL_ERROR" || errorType == "INVALID_CHAR_ERROR")
-                            {
-                                string msg = "Part Number can contain only letters,\nnumbers, and hyphens (-).";
-                                errorProvider1.SetError(textBox1, msg);
-                                label3.Text = msg;
-                            }
-                        }
-                    }
-                    catch (DatabaseQueryException dbEx)
-                    {
-                        MessageBox.Show($"{dbEx.Message}\nDetails: {dbEx.InnerException?.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        label4.Text = "SYSTEM ERROR";
-                        label4.ForeColor = Color.Red;
-                    }
+                case SearchType.PartNumber:
+                    await HandlePartNumberSearchAsync();
                 break;
 
-                //Search By Operator Name, gets value from comboBox2.
-                case 2:
-                    //Store user input from comboBox2 into opName variable.
-                    opName = comboBox2.Text;
-
-                    //User Role check for CRUD access
-                    if (_currentUser.ROLE_NAME == "Fabrication Manager" || _currentUser.ROLE_NAME == "Machining Manager")
-                    {
-                        //Enable update and delete record options in menu strip.
-                        updateRecordToolStripMenuItem.Enabled = true;
-                        updateRecordToolStripMenuItem.Visible = true;
-
-                        //Enable delete record option in menu strip.
-                        deleteRecordArchiveToolStripMenuItem.Enabled = true;
-                        deleteRecordArchiveToolStripMenuItem.Visible = true;
-
-                        //Disable restore record option in menu strip.
-                        restoreRecordMainTableToolStripMenuItem.Enabled = false;
-                        restoreRecordMainTableToolStripMenuItem.Visible = false;
-                    }
-                    else
-                    {
-                        //Disable update record options in menu strip.
-                        updateRecordToolStripMenuItem.Enabled = false;
-                        updateRecordToolStripMenuItem.Visible = false;
-
-                        //Disable delete record option in menu strip.
-                        deleteRecordArchiveToolStripMenuItem.Enabled = false;
-                        deleteRecordArchiveToolStripMenuItem.Visible = false;
-
-                        //Disable restore record option in menu strip.
-                        restoreRecordMainTableToolStripMenuItem.Enabled = false;
-                        restoreRecordMainTableToolStripMenuItem.Visible = false;
-                    }
-                    try
-                    {
-                        if (!string.IsNullOrEmpty(opName))
-                        {
-                            //Cache row count locally.
-                            totalRows = await newDAO.operatorNameQueryCount(opName);
-                            //Set currentPageIndex for query.
-                            currentPageIndex = 1;
-
-                            try
-                            {
-                                //Bind dataBaseSource to operatorQuery results passing the arguments of the operator name from comboBox2, pageSize, and currentPageIndex.
-                                dataBaseSource.DataSource = await newDAO.operatorNameQuery(opName, pageSize, currentPageIndex);
-
-                                //Bind dateGridView to dataBaseSource.
-                                dataGridView1.DataSource = dataBaseSource;
-
-                                //Hide the "ROW_VERSION" column.
-                                if (dataGridView1.Columns.Contains("ROW_VERSION"))
-                                {
-                                    dataGridView1.Columns["ROW_VERSION"].Visible = false;
-                                }
-
-                                //Calculate the total pages based on the cached total rows.
-                                totalPages = (int)Math.Ceiling((double)totalRows / pageSize);
-
-                                //Set UI element text values.
-                                label2.Text = "Number of Records: " + totalRows;
-                                label4.Text = "QUERY SUCCESS";
-                                label4.ForeColor = Color.Green;
-                                label5.Text = "Total Pages: " + totalPages;
-
-                                if (totalRows > 0)
-                                {
-                                    label6.Text = "Current Page: " + currentPageIndex;
-                                    errorProvider1.Clear();
-                                    label3.Text = "";
-                                }
-                                else
-                                {
-                                    label6.Text = "";
-                                    string noRecordsMsg = "No Records Found.";
-                                    errorProvider1.SetError(textBox1, noRecordsMsg);
-                                    label3.Text = noRecordsMsg;
-                                }
-                            }
-                            catch (DatabaseQueryException dbEx)
-                            {
-                                MessageBox.Show($"{dbEx.Message}\nDetails: {dbEx.InnerException?.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                label4.Text = "SYSTEM ERROR";
-                                label4.ForeColor = Color.Red;
-                            }
-                        }
-                        //Alert the user that an operator name must be selected.
-                        else
-                        {
-                            totalRows = 0;
-                            totalPages = 0;
-                            currentPageIndex = 1;
-                            opName = "";
-
-                            label2.Text = "Number of Records: " + totalRows;
-                            label4.Text = "QUERY FAILURE";
-                            label4.ForeColor = Color.Red;
-                            label5.Text = "Total Pages: " + totalPages;
-                            label6.Text = "";
-
-                            dataBaseSource.DataSource = null;
-                            dataGridView1.DataSource = null;
-
-                            string msg = "Please select an Operator Name.";
-                            errorProvider1.SetError(textBox1, msg);
-                            label3.Text = msg;
-                        }
-                    }
-                    catch (DatabaseQueryException dbEx)
-                    {
-                        MessageBox.Show($"{dbEx.Message}\nDetails: {dbEx.InnerException?.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        label4.Text = "SYSTEM ERROR";
-                        label4.ForeColor = Color.Red;
-                    }
+                case SearchType.OperatorName:
+                    await HandleOperatorNameSearchAsync();
                 break;
 
-                //Search by Fabrication Department.
-                case 3:
-
-                    //User Role check for CRUD access
-                    if (_currentUser.ROLE_NAME == "Fabrication Manager" || _currentUser.ROLE_NAME == "Machining Manager")
-                    {
-                        //Enable update and delete record options in menu strip.
-                        updateRecordToolStripMenuItem.Enabled = true;
-                        updateRecordToolStripMenuItem.Visible = true;
-
-                        //Enable delete record option in menu strip.
-                        deleteRecordArchiveToolStripMenuItem.Enabled = true;
-                        deleteRecordArchiveToolStripMenuItem.Visible = true;
-
-                        //Disable restore record option in menu strip.
-                        restoreRecordMainTableToolStripMenuItem.Enabled = false;
-                        restoreRecordMainTableToolStripMenuItem.Visible = false;
-                    }
-                    else
-                    {
-                        //Disable update record options in menu strip.
-                        updateRecordToolStripMenuItem.Enabled = false;
-                        updateRecordToolStripMenuItem.Visible = false;
-
-                        //Disable delete record option in menu strip.
-                        deleteRecordArchiveToolStripMenuItem.Enabled = false;
-                        deleteRecordArchiveToolStripMenuItem.Visible = false;
-
-                        //Disable restore record option in menu strip.
-                        restoreRecordMainTableToolStripMenuItem.Enabled = false;
-                        restoreRecordMainTableToolStripMenuItem.Visible = false;
-                    }
-
-                    //Set currentPageIndex for query.
-                    currentPageIndex = 1;
-
-                    try
-                    {
-                        //Bind dataBaseSource to fabricationDepartmentQuery results passing the arguments of pageSize, and currentPageIndex.
-                        dataBaseSource.DataSource = await newDAO.fabricationDepartmentQuery(pageSize, currentPageIndex);
-
-                        //Bind dateGridView to dataBaseSource.
-                        dataGridView1.DataSource = dataBaseSource;
-
-                        //Hide the "ROW_VERSION" column.
-                        if (dataGridView1.Columns.Contains("ROW_VERSION"))
-                        {
-                            dataGridView1.Columns["ROW_VERSION"].Visible = false;
-                        }
-
-                        //Get the total rows returned by fabricationDepartmentQueryCount.
-                        totalRows = await newDAO.fabricationDepartmentQueryCount();
-
-                        //Divide the totalRows variable by the pageSize variable and set value to totalPages variable.
-                        totalPages = (int)Math.Ceiling((double)totalRows / pageSize);
-
-                        //Set label2's text value to the value of totalRows.
-                        label2.Text = "Number of Records: " + totalRows;
-
-                        //Set label5's text value to the value of totalPages.
-                        label5.Text = "Total Pages: " + totalPages;
-
-                        //Set label6's text value to the value of currentPageIndex.
-                        label6.Text = "Current Page: " + currentPageIndex;
-
-                        //Clear errorProvider1.
-                        errorProvider1.Clear();
-
-                        //Set label4's value to alert the user of a succsessful query.
-                        label4.Text = "QUERY SUCCESS";
-
-                        //Set label4's color to green.
-                        label4.ForeColor = Color.Green;
-                    }
-                    catch (DatabaseQueryException dbEx)
-                    {
-                        MessageBox.Show($"{dbEx.Message}\nDetails: {dbEx.InnerException?.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        label4.Text = "SYSTEM ERROR";
-                        label4.ForeColor = Color.Red;
-                    }
+                case SearchType.FabricationDepartment:
+                    await HandleFabricationDepartmentSearchAsync();
                 break;
 
-                //Search by Machining Department.
-                case 4:
-
-                    //User Role check for CRUD access
-                    if (_currentUser.ROLE_NAME == "Fabrication Manager" || _currentUser.ROLE_NAME == "Machining Manager")
-                    {
-                        //Enable update and delete record options in menu strip.
-                        updateRecordToolStripMenuItem.Enabled = true;
-                        updateRecordToolStripMenuItem.Visible = true;
-
-                        //Enable delete record option in menu strip.
-                        deleteRecordArchiveToolStripMenuItem.Enabled = true;
-                        deleteRecordArchiveToolStripMenuItem.Visible = true;
-
-                        //Disable restore record option in menu strip.
-                        restoreRecordMainTableToolStripMenuItem.Enabled = false;
-                        restoreRecordMainTableToolStripMenuItem.Visible = false;
-                    }
-                    else
-                    {
-                        //Disable update record options in menu strip.
-                        updateRecordToolStripMenuItem.Enabled = false;
-                        updateRecordToolStripMenuItem.Visible = false;
-
-                        //Disable delete record option in menu strip.
-                        deleteRecordArchiveToolStripMenuItem.Enabled = false;
-                        deleteRecordArchiveToolStripMenuItem.Visible = false;
-
-                        //Disable restore record option in menu strip.
-                        restoreRecordMainTableToolStripMenuItem.Enabled = false;
-                        restoreRecordMainTableToolStripMenuItem.Visible = false;
-                    }
-
-                    //Set currentPageIndex for query.
-                    currentPageIndex = 1;
-
-                    try
-                    {
-                        //Bind dataBaseSource to fabricationDepartmentQuery results passing the arguments of pageSize, and currentPageIndex.
-                        dataBaseSource.DataSource = await newDAO.machiningDepartmentQuery(pageSize, currentPageIndex);
-
-                        //Bind dateGridView to dataBaseSource.
-                        dataGridView1.DataSource = dataBaseSource;
-
-                        //Hide the "ROW_VERSION" column.
-                        if (dataGridView1.Columns.Contains("ROW_VERSION"))
-                        {
-                            dataGridView1.Columns["ROW_VERSION"].Visible = false;
-                        }
-
-                        //Get the total rows returned by fabricationDepartmentQueryCount.
-                        totalRows = await newDAO.machiningDepartmentQueryCount();
-
-                        //Divide the totalRows variable by the pageSize variable and set value to totalPages variable.
-                        totalPages = (int)Math.Ceiling((double)totalRows / pageSize);
-
-                        //Set label2's text value to the value of totalRows.
-                        label2.Text = "Number of Records: " + totalRows;
-
-                        //Set label5's text value to the value of totalPages.
-                        label5.Text = "Total Pages: " + totalPages;
-
-                        //Set label6's text value to the value of currentPageIndex.
-                        label6.Text = "Current Page: " + currentPageIndex;
-
-                        //Clear errorProvider1.
-                        errorProvider1.Clear();
-
-                        //Set label4's value to alert the user of a succsessful query.
-                        label4.Text = "QUERY SUCCESS";
-
-                        //Set label4's color to green.
-                        label4.ForeColor = Color.Green;
-                    }
-                    catch (DatabaseQueryException dbEx)
-                    {
-                        MessageBox.Show($"{dbEx.Message}\nDetails: {dbEx.InnerException?.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        label4.Text = "SYSTEM ERROR";
-                        label4.ForeColor = Color.Red;
-                    }
+                case SearchType.MachiningDepartment:
+                    await HandleMachiningDepartmentSearchAsync();
                 break;
 
-                //Search By Part Number in Archive, gets value from textBox1.
-                case 5:
-                    //Store user input from textBox1 into partNumber variable.
-                    partNumber = textBox1.Text;
-
-                    //User Role check for CRUD access
-                    if (_currentUser.ROLE_NAME == "Fabrication Manager" || _currentUser.ROLE_NAME == "Machining Manager")
-                    {
-                        //Enable restore record option in menu strip.
-                        restoreRecordMainTableToolStripMenuItem.Enabled = true;
-                        restoreRecordMainTableToolStripMenuItem.Visible = true;
-
-                        //Disable update and delete record options in menu strip.
-                        updateRecordToolStripMenuItem.Enabled = false;
-                        updateRecordToolStripMenuItem.Visible = false;
-
-                        //Disable delete record option in menu strip.
-                        deleteRecordArchiveToolStripMenuItem.Enabled = false;
-                        deleteRecordArchiveToolStripMenuItem.Visible = false;
-                    }
-                    else
-                    {
-                        //Disable restore record option in menu strip.
-                        restoreRecordMainTableToolStripMenuItem.Enabled = false;
-                        restoreRecordMainTableToolStripMenuItem.Visible = false;
-
-                        //Disable update and delete record options in menu strip.
-                        updateRecordToolStripMenuItem.Enabled = false;
-                        updateRecordToolStripMenuItem.Visible = false;
-
-                        //Disable delete record option in menu strip.
-                        deleteRecordArchiveToolStripMenuItem.Enabled = false;
-                        deleteRecordArchiveToolStripMenuItem.Visible = false;
-                    }
-                    try
-                    {
-                        //If the partNumber is of the right format, execute the search query.
-                        if (newDV.validatePartNumber(partNumber, out errorType))
-                        {
-                            //Cache row count locally.
-                            totalRows = await newDAO.partNumberQueryCountArchive(partNumber);
-                            //Set currentPageIndex for query.
-                            currentPageIndex = 1;
-
-                            try
-                            {
-                                //Bind dataBaseSource to partNumberQuery results, passing the arguments partNumber, pageSize, and currentPageIndex.
-                                dataBaseSource.DataSource = await newDAO.partNumberQueryArchive(partNumber, pageSize, currentPageIndex);
-
-                                //Bind dateGridView1 to dataBaseSource.
-                                dataGridView1.DataSource = dataBaseSource;
-
-                                //Hide the "ROW_VERSION" column.
-                                if (dataGridView1.Columns.Contains("ROW_VERSION"))
-                                {
-                                    dataGridView1.Columns["ROW_VERSION"].Visible = false;
-                                }
-
-                                //Calculate total pages based on the cached total rows.
-                                totalPages = (int)Math.Ceiling((double)totalRows / pageSize);
-
-                                //Set UI element text values.
-                                label2.Text = "Number of Records: " + totalRows;
-                                label4.Text = "QUERY SUCCESS";
-                                label4.ForeColor = Color.Green;
-                                label5.Text = "Total Pages: " + totalPages;
-
-                                if(totalRows > 0)
-                                {
-                                    label6.Text = "Current Page: " + currentPageIndex;
-                                    errorProvider1.Clear();
-                                    label3.Text = "";
-                                }
-                                else
-                                {
-                                    label6.Text = "";
-                                    string noRecordMsg = "No Records Found.";
-                                    errorProvider1.SetError(textBox1, noRecordMsg);
-                                    label3.Text = noRecordMsg;
-                                }
-                            }
-                            catch (DatabaseQueryException dbEx)
-                            {
-                                MessageBox.Show($"{dbEx.Message}\nDetails: {dbEx.InnerException?.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                label4.Text = "SYSTEM ERROR";
-                                label4.ForeColor = Color.Red;
-                            }
-                        }
-                        else
-                        {
-                            totalRows = 0;
-                            totalPages = 0;
-                            currentPageIndex = 1;
-                            partNumber = "";
-
-                            label2.Text = "Number of Records: " + totalRows;
-                            label4.Text = "QUERY FAILURE";
-                            label4.ForeColor = Color.Red;
-                            label5.Text = "Total Pages: " + totalPages;
-                            label6.Text = "";
-
-                            dataBaseSource.DataSource = null;
-                            dataGridView1.DataSource = null;                            
-
-                            if (errorType == "EMPTY_ERROR")
-                            {
-                                string msg = "Part Number cannot be empty.\nPlease enter a part number.";
-                                errorProvider1.SetError(textBox1, msg);
-                                label3.Text = msg;
-                            }
-                            else if (errorType == "WHITESPACE_ERROR")
-                            {
-                                string msg = "Part Number cannot contain spaces.";
-                                errorProvider1.SetError(textBox1, msg);
-                                label3.Text = msg;
-                            }
-                            else if (errorType == "SYMBOL_ERROR" || errorType == "INVALID_CHAR_ERROR")
-                            {
-                                string msg = "Part Number can contain only letters,\nnumbers, and hyphens (-).";
-                                errorProvider1.SetError(textBox1, msg);
-                                label3.Text = msg;
-                            }
-                        }
-                    }
-                    catch (DatabaseQueryException dbEx)
-                    {
-                        MessageBox.Show($"{dbEx.Message}\nDetails: {dbEx.InnerException?.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        label4.Text = "SYSTEM ERROR";
-                        label4.ForeColor = Color.Red;
-                    }
+                case SearchType.PartNumberArchive:
+                    await HandlePartNumberArchiveSearchAsync();
                 break;
             }
         }
@@ -1020,839 +382,33 @@ namespace KiczanProductionInfoSystem
         //Event handler for Next Button.
         private async void button4_Click(object sender, EventArgs e)
         {
-            string errorType = string.Empty;
-
-            if (currentPageIndex < totalPages && dataBaseSource.DataSource != null)
+            if(dataBaseSource.DataSource == null)
             {
-                //Get index value from comboBox1 after user selection.
-                int searchType = comboBox1.SelectedIndex;
+                return;
+            }
 
-                switch (searchType)
+            if(HasSearchInputChanged())
+            {
+                await ExecuteSelectedSearchAsync();
+            }
+            else
+            {
+                if(currentPageIndex < totalPages)
                 {
-                    case 0:
-                        //If the dateRange variable is still the same value as textBox1.Text and the next button is pressed.
-                        if (dateRange == textBox1.Text)
-                        {
-                            if (newDV.validateDateRange(dateRange, out _, out DateTime cleanStartDate, out DateTime cleanEndDate))
-                            {
-                                currentPageIndex++;
-                                label6.Text = "Current Page: " + currentPageIndex;
-
-                                try
-                                {
-                                    dataBaseSource.DataSource = await newDAO.dateDueRangeQuery(cleanStartDate, cleanEndDate, pageSize, currentPageIndex);
-                                    dataGridView1.DataSource = dataBaseSource;
-                                }
-                                catch (DatabaseQueryException dbEx)
-                                {
-                                    MessageBox.Show($"{dbEx.Message}\nDetails: {dbEx.InnerException?.Message}", "Datebase Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                    label4.Text = "SYSTEM ERROR";
-                                    label4.ForeColor = Color.Red;
-                                }
-                            }
-                        }
-                        //If the date range input into textBox1 has changed, apply Auto-Reset pattern.
-                        else
-                        {
-                            //Validate new input.
-                            if (newDV.validateDateRange(textBox1.Text, out errorType, out DateTime newStartDate, out DateTime newEndDate))
-                            {
-                                //Sync with new text box input.
-                                dateRange = textBox1.Text;
-
-                                //Reset page counter.
-                                currentPageIndex = 1;
-
-                                label6.Text = "Current Page: " + currentPageIndex;
-
-                                try
-                                {
-                                    //Execute fresh query.
-                                    dataBaseSource.DataSource = await newDAO.dateDueRangeQuery(newStartDate, newEndDate, pageSize, currentPageIndex);
-                                    dataGridView1.DataSource = dataBaseSource;
-
-                                    //Recalculate row counts and total pages.
-                                    totalRows = await newDAO.dateDueRangeQueryCount(newStartDate, newEndDate);
-
-                                    totalPages = (int)Math.Ceiling((double)totalRows / pageSize);
-
-                                    //Update UI.
-                                    label2.Text = "Number of Records: " + totalRows;
-                                    label3.Text = "";
-                                    label4.Text = "QUERY SUCCESS";
-                                    label4.ForeColor = Color.Green;
-                                    label5.Text = "Total Pages: " + totalPages;
-                                    errorProvider1.Clear();
-                                }
-                                catch (DatabaseQueryException dbEx)
-                                {
-                                    MessageBox.Show($"{dbEx.Message}\nDetails: {dbEx.InnerException?.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                    label4.Text = "SYSTEM ERROR";
-                                    label4.ForeColor = Color.Red;
-                                }
-                            }
-                            //The input changed and is invalid.
-                            else
-                            {
-                                //Wipe state and clear datagrid.
-                                dateRange = "";
-                                currentPageIndex = 1;
-                                dataBaseSource.DataSource = null;
-                                dataGridView1.DataSource = null;
-
-                                totalRows = 0;
-                                totalPages = 0;
-
-                                label2.Text = "Number of Records: " + totalRows;
-                                label4.Text = "QUERY FAILURE";
-                                label4.ForeColor = Color.Red;
-                                label5.Text = "Total Pages: " + totalPages;
-                                label6.Text = "";
-
-                                //Target specific UI error.
-                                if (errorType == "FORMAT_ERROR")
-                                {
-                                    string msg = "Due Date Range must be of the \nformat: \nmm/dd/yyyy-mm/dd/yyyy";
-                                    errorProvider1.SetError(textBox1, msg);
-                                    label3.Text = msg;
-                                }
-                                else if (errorType == "ORDER_ERROR")
-                                {
-                                    string msg = "Beginning Date occurs after ending date. \nPlease enter as \n(Beginning Date)mm/dd/yyyy-\n(Ending Date)mm/dd/yyyy";
-                                    errorProvider1.SetError(textBox1, msg);
-                                    label3.Text = msg;
-                                }
-                            }
-                        }
-                    break;
-
-                    case 1:
-                        //If the partNumber variable is still the same value as textBox1.Text and the next button is pressed.
-                        if (partNumber == textBox1.Text)
-                        {
-                            if (newDV.validatePartNumber(partNumber, out errorType))
-                            {
-                                currentPageIndex++;
-                                label6.Text = "Current Page: " + currentPageIndex;
-
-                                try
-                                {
-                                    dataBaseSource.DataSource = await newDAO.partNumberQuery(partNumber, pageSize, currentPageIndex);
-                                    dataGridView1.DataSource = dataBaseSource;
-                                }
-                                catch (DatabaseQueryException dbEx)
-                                {
-                                    MessageBox.Show($"{dbEx.Message}\nDetails: {dbEx.InnerException?.Message}", "Datebase Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                    label4.Text = "SYSTEM ERROR";
-                                    label4.ForeColor = Color.Red;
-                                }
-                            }
-                        }
-                        //If the part number input into textBox1.Text has changed, apply auto-reset.
-                        else
-                        {
-                            try
-                            {
-                                //Validate new input.
-                                if (newDV.validatePartNumber(textBox1.Text, out errorType))
-                                {
-                                    //Sync with new text box input.
-                                    partNumber = textBox1.Text;
-                                    //Cache row count locally, reset page counter..
-                                    totalRows = await newDAO.partNumberQueryCount(partNumber);
-                                    currentPageIndex = 1;
-
-                                    try
-                                    {
-                                        //Execute fresh query.
-                                        dataBaseSource.DataSource = await newDAO.partNumberQuery(partNumber, pageSize, currentPageIndex);
-                                        dataGridView1.DataSource = dataBaseSource;
-
-                                        //Calculate total pages based on the cached total rows.
-                                        totalPages = (int)Math.Ceiling((double)totalRows / pageSize);
-
-                                        //Update UI.
-                                        label2.Text = "Number of Records: " + totalRows;
-                                        label4.Text = "QUERY SUCCESS";
-                                        label4.ForeColor = Color.Green;
-                                        label5.Text = "Total Pages: " + totalPages;
-
-                                        if(totalRows > 0)
-                                        {
-                                            label6.Text = "Current Page: " + currentPageIndex;
-                                            errorProvider1.Clear();
-                                            label3.Text = "";
-                                        }
-                                        else
-                                        {
-                                            label6.Text = "";
-                                            string noRecordsMsg = "No Records Found";
-                                            errorProvider1.SetError(textBox1 , noRecordsMsg);
-                                            label3 .Text = noRecordsMsg;
-                                        }
-                                    }
-                                    catch (DatabaseQueryException dbEx)
-                                    {
-                                        MessageBox.Show($"{dbEx.Message}\nDetails: {dbEx.InnerException?.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                        label4.Text = "SYSTEM ERROR";
-                                        label4.ForeColor = Color.Red;
-                                    }
-                                }
-                                //The input changed and is invalid.
-                                else
-                                {
-                                    //Wipe state and clear datagrid.
-                                    partNumber = "";
-                                    totalRows = 0;
-                                    totalPages = 0;
-                                    currentPageIndex = 1;
-                                    dataBaseSource.DataSource = null;
-                                    dataGridView1.DataSource = null;
-
-                                    label2.Text = "Number of Records: " + totalRows;
-                                    label4.Text = "QUERY FAILURE";
-                                    label4.ForeColor = Color.Red;
-                                    label5.Text = "Total Pages: " + totalPages;
-                                    label6.Text = "";
-                                    
-                                    //Target specific UI error.
-                                    if (errorType == "EMPTY_ERROR")
-                                    {
-                                        string msg = "Part Number cannot be empty.\nPlease enter a part number.";
-                                        errorProvider1.SetError(textBox1, msg);
-                                        label3.Text = msg;
-                                    }
-                                    else if (errorType == "WHITESPACE_ERROR")
-                                    {
-                                        string msg = "Part Number cannot contain spaces.";
-                                        errorProvider1.SetError(textBox1, msg);
-                                        label3.Text = msg;
-                                    }
-                                    else if (errorType == "SYMBOL_ERROR" || errorType == "INVALID_CHAR_ERROR")
-                                    {
-                                        string msg = "Part Number can contain only letters,\nnumbers, and hyphens (-).";
-                                        errorProvider1.SetError(textBox1, msg);
-                                        label3.Text = msg;
-                                    }
-                                }
-                            }
-                            catch (DatabaseQueryException dbEx)
-                            {
-                                MessageBox.Show($"{dbEx.Message}\nDetails: {dbEx.InnerException?.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                label4.Text = "SYSTEM ERROR";
-                                label4.ForeColor = Color.Red;
-                            }
-                        }               
-                    break;
-
-                    case 2:
-                        //Incremement page counter index.
-                        currentPageIndex++;
-
-                        //Update page.
-                        label6.Text = "Current Page: " + currentPageIndex;
-
-                        try
-                        {
-                            //Query to update page.
-                            dataBaseSource.DataSource = await newDAO.operatorNameQuery(comboBox2.Text, pageSize, currentPageIndex);
-
-                            //Bind results to dataGridView1.
-                            dataGridView1.DataSource = dataBaseSource;
-                        }
-                        catch (DatabaseQueryException dbEx)
-                        {
-                            MessageBox.Show($"{dbEx.Message}\nDetails: {dbEx.InnerException?.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            label4.Text = "SYSTEM ERROR";
-                            label4.ForeColor = Color.Red;
-                        }
-                    break;
-
-                    case 3:
-                        //Incremement page counter index.
-                        currentPageIndex++;
-
-                        //Update page.
-                        label6.Text = "Current Page: " + currentPageIndex;
-
-                        try
-                        {
-                            //Query to update page.
-                            dataBaseSource.DataSource = await newDAO.fabricationDepartmentQuery(pageSize, currentPageIndex);
-
-                            //Bind results to dataGridView1.
-                            dataGridView1.DataSource = dataBaseSource;
-                        }
-                        catch (DatabaseQueryException dbEx)
-                        {
-                            MessageBox.Show($"{dbEx.Message}\nDetails: {dbEx.InnerException?.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            label4.Text = "SYSTEM ERROR";
-                            label4.ForeColor = Color.Red;
-                        }
-                    break;
-
-                    case 4:
-                        //Incremement page counter index.
-                        currentPageIndex++;
-
-                        //Update page.
-                        label6.Text = "Current Page: " + currentPageIndex;
-
-                        try
-                        {
-                            //Query to update page.
-                            dataBaseSource.DataSource = await newDAO.machiningDepartmentQuery(pageSize, currentPageIndex);
-
-                            //Bind results to dataGridView1.
-                            dataGridView1.DataSource = dataBaseSource;
-                        }
-                        catch (DatabaseQueryException dbEx)
-                        {
-                            MessageBox.Show($"{dbEx.Message}\nDetails: {dbEx.InnerException?.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            label4.Text = "SYSTEM ERROR";
-                            label4.ForeColor = Color.Red;
-                        }
-                    break;
-
-                    case 5:
-                        //If the partNumber variable is still the same value as textBox1.Text and the next button is pressed.
-                        if (partNumber == textBox1.Text)
-                        {
-                            if (newDV.validatePartNumber(partNumber, out errorType))
-                            {
-                                currentPageIndex++;
-                                label6.Text = "Current Page: " + currentPageIndex;
-
-                                try
-                                {
-                                    dataBaseSource.DataSource = await newDAO.partNumberQueryArchive(partNumber, pageSize, currentPageIndex);
-                                    dataGridView1.DataSource = dataBaseSource;
-                                }
-                                catch (DatabaseQueryException dbEx)
-                                {
-                                    MessageBox.Show($"{dbEx.Message}\nDetails: {dbEx.InnerException?.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                    label4.Text = "SYSTEM ERROR";
-                                    label4.ForeColor = Color.Red;
-                                }
-                            }
-                        }
-                        //If the part number input into textBox1.Text has changed, apply auto-reset.
-                        else
-                        {
-                            try
-                            {
-                                //Validate new input.
-                                if (newDV.validatePartNumber(textBox1.Text, out errorType))
-                                {
-                                    //Sync with new text box input.
-                                    partNumber = textBox1.Text;
-                                    //Cache row count locally, reset page counter..
-                                    totalRows = await newDAO.partNumberQueryCountArchive(partNumber);
-                                    currentPageIndex = 1;
-
-                                    try
-                                    {
-                                        //Execute fresh query.
-                                        dataBaseSource.DataSource = await newDAO.partNumberQueryArchive(partNumber, pageSize, currentPageIndex);
-                                        dataGridView1.DataSource = dataBaseSource;
-
-                                        //Calculate total pages based on the cached total rows.
-                                        totalPages = (int)Math.Ceiling((double)totalRows / pageSize);
-
-                                        //Update UI.
-                                        label2.Text = "Number of Records: " + totalRows;
-                                        label4.Text = "QUERY SUCCESS";
-                                        label4.ForeColor = Color.Green;
-                                        label5.Text = "Total Pages: " + totalPages;
-
-                                        if (totalRows > 0)
-                                        {
-                                            label6.Text = "Current Page: " + currentPageIndex;
-                                            errorProvider1.Clear();
-                                            label3.Text = "";
-                                        }
-                                        else
-                                        {
-                                            label6.Text = "";
-                                            string noRecordsMsg = "No Records Found";
-                                            errorProvider1.SetError(textBox1, noRecordsMsg);
-                                            label3.Text = noRecordsMsg;
-                                        }
-                                    }
-                                    catch (DatabaseQueryException dbEx)
-                                    {
-                                        MessageBox.Show($"{dbEx.Message}\nDetails: {dbEx.InnerException?.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                        label4.Text = "SYSTEM ERROR";
-                                        label4.ForeColor = Color.Red;
-                                    }
-                                }
-                                //The input changed and is invalid.
-                                else
-                                {
-                                    //Wipe state and clear datagrid.
-                                    partNumber = "";
-                                    totalRows = 0;
-                                    totalPages = 0;
-                                    currentPageIndex = 1;
-                                    dataBaseSource.DataSource = null;
-                                    dataGridView1.DataSource = null;
-
-                                    label2.Text = "Number of Records: " + totalRows;
-                                    label4.Text = "QUERY FAILURE";
-                                    label4.ForeColor = Color.Red;
-                                    label5.Text = "Total Pages: " + totalPages;
-                                    label6.Text = "";
-                                    
-                                    //Target specific UI error.
-                                    if (errorType == "EMPTY_ERROR")
-                                    {
-                                        string msg = "Part Number cannot be empty.\nPlease enter a part number.";
-                                        errorProvider1.SetError(textBox1, msg);
-                                        label3.Text = msg;
-                                    }
-                                    else if (errorType == "WHITESPACE_ERROR")
-                                    {
-                                        string msg = "Part Number cannot contain spaces.";
-                                        errorProvider1.SetError(textBox1, msg);
-                                        label3.Text = msg;
-                                    }
-                                    else if (errorType == "SYMBOL_ERROR" || errorType == "INVALID_CHAR_ERROR")
-                                    {
-                                        string msg = "Part Number can contain only letters,\nnumbers, and hyphens (-).";
-                                        errorProvider1.SetError(textBox1, msg);
-                                        label3.Text = msg;
-                                    }
-                                }
-                            }
-                            catch (DatabaseQueryException dbEx)
-                            {
-                                MessageBox.Show($"{dbEx.Message}\nDetails: {dbEx.InnerException?.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                label4.Text = "SYSTEM ERROR";
-                                label4.ForeColor = Color.Red;
-                            }
-                        }
-                    break;
+                    currentPageIndex++;
+                    await FetchCurrentPageDataAsync();
                 }
             }
         }
         //Event handler for Previous Button.
         private async void button5_Click(object sender, EventArgs e)
         {
-            string errorType = string.Empty;
-
-            if (currentPageIndex > 1)
+            if (dataBaseSource.DataSource == null || currentPageIndex <= 1)
             {
-                //Get index value from comboBox1 after user selection.
-                int searchType = comboBox1.SelectedIndex;
-
-                switch (searchType)
-                {
-                    case 0:
-                        //If the dateRange variable is still the same value as textBox1.Text and the next button is pressed.
-                        if (dateRange == textBox1.Text)
-                        {
-                            if (newDV.validateDateRange(dateRange, out _, out DateTime cleanStartDate, out DateTime cleanEndDate))
-                            {
-                                currentPageIndex--;
-                                label6.Text = "Current Page: " + currentPageIndex;
-
-                                try
-                                {
-                                    dataBaseSource.DataSource = await newDAO.dateDueRangeQuery(cleanStartDate, cleanEndDate, pageSize, currentPageIndex);
-                                    dataGridView1.DataSource = dataBaseSource;
-                                }
-                                catch (DatabaseQueryException dbEx)
-                                {
-                                    MessageBox.Show($"{dbEx.Message}\nDetails: {dbEx.InnerException?.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                    label4.Text = "SYSTEM ERROR";
-                                    label4.ForeColor = Color.Red;
-                                }
-                            }
-                        }
-                        //If the date range input into textBox1 has changed. Apply Auto-Reset pattern.
-                        else
-                        {
-                            //Validate new input.
-                            if (newDV.validateDateRange(textBox1.Text, out errorType, out DateTime newStartDate, out DateTime newEndDate))
-                            {
-                                //Sync with new text box input.
-                                dateRange = textBox1.Text;
-
-                                //Reset page counter.
-                                currentPageIndex = 1;
-
-                                label6.Text = "Current Page: " + currentPageIndex;
-
-                                try
-                                {
-                                    //Execute fresh query.
-                                    dataBaseSource.DataSource = await newDAO.dateDueRangeQuery(newStartDate, newEndDate, pageSize, currentPageIndex);
-                                    dataGridView1.DataSource = dataBaseSource;
-
-                                    //Recalculate row counts and total pages.
-                                    totalRows = await newDAO.dateDueRangeQueryCount(newStartDate, newEndDate);
-
-                                    totalPages = (int)Math.Ceiling((double)totalRows / pageSize);
-
-                                    //Update UI.
-                                    label2.Text = "Number of Records: " + totalRows;
-                                    label5.Text = "Total Pages: " + totalPages;
-                                    label4.Text = "QUERY SUCCESS";
-                                    label4.ForeColor = Color.Green;
-
-                                    errorProvider1.Clear();
-                                    label3.Text = "";
-                                }
-                                catch (DatabaseQueryException dbEx)
-                                {
-                                    MessageBox.Show($"{dbEx.Message}\nDetails: {dbEx.InnerException?.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                    label4.Text = "SYSTEM ERROR";
-                                    label4.ForeColor = Color.Red;
-                                }
-                            }
-                            //The input changed and is invalid.
-                            else
-                            {
-                                //Wipe state and clear datagrid.
-                                dateRange = "";
-                                currentPageIndex = 1;
-                                dataBaseSource.DataSource = null;
-                                dataGridView1.DataSource = null;
-
-                                totalRows = 0;
-                                totalPages = 0;
-
-                                label2.Text = "Number of Records: " + totalRows;
-                                label5.Text = "Total Pages: " + totalPages;
-                                label6.Text = "";
-                                label4.Text = "QUERY FAILURE";
-                                label4.ForeColor = Color.Red;
-
-                                //Target specific UI error.
-                                if (errorType == "FORMAT_ERROR")
-                                {
-                                    string msg = "Due Date Range must be of the \nformat: \nmm/dd/yyyy-mm/dd/yyyy";
-                                    errorProvider1.SetError(textBox1, msg);
-                                    label3.Text = msg;
-                                }
-                                else if (errorType == "ORDER_ERROR")
-                                {
-                                    string msg = "Beginning Date occurs after ending date. \nPlease enter as \n(Beginning Date)mm/dd/yyyy-\n(Ending Date)mm/dd/yyyy";
-                                    errorProvider1.SetError(textBox1, msg);
-                                    label3.Text = msg;
-                                }
-                            }
-                        }
-                    break;
-
-                    case 1:
-                        //If the partNumber variable is still the same value as textBox1.Text and the next button is pressed.
-                        if (partNumber == textBox1.Text)
-                        {
-                            if (newDV.validatePartNumber(partNumber, out errorType))
-                            {
-                                currentPageIndex--;
-                                label6.Text = "Current Page: " + currentPageIndex;
-
-                                try
-                                {
-                                    dataBaseSource.DataSource = await newDAO.partNumberQuery(partNumber, pageSize, currentPageIndex);
-                                    dataGridView1.DataSource = dataBaseSource;
-                                }
-                                catch (DatabaseQueryException dbEx)
-                                {
-                                    MessageBox.Show($"{dbEx.Message}\nDetails: {dbEx.InnerException?.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                    label4.Text = "SYSTEM ERROR";
-                                    label4.ForeColor = Color.Red;
-                                }
-                            }
-                        }
-                        //If the part number input into textBox1.Text has changed, apply auto-reset.
-                        else
-                        {
-                            try
-                            {
-                                //Validate new input.
-                                if (newDV.validatePartNumber(textBox1.Text, out errorType))
-                                {
-                                    //Sync with new text box input.
-                                    partNumber = textBox1.Text;
-                                    //Cache row count locally, reset page counter..
-                                    totalRows = await newDAO.partNumberQueryCount(partNumber);
-                                    currentPageIndex = 1;
-
-                                    try
-                                    {
-                                        //Execute fresh query.
-                                        dataBaseSource.DataSource = await newDAO.partNumberQuery(partNumber, pageSize, currentPageIndex);
-                                        dataGridView1.DataSource = dataBaseSource;
-
-                                        //Calculate total pages based on the cached total rows.
-                                        totalPages = (int)Math.Ceiling((double)totalRows / pageSize);
-
-                                        //Update UI.
-                                        label2.Text = "Number of Records: " + totalRows;
-                                        label4.Text = "QUERY SUCCESS";
-                                        label4.ForeColor = Color.Green;
-                                        label5.Text = "Total Pages: " + totalPages;
-
-                                        if (totalRows > 0)
-                                        {
-                                            label6.Text = "Current Page: " + currentPageIndex;
-                                            errorProvider1.Clear();
-                                            label3.Text = "";
-                                        }
-                                        else
-                                        {
-                                            label6.Text = "";
-                                            string noRecordsMsg = "No Records Found";
-                                            errorProvider1.SetError(textBox1, noRecordsMsg);
-                                            label3.Text = noRecordsMsg;
-                                        }
-                                    }
-                                    catch (DatabaseQueryException dbEx)
-                                    {
-                                        MessageBox.Show($"{dbEx.Message}\nDetails: {dbEx.InnerException?.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                        label4.Text = "SYSTEM ERROR";
-                                        label4.ForeColor = Color.Red;
-                                    }
-                                }
-                                //The input changed and is invalid.
-                                else
-                                {
-                                    //Wipe state and clear datagrid.
-                                    partNumber = "";
-                                    totalRows = 0;
-                                    totalPages = 0;
-                                    currentPageIndex = 1;
-                                    dataBaseSource.DataSource = null;
-                                    dataGridView1.DataSource = null;
-
-                                    label2.Text = "Number of Records: " + totalRows;
-                                    label4.Text = "QUERY FAILURE";
-                                    label4.ForeColor = Color.Red;
-                                    label5.Text = "Total Pages: " + totalPages;
-                                    label6.Text = "";
-                                    
-                                    //Target specific UI error.
-                                    if (errorType == "EMPTY_ERROR")
-                                    {
-                                        string msg = "Part Number cannot be empty.\nPlease enter a part number.";
-                                        errorProvider1.SetError(textBox1, msg);
-                                        label3.Text = msg;
-                                    }
-                                    else if (errorType == "WHITESPACE_ERROR")
-                                    {
-                                        string msg = "Part Number cannot contain spaces.";
-                                        errorProvider1.SetError(textBox1, msg);
-                                        label3.Text = msg;
-                                    }
-                                    else if (errorType == "SYMBOL_ERROR" || errorType == "INVALID_CHAR_ERROR")
-                                    {
-                                        string msg = "Part Number can contain only letters,\nnumbers, and hyphens (-).";
-                                        errorProvider1.SetError(textBox1, msg);
-                                        label3.Text = msg;
-                                    }
-                                }
-                            }
-                            catch (DatabaseQueryException dbEx)
-                            {
-                                MessageBox.Show($"{dbEx.Message}\nDetails: {dbEx.InnerException?.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                label4.Text = "SYSTEM ERROR";
-                                label4.ForeColor = Color.Red;
-                            }
-                        }
-                    break;
-
-                    case 2:
-                        //Decrement page counter index.
-                        currentPageIndex--;
-
-                        //Update page.
-                        label6.Text = "Current Page: " + currentPageIndex;
-
-                        try
-                        {
-                            //Query to update page.
-                            dataBaseSource.DataSource = await newDAO.operatorNameQuery(comboBox2.Text, pageSize, currentPageIndex);
-
-                            //Bind results to dataGridView1.
-                            dataGridView1.DataSource = dataBaseSource;
-                        }
-                        catch (DatabaseQueryException dbEx)
-                        {
-                            MessageBox.Show($"{dbEx.Message}\nDetails: {dbEx.InnerException?.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            label4.Text = "SYSTEM ERROR";
-                            label4.ForeColor = Color.Red;
-                        }
-                    break;
-
-                    case 3:
-                        // Decrement page counter index.
-                        currentPageIndex--;
-
-                        // Update page.
-                        label6.Text = "Current Page: " + currentPageIndex;
-
-                        try
-                        {
-                            // Query to update page.
-                            dataBaseSource.DataSource = await newDAO.fabricationDepartmentQuery(pageSize, currentPageIndex);
-
-                            // Bind results to dataGridView1.
-                            dataGridView1.DataSource = dataBaseSource;
-                        }
-                        catch (DatabaseQueryException dbEx)
-                        {
-                            MessageBox.Show($"{dbEx.Message}\nDetails: {dbEx.InnerException?.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            label4.Text = "SYSTEM ERROR";
-                            label4.ForeColor = Color.Red;
-                        }
-                    break;
-
-                    case 4:
-                        // Decrement page counter index.
-                        currentPageIndex--;
-
-                        // Update page.
-                        label6.Text = "Current Page: " + currentPageIndex;
-
-                        try
-                        {
-                            // Query to update page.
-                            dataBaseSource.DataSource = await newDAO.machiningDepartmentQuery(pageSize, currentPageIndex);
-
-                            // Bind results to dataGridView1.
-                            dataGridView1.DataSource = dataBaseSource;
-                        }
-                        catch (DatabaseQueryException dbEx)
-                        {
-                            MessageBox.Show($"{dbEx.Message}\nDetails: {dbEx.InnerException?.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            label4.Text = "SYSTEM ERROR";
-                            label4.ForeColor = Color.Red;
-                        }
-                    break;
-
-                    case 5:
-                        //If the partNumber variable is still the same value as textBox1.Text and the next button is pressed.
-                        if (partNumber == textBox1.Text)
-                        {
-                            if (newDV.validatePartNumber(partNumber, out errorType))
-                            {
-                                currentPageIndex--;
-                                label6.Text = "Current Page: " + currentPageIndex;
-
-                                try
-                                {
-                                    dataBaseSource.DataSource = await newDAO.partNumberQueryArchive(partNumber, pageSize, currentPageIndex);
-                                    dataGridView1.DataSource = dataBaseSource;
-                                }
-                                catch (DatabaseQueryException dbEx)
-                                {
-                                    MessageBox.Show($"{dbEx.Message}\nDetails: {dbEx.InnerException?.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                    label4.Text = "SYSTEM ERROR";
-                                    label4.ForeColor = Color.Red;
-                                }
-                            }
-                        }
-                        //If the part number input into textBox1.Text has changed, apply auto-reset.
-                        else
-                        {
-                            try
-                            {
-                                //Validate new input.
-                                if (newDV.validatePartNumber(textBox1.Text, out errorType))
-                                {
-                                    //Sync with new text box input.
-                                    partNumber = textBox1.Text;
-                                    //Cache row count locally, reset page counter..
-                                    totalRows = await newDAO.partNumberQueryCountArchive(partNumber);
-                                    currentPageIndex = 1;
-
-                                    try
-                                    {
-                                        //Execute fresh query.
-                                        dataBaseSource.DataSource = await newDAO.partNumberQueryArchive(partNumber, pageSize, currentPageIndex);
-                                        dataGridView1.DataSource = dataBaseSource;
-
-                                        //Calculate total pages based on the cached total rows.
-                                        totalPages = (int)Math.Ceiling((double)totalRows / pageSize);
-
-                                        //Update UI.
-                                        label2.Text = "Number of Records: " + totalRows;
-                                        label4.Text = "QUERY SUCCESS";
-                                        label4.ForeColor = Color.Green;
-                                        label5.Text = "Total Pages: " + totalPages;
-
-                                        if (totalRows > 0)
-                                        {
-                                            label6.Text = "Current Page: " + currentPageIndex;
-                                            errorProvider1.Clear();
-                                            label3.Text = "";
-                                        }
-                                        else
-                                        {
-                                            label6.Text = "";
-                                            string noRecordsMsg = "No Records Found";
-                                            errorProvider1.SetError(textBox1, noRecordsMsg);
-                                            label3.Text = noRecordsMsg;
-                                        }
-                                    }
-                                    catch (DatabaseQueryException dbEx)
-                                    {
-                                        MessageBox.Show($"{dbEx.Message}\nDetails: {dbEx.InnerException?.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                        label4.Text = "SYSTEM ERROR";
-                                        label4.ForeColor = Color.Red;
-                                    }
-                                }
-                                //The input changed and is invalid.
-                                else
-                                {
-                                    //Wipe state and clear datagrid.
-                                    partNumber = "";
-                                    totalRows = 0;
-                                    totalPages = 0;
-                                    currentPageIndex = 1;
-                                    dataBaseSource.DataSource = null;
-                                    dataGridView1.DataSource = null;
-
-                                    label2.Text = "Number of Records: " + totalRows;
-                                    label4.Text = "QUERY FAILURE";
-                                    label4.ForeColor = Color.Red;
-                                    label5.Text = "Total Pages: " + totalPages;
-                                    label6.Text = "";
-
-                                    //Target specific UI error.
-                                    if (errorType == "EMPTY_ERROR")
-                                    {
-                                        string msg = "Part Number cannot be empty.\nPlease enter a part number.";
-                                        errorProvider1.SetError(textBox1, msg);
-                                        label3.Text = msg;
-                                    }
-                                    else if (errorType == "WHITESPACE_ERROR")
-                                    {
-                                        string msg = "Part Number cannot contain spaces.";
-                                        errorProvider1.SetError(textBox1, msg);
-                                        label3.Text = msg;
-                                    }
-                                    else if (errorType == "SYMBOL_ERROR" || errorType == "INVALID_CHAR_ERROR")
-                                    {
-                                        string msg = "Part Number can contain only letters,\nnumbers, and hyphens (-).";
-                                        errorProvider1.SetError(textBox1, msg);
-                                        label3.Text = msg;
-                                    }
-                                }
-                            }
-                            catch (DatabaseQueryException dbEx)
-                            {
-                                MessageBox.Show($"{dbEx.Message}\nDetails: {dbEx.InnerException?.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                label4.Text = "SYSTEM ERROR";
-                                label4.ForeColor = Color.Red;
-                            }
-                        }
-                    break;
-                }
+                return;
             }
+            currentPageIndex--;
+            await FetchCurrentPageDataAsync();
         }
 
         //Event handler for right click event on dataGridView1.
@@ -2290,6 +846,347 @@ namespace KiczanProductionInfoSystem
             {
                 textBox1.Text = "";
             }
+        }
+        
+        //Helper function to handle Due Date Range Search.
+        private async Task HandleDueDateRangeSearchAsync()
+        {
+            dateRange = textBox1.Text;
+
+            if(newDV.validateDateRange(dateRange, out string errorType, out DateTime cleanStartDate, out DateTime cleanEndDate))
+            {
+                _activeSearchType = SearchType.DueDateRange;
+                _activeDateRangeString = dateRange;
+                _activeStartDate = cleanStartDate;
+                _activeEndDate = cleanEndDate;
+                currentPageIndex = 1;
+
+                try
+                {
+                    var data = await newDAO.dateDueRangeQuery(_activeStartDate, _activeEndDate, pageSize, currentPageIndex);
+                    int count = await newDAO.dateDueRangeQueryCount(_activeStartDate, _activeEndDate);
+                    ApplyQueryResultToUI(data, count);
+                }
+                catch(DatabaseQueryException dbEx)
+                {
+                    HandleDataBaseException(dbEx);
+                }
+            }
+            else
+            {
+                ResetUIToFailureState();
+                dateRange = "";
+
+                string errorMsg = errorType == "FORMAT_ERROR"
+                    ? "Due Date Range must be of the \nformat: \nmm/dd/yyyy-mm/dd/yyyy"
+                    : "Beginning Date occurs after ending date. \nPlease enter as\n(Beginning Date)mm/dd/yyyy-(Ending Date)mm/dd/yyyy";
+                SetInputError(errorMsg);
+            }
+        }
+
+        //Helper function to handle Part Number Search.
+        private async Task HandlePartNumberSearchAsync()
+        {
+            partNumber = textBox1.Text;
+
+            if(newDV.validatePartNumber(partNumber, out string errorType))
+            {
+                _activeSearchType = SearchType.PartNumber;
+                _activePartNumber = partNumber;
+                currentPageIndex = 1;
+
+                try
+                {
+                    var data = await newDAO.partNumberQuery(_activePartNumber, pageSize, currentPageIndex);
+                    int count = await newDAO.partNumberQueryCount(_activePartNumber);
+                    ApplyQueryResultToUI(data, count);
+                }
+                catch(DatabaseQueryException dbEx)
+                {
+                    HandleDataBaseException(dbEx);
+                }
+            }
+            else
+            {
+                ResetUIToFailureState();
+                partNumber = "";
+
+                string errorMsg = errorType switch
+                {
+                    "EMPTY_ERROR" => "Part Number cannot be empty.\n Please enter a Part Number.",
+                    "WHITE_SPACE_ERROR" => "Part Number cannot contain spaces.",
+                    _ => "Part Number can contain only letters,\nnumbers, and hyphens (-)."
+                };
+                SetInputError(errorMsg);
+            }
+        }
+
+        //Helper function to handle Operator Name Search.
+        private async Task HandleOperatorNameSearchAsync()
+        {
+            opName = comboBox2.Text;
+
+            if(!string.IsNullOrEmpty(opName))
+            {
+                _activeSearchType = SearchType.OperatorName;
+                _activeOperatorName = opName;
+                currentPageIndex = 1;
+
+                try
+                {
+                    var data = await newDAO.operatorNameQuery(_activeOperatorName, pageSize, currentPageIndex);
+                    int count = await newDAO.operatorNameQueryCount(_activeOperatorName);
+                    ApplyQueryResultToUI(data, count);
+                }
+                catch(DatabaseQueryException dbEx)
+                {
+                    HandleDataBaseException(dbEx);
+                }
+            }
+            else
+            {
+                ResetUIToFailureState();
+                opName = "";
+                SetInputError("Please select and Operator Name.");
+            }
+        }
+
+        //Helper function to handle Fabrication Department Search.
+        private async Task HandleFabricationDepartmentSearchAsync()
+        {
+            _activeSearchType = SearchType.FabricationDepartment;
+            currentPageIndex = 1;
+
+            try
+            {
+                var data = await newDAO.fabricationDepartmentQuery(pageSize, currentPageIndex);
+                int count = await newDAO.fabricationDepartmentQueryCount();
+                ApplyQueryResultToUI(data, count);
+            }
+            catch(DatabaseQueryException dbEx)
+            {
+                HandleDataBaseException(dbEx);
+            }
+        }
+
+        //Helper function to handle Machining Department Search.
+        private async Task HandleMachiningDepartmentSearchAsync()
+        {
+            _activeSearchType = SearchType.MachiningDepartment;
+            currentPageIndex = 1;
+
+            try
+            {
+                var data = await newDAO.machiningDepartmentQuery(pageSize, currentPageIndex);
+                int count = await newDAO.machiningDepartmentQueryCount();
+                ApplyQueryResultToUI(data, count);
+            }
+            catch(DatabaseQueryException dbEx)
+            {
+                HandleDataBaseException(dbEx);
+            }
+        }
+
+        //Helper function to handle Part Number Archive Search.
+        private async Task HandlePartNumberArchiveSearchAsync()
+        {
+            partNumber = textBox1.Text;
+
+            if (newDV.validatePartNumber(partNumber, out string errorType))
+            {
+                _activeSearchType = SearchType.PartNumberArchive;
+                _activePartNumber = partNumber;
+                currentPageIndex = 1;
+
+                try
+                {
+                    var data = await newDAO.partNumberQueryArchive(_activePartNumber, pageSize, currentPageIndex);
+                    int count = await newDAO.partNumberQueryCountArchive(_activePartNumber);
+                    ApplyQueryResultToUI(data, count);
+                }
+                catch (DatabaseQueryException dbEx)
+                {
+                    HandleDataBaseException(dbEx);
+                }
+            }
+            else
+            {
+                ResetUIToFailureState();
+                partNumber = "";
+
+                string errorMsg = errorType switch
+                {
+                    "EMPTY_ERROR" => "Part Number cannot be empty.\n Please enter a Part Number.",
+                    "WHITE_SPACE_ERROR" => "Part Number cannot contain spaces.",
+                    _ => "Part Number can contain only letters,\nnumbers, and hyphens (-)."
+                };
+                SetInputError(errorMsg);
+            }
+        }
+
+        //Helper function to fetch the current pages data.
+        private async Task FetchCurrentPageDataAsync()
+        {
+            try
+            {
+                object data = null;
+
+                switch(_activeSearchType)
+                {
+                    case SearchType.DueDateRange:
+                        data = await newDAO.dateDueRangeQuery(_activeStartDate, _activeEndDate, pageSize, currentPageIndex);
+                    break;
+
+                    case SearchType.PartNumber:
+                        data = await newDAO.partNumberQuery(_activePartNumber, pageSize, currentPageIndex);
+                    break;
+
+                    case SearchType.OperatorName:
+                        data = await newDAO.operatorNameQuery(_activeOperatorName, pageSize, currentPageIndex);
+                    break;
+
+                    case SearchType.FabricationDepartment:
+                        data = await newDAO.fabricationDepartmentQuery(pageSize, currentPageIndex);
+                    break;
+
+                    case SearchType.MachiningDepartment:
+                        data = await newDAO.machiningDepartmentQuery(pageSize, currentPageIndex);
+                    break;
+
+                    case SearchType.PartNumberArchive:
+                        data = await newDAO.partNumberQueryArchive(_activePartNumber, pageSize, currentPageIndex);
+                    break;
+                }
+
+                dataBaseSource.DataSource = data;
+                dataGridView1.DataSource = dataBaseSource;
+
+                label6.Text = $"Current Page: {currentPageIndex}";
+            }
+            catch(DatabaseQueryException dbEx)
+            {
+                HandleDataBaseException(dbEx);
+            }
+        }
+
+        //Helper function to set menu strip visibility.
+        private void UpdateUserMenuPermissions(bool isArchive)
+        {
+            bool hasCrudAccess = _currentUser.ROLE_NAME == "Fabrication Manager" || _currentUser.ROLE_NAME == "Machining Manager";
+
+            updateRecordToolStripMenuItem.Enabled = !isArchive && hasCrudAccess;
+            updateRecordToolStripMenuItem.Visible = !isArchive && hasCrudAccess;
+
+            deleteRecordArchiveToolStripMenuItem.Enabled = !isArchive && hasCrudAccess;
+            deleteRecordArchiveToolStripMenuItem.Visible = !isArchive && hasCrudAccess;
+
+            restoreRecordMainTableToolStripMenuItem.Enabled = isArchive && hasCrudAccess;
+            restoreRecordMainTableToolStripMenuItem.Visible = isArchive && hasCrudAccess;
+        }
+        
+
+        //Helper function to bind UI to successful query.
+        private void ApplyQueryResultToUI(object dataSource, int rowCount)
+        {
+            totalRows = rowCount;
+            totalPages = (int)Math.Ceiling((double)totalRows / pageSize);
+
+            dataBaseSource.DataSource = dataSource;
+            dataGridView1.DataSource = dataBaseSource;
+
+            if(dataGridView1.Columns.Contains("ROW_VERSION"))
+            {
+                dataGridView1.Columns["ROW_VERSION"].Visible = false;
+            }
+
+            label2.Text = $"Number of Records: {totalRows}";
+            label5.Text = $"Total Pages: {totalPages}";
+
+            if(totalRows > 0)
+            {
+                label6.Text = $"Current Page: {currentPageIndex}";
+                errorProvider1.Clear();
+                label3.Text = "";
+            }
+            else
+            {
+                label6.Text = "";
+                SetInputError("No Records Found.");
+            }
+            SetStatusLabel("QUERY SUCCESS", Color.Green);
+        }
+
+        //Helper function to detect search input change.
+        private bool HasSearchInputChanged()
+        {
+            SearchType currentSelection = (SearchType)comboBox1.SelectedIndex;
+            if(currentSelection != _activeSearchType)
+            {
+                return true;
+            }
+            return currentSelection switch
+            {
+                SearchType.DueDateRange => textBox1.Text != _activeDateRangeString,
+                SearchType.PartNumber => textBox1.Text != _activePartNumber,
+                SearchType.PartNumberArchive => textBox1.Text != _activePartNumber,
+                SearchType.OperatorName => comboBox2.Text != _activeOperatorName,
+                _ => false
+            };
+        }
+
+        //Helper function to Clean Failure/Clear UI state.
+        private void ResetUIToFailureState()
+        {
+            totalRows = 0;
+            totalPages = 0;
+            currentPageIndex = 1;
+
+            label2.Text = "Number of Records: 0";
+            label5.Text = "Total Pages: 0";
+            label6.Text = "";
+
+            dataBaseSource.DataSource = null;
+            dataGridView1.DataSource = null;
+
+            if(dataGridView1.Rows.Count > 0)
+            {
+                dataGridView1.Rows.Clear();
+            }
+            SetStatusLabel("QUERY FAILURE", Color.Red);
+        }
+
+
+        //Helper function to set input error during failed validation.
+        private void SetInputError(string  message)
+        {
+            errorProvider1.SetError(textBox1, message);
+            label3.Text = message;
+        }
+
+        //Helper function to set status labels during system error.
+        private void SetStatusLabel(string text, Color color)
+        {
+            label4.Text = text;
+            label4.ForeColor = color;
+        }
+
+        //Type Safe Search Enums Matrix to elegantly handle user search selection.
+        public enum SearchType
+        {
+            DueDateRange = 0,
+            PartNumber = 1,
+            OperatorName = 2,
+            FabricationDepartment = 3,
+            MachiningDepartment = 4,
+            PartNumberArchive = 5
+
+        }
+
+        //Helper function to handle DB Exceptions.
+        private void HandleDataBaseException(DatabaseQueryException dbEx)
+        {
+            MessageBox.Show($"{dbEx.Message}\nDetails: {dbEx.InnerException?.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            SetStatusLabel("SYSTEM ERROR", Color.Red);
         }
     }
 }
